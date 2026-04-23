@@ -30,7 +30,8 @@ const NAV = [
   {
     section: "Reference",
     items: [
-      { label: "Skills library", href: "/docs/skills" },
+      { label: "Skills library",  href: "/docs/skills" },
+      { label: "Architecture",    href: "/graph"        },
     ],
   },
 ];

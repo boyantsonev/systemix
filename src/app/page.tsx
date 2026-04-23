@@ -183,9 +183,15 @@ function HowItWorks() {
         <h2 className="text-[1.75rem] font-black tracking-tight mb-2">
           How it works
         </h2>
-        <p className="text-[15px] text-muted-foreground leading-relaxed mb-14 max-w-xl">
+        <p className="text-[15px] text-muted-foreground leading-relaxed mb-6 max-w-xl">
           A pipeline that turns scattered design sources into a single, machine-readable contract — with lineage, rationale, and a quality score attached to every token.
         </p>
+        <Link
+          href="/graph"
+          className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground transition-colors mb-14"
+        >
+          See the full architecture diagram →
+        </Link>
 
         <div className="space-y-px">
           {stages.map(({ n, name, desc }, i) => (
