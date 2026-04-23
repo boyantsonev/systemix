@@ -2,6 +2,8 @@ import Link from "next/link";
 import { SLogo } from "@/components/systemix/SLogo";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 
+// ── Nav ──────────────────────────────────────────────────────────────────────
+
 function LandingNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
@@ -23,6 +25,9 @@ function LandingNav() {
           >
             GitHub
           </a>
+          <Link href="/dashboard" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-md hover:bg-muted/50">
+            Dashboard
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -39,13 +44,15 @@ function LandingNav() {
   );
 }
 
+// ── Footer ───────────────────────────────────────────────────────────────────
+
 function LandingFooter() {
   return (
     <footer className="border-t border-border/50 mt-32">
       <div className="max-w-4xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <SLogo size={14} className="text-muted-foreground/50" />
-          <span className="text-[12px] text-muted-foreground/50 font-mono">
+          <SLogo size={14} className="text-muted-foreground/40" />
+          <span className="text-[12px] text-muted-foreground/40 font-mono">
             The design contract layer for agents and teams.
           </span>
         </div>
@@ -61,7 +68,7 @@ function LandingFooter() {
           <Link href="/docs" className="hover:text-muted-foreground transition-colors">
             Docs
           </Link>
-          <span className="border border-border/50 text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wide font-bold text-muted-foreground/30">
+          <span className="border border-border/50 text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wide font-bold">
             Open source
           </span>
         </div>
@@ -70,50 +77,149 @@ function LandingFooter() {
   );
 }
 
+// ── Sections ─────────────────────────────────────────────────────────────────
+
+function Hero() {
+  return (
+    <section className="pt-24 pb-24">
+      <div className="max-w-3xl mx-auto text-center">
+        <h1 className="text-[2.75rem] sm:text-[3.5rem] font-black tracking-tight leading-[1.1] mb-6">
+          Your design tokens are<br />
+          <span className="text-muted-foreground">lying to your agents.</span>
+        </h1>
+        <p className="text-[17px] text-muted-foreground leading-relaxed max-w-lg mx-auto mb-10">
+          Systemix builds a verified contract between Figma, your codebase, and every AI tool in your workflow — so agents stop hallucinating design decisions.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex items-center gap-2 bg-muted/50 border border-border rounded-lg px-4 py-2.5 font-mono text-[13px] select-all cursor-text">
+            <span className="text-muted-foreground/40 select-none">$</span>
+            npx @systemix/init
+          </div>
+          <Link
+            href="/docs/quick-install"
+            className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Read the docs →
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Problem() {
+  const pains = [
+    {
+      label: "Figma drift",
+      body: "Variable collections and CSS tokens diverge without anyone noticing.",
+    },
+    {
+      label: "Agent hallucination",
+      body: "LLMs confidently use the wrong token name because your sources disagree.",
+    },
+    {
+      label: "No audit trail",
+      body: "When a decision changes, there's no record of why — just a diff no one remembers.",
+    },
+  ];
+
+  return (
+    <section className="py-24 border-t border-border/40">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
+          Design systems drift.<br />Agents make it worse.
+        </h2>
+        <div className="text-[15px] text-muted-foreground leading-relaxed space-y-4 mb-14 max-w-2xl">
+          <p>
+            Figma says <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">primary</code> is{" "}
+            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">#1a56db</code>. Your CSS says{" "}
+            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">oklch(0.45 0.18 250)</code>. Your agent picks whichever it saw last and ships it.
+          </p>
+          <p>
+            The problem isn&apos;t your team. It&apos;s that nothing formally owns the contract between your design system&apos;s sources of truth.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-3 gap-px bg-border/40 rounded-xl overflow-hidden border border-border/40">
+          {pains.map(({ label, body }) => (
+            <div key={label} className="bg-background px-5 py-6">
+              <p className="text-[12px] font-bold text-foreground/80 mb-2 uppercase tracking-wide">{label}</p>
+              <p className="text-[13px] text-muted-foreground leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  const stages = [
+    {
+      n: "01",
+      name: "Ingest",
+      desc: "Pull tokens, components, and variables from Figma, CSS, and your codebase. Every value is traced to its source.",
+    },
+    {
+      n: "02",
+      name: "Reconcile",
+      desc: "When sources disagree, Systemix applies your rules — not guesses. Code wins, Figma wins, or you decide. Every conflict is logged.",
+    },
+    {
+      n: "03",
+      name: "Rationale",
+      desc: "Decisions are annotated with the why. Deprecated tokens point to their replacements. Agents read the intent, not just the value.",
+    },
+    {
+      n: "04",
+      name: "Serve",
+      desc: "The contract is exposed via MCP. Any agent — Claude Code, Cursor, Copilot — can ask for a verified, sourced answer.",
+    },
+  ];
+
+  return (
+    <section className="py-24 border-t border-border/40">
+      <div className="max-w-3xl mx-auto">
+        <h2 className="text-[1.75rem] font-black tracking-tight mb-2">
+          Four stages. One contract.
+        </h2>
+        <p className="text-[15px] text-muted-foreground leading-relaxed mb-14 max-w-xl">
+          A pipeline that turns scattered design sources into a single, machine-readable contract — with lineage, rationale, and a quality score baked in.
+        </p>
+
+        <div className="space-y-px">
+          {stages.map(({ n, name, desc }, i) => (
+            <div key={n} className="flex gap-6 py-6 border-b border-border/40 last:border-0">
+              <div className="shrink-0 w-8 pt-0.5">
+                <span className="text-[11px] font-mono text-muted-foreground/30 tabular-nums">{n}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-foreground mb-1">{name}</p>
+                <p className="text-[13px] text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
+              {i < stages.length - 1 && (
+                <div className="shrink-0 self-center text-muted-foreground/20 text-[11px] font-mono hidden sm:block">→</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
-
-      {/* Content sections — populated in SYSTMIX-192 and SYSTMIX-193 */}
       <main className="max-w-4xl mx-auto px-6">
-        {/* Hero placeholder */}
-        <section className="pt-24 pb-20 text-center">
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight mb-6">
-            Your design tokens are<br />
-            <span className="text-muted-foreground">lying to your agents.</span>
-          </h1>
-          <p className="text-[16px] text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
-            Systemix builds a verified contract between Figma, your codebase, and every AI tool in your workflow — so agents stop hallucinating design decisions.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <div className="flex items-center gap-2 bg-muted/60 border border-border rounded-lg px-4 py-2.5 font-mono text-[13px]">
-              <span className="text-muted-foreground/50 select-none">$</span>
-              <span>npx @systemix/init</span>
-            </div>
-            <Link
-              href="/docs/quick-install"
-              className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Read the docs →
-            </Link>
-          </div>
-        </section>
-
-        {/* Divider */}
-        <div className="border-t border-border/40" />
-
-        {/* Remaining sections placeholder — SYSTMIX-192, SYSTMIX-193 */}
-        <section className="py-20 text-center">
-          <p className="text-[11px] font-mono text-muted-foreground/30 uppercase tracking-widest">
-            Problem · How it works · Use cases · GIGO score · CTA
-          </p>
-          <p className="text-[11px] font-mono text-muted-foreground/20 mt-2">
-            SYSTMIX-192 · SYSTMIX-193
-          </p>
-        </section>
+        <Hero />
+        <Problem />
+        <HowItWorks />
+        {/* Use cases + GIGO + CTA — SYSTMIX-193 */}
       </main>
-
       <LandingFooter />
     </div>
   );
