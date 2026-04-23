@@ -17,7 +17,7 @@ const NAV = [
     section: "Concepts",
     items: [
       { label: "contract.json",          href: "/docs/concepts/contract"   },
-      { label: "GIGO Score",             href: "/docs/concepts/gigo-score" },
+      { label: "Quality Score",          href: "/docs/concepts/gigo-score" },
       { label: "Drift & Reconciliation", href: "/docs/concepts/drift"      },
     ],
   },
@@ -25,6 +25,12 @@ const NAV = [
     section: "Guides",
     items: [
       { label: "Setup Guide", href: "/docs/guides/setup" },
+    ],
+  },
+  {
+    section: "Reference",
+    items: [
+      { label: "Skills library", href: "/docs/skills" },
     ],
   },
 ];

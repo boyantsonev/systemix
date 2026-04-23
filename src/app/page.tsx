@@ -173,7 +173,7 @@ function HowItWorks() {
     {
       n: "04",
       name: "Serve",
-      desc: "The contract is exposed via MCP. Any agent — Claude Code, Cursor, Copilot — can ask for a verified, sourced answer.",
+      desc: "The contract is exposed via MCP. Any agent — Claude Code, Cursor, Copilot — can query tokens, check drift status, and read reconciliation decisions.",
     },
   ];
 
@@ -181,10 +181,10 @@ function HowItWorks() {
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-2">
-          Four stages. One contract.
+          How it works
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-14 max-w-xl">
-          A pipeline that turns scattered design sources into a single, machine-readable contract — with lineage, rationale, and a quality score baked in.
+          A pipeline that turns scattered design sources into a single, machine-readable contract — with lineage, rationale, and a quality score attached to every token.
         </p>
 
         <div className="space-y-px">
@@ -216,7 +216,7 @@ function UseCases() {
     },
     {
       label: "AI-first product teams",
-      body: "Your agents write components. They need to know what tokens exist, which are deprecated, and what the GIGO score is before they touch anything. Systemix is the MCP server your agents were waiting for.",
+      body: "Your agents write components. They need to know what tokens exist, which are deprecated, and whether the contract is clean enough to trust. Systemix is the MCP server your agents query before touching anything.",
     },
     {
       label: "Solo engineers with a design system debt problem",
@@ -244,21 +244,21 @@ function UseCases() {
   );
 }
 
-function GigoCallout() {
+function QualityGate() {
   const tiers = [
-    { score: "≥ 90%", state: "Green", dot: "bg-emerald-500", body: "Contract is clean. Agent reads are reliable. Safe to ship." },
-    { score: "≥ 80%", state: "Amber", dot: "bg-amber-500", body: "Drifts exist. Agents will encounter ambiguity. Triage recommended." },
-    { score: "< 80%", state: "Red. Pipeline halts.", dot: "bg-red-400", body: "Data quality is too low to trust agent decisions. Fix conflicts before proceeding." },
+    { score: "≥ 90%", state: "Clean",   dot: "bg-emerald-500", body: "All conflicts resolved. Agent reads are reliable." },
+    { score: "≥ 80%", state: "Drifted", dot: "bg-amber-500",   body: "Unresolved conflicts exist. Agents will encounter ambiguous values." },
+    { score: "< 80%", state: "Blocked", dot: "bg-red-400",     body: "Too many unresolved conflicts. The MCP server refuses to start." },
   ];
 
   return (
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
-          Know before you ship.
+          A quality score on every contract.
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          GIGO — Garbage In, Garbage Out — is Systemix&apos;s quality signal for your contract. It measures how trustworthy your design system data is before it reaches an agent or a CI gate.
+          Systemix calculates a quality score (0–100%) from the ratio of resolved tokens, source coverage, and completeness. Below 80%, the MCP server won&apos;t start — serving a low-quality contract to agents is worse than serving nothing.
         </p>
 
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
@@ -278,7 +278,7 @@ function GigoCallout() {
         </div>
 
         <p className="text-[13px] text-muted-foreground leading-relaxed mt-6 max-w-xl">
-          The score rises as you resolve conflicts. It drops when sources drift apart. It&apos;s a forcing function, not a vanity metric.
+          The score rises as you resolve conflicts and connect sources. It drops when Figma and code drift apart.
         </p>
       </div>
     </section>
@@ -333,7 +333,7 @@ export default function LandingPage() {
         <Problem />
         <HowItWorks />
         <UseCases />
-        <GigoCallout />
+        <QualityGate />
         <BottomCTA />
       </main>
       <LandingFooter />
