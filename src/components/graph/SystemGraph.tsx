@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import {
   ReactFlow,
   Background,
@@ -363,7 +363,7 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
-function NodeInfoPanel({ nodeId, locked, onClose }: { nodeId: string; locked: boolean; onClose: () => void }) {
+function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => void }) {
   const node = BASE_NODES.find(n => n.id === nodeId);
   const meta = NODE_META[nodeId];
   if (!node || !meta) return null;
@@ -374,11 +374,11 @@ function NodeInfoPanel({ nodeId, locked, onClose }: { nodeId: string; locked: bo
 
   return (
     <div
-      className="w-56 rounded-xl p-3.5 transition-all"
+      className="w-56 rounded-xl p-3.5"
       style={{
         background: "rgba(8,8,22,0.92)",
         backdropFilter: "blur(16px)",
-        border: locked ? `1px solid ${col.stroke}40` : "1px solid rgba(255,255,255,0.08)",
+        border: `1px solid ${col.stroke}40`,
       }}
     >
       {/* Header */}
@@ -395,15 +395,13 @@ function NodeInfoPanel({ nodeId, locked, onClose }: { nodeId: string; locked: bo
             </p>
           </div>
         </div>
-        {locked && (
-          <button
-            onClick={onClose}
-            className="shrink-0 text-white/20 hover:text-white/50 transition-colors text-[11px] leading-none mt-0.5"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        )}
+        <button
+          onClick={onClose}
+          className="shrink-0 text-white/20 active:text-white/60 text-[11px] leading-none mt-0.5 p-1 -mr-1 -mt-0.5"
+          aria-label="Close"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Description */}
@@ -442,89 +440,43 @@ function NodeInfoPanel({ nodeId, locked, onClose }: { nodeId: string; locked: bo
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export function SystemGraph() {
-  // hoveredId: ephemeral, drives dimming + panel preview on hover
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  // lockedId: persistent, set on click — panel stays open until dismissed
-  const [lockedId, setLockedId]   = useState<string | null>(null);
-
-  // The panel shows the locked node, falling back to hovered node
-  const panelId  = lockedId ?? hoveredId;
-  // Dimming/edge-highlight uses the same active node
-  const activeId = panelId;
-
-  // Grace-period timer: keeps panel alive while mouse travels node → panel
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function clearHideTimer() {
-    if (hideTimer.current) { clearTimeout(hideTimer.current); hideTimer.current = null; }
-  }
-
-  function scheduleHide() {
-    clearHideTimer();
-    hideTimer.current = setTimeout(() => { setHoveredId(null); hideTimer.current = null; }, 160);
-  }
-
-  function handleNodeMouseEnter(_: React.MouseEvent, node: { id: string }) {
-    clearHideTimer();
-    setHoveredId(node.id);
-  }
-
-  function handleNodeMouseLeave() {
-    // Only start the hide timer when there's no locked node holding the panel
-    if (!lockedId) scheduleHide();
-    else setHoveredId(null); // just clear hover glow, locked panel stays
-  }
-
-  function handleNodeClick(_: React.MouseEvent, node: { id: string }) {
-    clearHideTimer();
-    setLockedId(prev => prev === node.id ? null : node.id);
-  }
-
-  function handlePaneClick() {
-    clearHideTimer();
-    setLockedId(null);
-    setHoveredId(null);
-  }
-
-  // Panel mouse handlers to keep it alive when cursor travels into it
-  function handlePanelMouseEnter() { clearHideTimer(); }
-  function handlePanelMouseLeave() { if (!lockedId) scheduleHide(); }
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const adjacentIds = useMemo(() => {
-    if (!activeId) return new Set<string>();
+    if (!selectedId) return new Set<string>();
     return new Set(
       BASE_EDGES.flatMap(e =>
-        e.source === activeId ? [e.target] :
-        e.target === activeId ? [e.source] : []
+        e.source === selectedId ? [e.target] :
+        e.target === selectedId ? [e.source] : []
       )
     );
-  }, [activeId]);
+  }, [selectedId]);
 
   const nodes = useMemo(() =>
     BASE_NODES.map(node => ({
       ...node,
       data: {
         ...node.data,
-        dimmed: activeId !== null && node.id !== activeId && !adjacentIds.has(node.id),
+        dimmed: selectedId !== null && node.id !== selectedId && !adjacentIds.has(node.id),
       },
     })),
-    [activeId, adjacentIds]
+    [selectedId, adjacentIds]
   );
 
   const edges = useMemo(() =>
     BASE_EDGES.map(edge => {
-      const active = edge.source === activeId || edge.target === activeId;
-      const faded  = activeId !== null && !active;
+      const active = edge.source === selectedId || edge.target === selectedId;
+      const faded  = selectedId !== null && !active;
       return {
         ...edge,
         style: {
           ...edge.style,
-          opacity: faded ? 0.04 : activeId !== null ? 0.9 : (edge.style?.opacity ?? 0.3),
+          opacity: faded ? 0.04 : selectedId !== null ? 0.9 : (edge.style?.opacity ?? 0.3),
           strokeWidth: active ? (Number(edge.style?.strokeWidth ?? 1)) + 0.5 : Number(edge.style?.strokeWidth ?? 1),
         },
       };
     }),
-    [activeId]
+    [selectedId]
   );
 
   return (
@@ -533,10 +485,8 @@ export function SystemGraph() {
         nodes={nodes}
         edges={edges}
         nodeTypes={NODE_TYPES}
-        onNodeMouseEnter={handleNodeMouseEnter}
-        onNodeMouseLeave={handleNodeMouseLeave}
-        onNodeClick={handleNodeClick}
-        onPaneClick={handlePaneClick}
+        onNodeClick={(_, node) => setSelectedId(prev => prev === node.id ? null : node.id)}
+        onPaneClick={() => setSelectedId(null)}
         fitView
         fitViewOptions={{ padding: 0.15 }}
         nodesDraggable={false}
@@ -559,24 +509,15 @@ export function SystemGraph() {
         />
       </ReactFlow>
 
-      {/* Detail panel — appears on hover, stays when moused into, locks on click */}
-      {panelId && (
-        <div
-          className="absolute top-3 right-3 z-10"
-          onMouseEnter={handlePanelMouseEnter}
-          onMouseLeave={handlePanelMouseLeave}
-        >
-          <NodeInfoPanel
-            nodeId={panelId}
-            locked={!!lockedId}
-            onClose={() => { setLockedId(null); setHoveredId(null); }}
-          />
+      {selectedId && (
+        <div className="absolute top-3 right-3 z-10">
+          <NodeInfoPanel nodeId={selectedId} onClose={() => setSelectedId(null)} />
         </div>
       )}
 
       <div className="absolute bottom-5 right-5 z-10">
         <p className="text-[10px] font-mono text-white/15">
-          hover to explore · click to lock · drag to pan
+          tap to inspect · pinch to zoom · drag to pan
         </p>
       </div>
     </div>
