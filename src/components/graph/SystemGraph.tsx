@@ -215,6 +215,8 @@ const BASE_EDGES: Edge[] = [
   mkEdge("hermes-claude",       "hermes",        "claude-code",   { stroke: "#0891b2", strokeWidth: 1.5 }),
   mkEdge("hermes-cursor",       "hermes",        "cursor",        { stroke: "#0891b2", strokeWidth: 1.5 }),
   mkEdge("hermes-posthog",      "hermes",        "posthog",       { stroke: "#0891b2", strokeDasharray: "3 3" }),
+  mkEdge("deploy-posthog",      "s-deploy",      "posthog",       { stroke: "#0891b2", strokeDasharray: "4 2", opacity: 0.4 }),
+  mkEdge("drift-posthog",       "s-drift",       "posthog",       { stroke: "#0891b2", strokeDasharray: "4 2", opacity: 0.4 }),
 ];
 
 // ── Node metadata ──────────────────────────────────────────────────────────────
@@ -335,7 +337,7 @@ const NODE_META: Record<string, NodeMeta> = {
     docHrefs: [{ label: "Quick Install →", href: "/docs/quick-install" }],
   },
   "posthog": {
-    desc: "Product analytics. Receives skill run events, drift metric trends, and quality score changes from Hermes via PostHog MCP.",
+    desc: "Product analytics — three event streams: /deploy sends a release annotation (timestamp + quality score at ship time); /drift-report sends the quality score metric for trending; Hermes sends operational skill-run events (counts, durations).",
     docHrefs: [{ label: "Architecture →", href: "/graph" }],
   },
 };
