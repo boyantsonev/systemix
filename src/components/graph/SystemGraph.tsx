@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -363,7 +363,7 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
-function NodeInfoPanel({ nodeId }: { nodeId: string }) {
+function NodeInfoPanel({ nodeId, locked, onClose }: { nodeId: string; locked: boolean; onClose: () => void }) {
   const node = BASE_NODES.find(n => n.id === nodeId);
   const meta = NODE_META[nodeId];
   if (!node || !meta) return null;
@@ -374,21 +374,36 @@ function NodeInfoPanel({ nodeId }: { nodeId: string }) {
 
   return (
     <div
-      className="w-56 rounded-xl border border-white/8 bg-black/70 backdrop-blur-md p-3.5"
-      style={{ backdropFilter: "blur(12px)", background: "rgba(8,8,22,0.85)" }}
+      className="w-56 rounded-xl p-3.5 transition-all"
+      style={{
+        background: "rgba(8,8,22,0.92)",
+        backdropFilter: "blur(16px)",
+        border: locked ? `1px solid ${col.stroke}40` : "1px solid rgba(255,255,255,0.08)",
+      }}
     >
       {/* Header */}
-      <div className="flex items-start gap-2 mb-2.5">
-        <svg width={8} height={8} className="mt-1 shrink-0">
-          <circle cx={4} cy={4} r={3.5} fill={col.fill} stroke={col.stroke} strokeWidth={1.5} />
-        </svg>
-        <div className="min-w-0">
-          <p className="text-[11px] font-mono font-semibold text-white/80 leading-tight">{label}</p>
-          {sub && <p className="text-[10px] font-mono text-white/30 mt-0.5">{sub}</p>}
-          <p className="text-[9px] font-mono uppercase tracking-widest mt-0.5" style={{ color: col.stroke }}>
-            {TYPE_LABEL[ntype]}
-          </p>
+      <div className="flex items-start justify-between gap-2 mb-2.5">
+        <div className="flex items-start gap-2 min-w-0">
+          <svg width={8} height={8} className="mt-1 shrink-0">
+            <circle cx={4} cy={4} r={3.5} fill={col.fill} stroke={col.stroke} strokeWidth={1.5} />
+          </svg>
+          <div className="min-w-0">
+            <p className="text-[11px] font-mono font-semibold text-white/80 leading-tight">{label}</p>
+            {sub && <p className="text-[10px] font-mono text-white/30 mt-0.5">{sub}</p>}
+            <p className="text-[9px] font-mono uppercase tracking-widest mt-0.5" style={{ color: col.stroke }}>
+              {TYPE_LABEL[ntype]}
+            </p>
+          </div>
         </div>
+        {locked && (
+          <button
+            onClick={onClose}
+            className="shrink-0 text-white/20 hover:text-white/50 transition-colors text-[11px] leading-none mt-0.5"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Description */}
@@ -427,43 +442,89 @@ function NodeInfoPanel({ nodeId }: { nodeId: string }) {
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export function SystemGraph() {
+  // hoveredId: ephemeral, drives dimming + panel preview on hover
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  // lockedId: persistent, set on click — panel stays open until dismissed
+  const [lockedId, setLockedId]   = useState<string | null>(null);
+
+  // The panel shows the locked node, falling back to hovered node
+  const panelId  = lockedId ?? hoveredId;
+  // Dimming/edge-highlight uses the same active node
+  const activeId = panelId;
+
+  // Grace-period timer: keeps panel alive while mouse travels node → panel
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function clearHideTimer() {
+    if (hideTimer.current) { clearTimeout(hideTimer.current); hideTimer.current = null; }
+  }
+
+  function scheduleHide() {
+    clearHideTimer();
+    hideTimer.current = setTimeout(() => { setHoveredId(null); hideTimer.current = null; }, 160);
+  }
+
+  function handleNodeMouseEnter(_: React.MouseEvent, node: { id: string }) {
+    clearHideTimer();
+    setHoveredId(node.id);
+  }
+
+  function handleNodeMouseLeave() {
+    // Only start the hide timer when there's no locked node holding the panel
+    if (!lockedId) scheduleHide();
+    else setHoveredId(null); // just clear hover glow, locked panel stays
+  }
+
+  function handleNodeClick(_: React.MouseEvent, node: { id: string }) {
+    clearHideTimer();
+    setLockedId(prev => prev === node.id ? null : node.id);
+  }
+
+  function handlePaneClick() {
+    clearHideTimer();
+    setLockedId(null);
+    setHoveredId(null);
+  }
+
+  // Panel mouse handlers to keep it alive when cursor travels into it
+  function handlePanelMouseEnter() { clearHideTimer(); }
+  function handlePanelMouseLeave() { if (!lockedId) scheduleHide(); }
 
   const adjacentIds = useMemo(() => {
-    if (!hoveredId) return new Set<string>();
+    if (!activeId) return new Set<string>();
     return new Set(
       BASE_EDGES.flatMap(e =>
-        e.source === hoveredId ? [e.target] :
-        e.target === hoveredId ? [e.source] : []
+        e.source === activeId ? [e.target] :
+        e.target === activeId ? [e.source] : []
       )
     );
-  }, [hoveredId]);
+  }, [activeId]);
 
   const nodes = useMemo(() =>
     BASE_NODES.map(node => ({
       ...node,
       data: {
         ...node.data,
-        dimmed: hoveredId !== null && node.id !== hoveredId && !adjacentIds.has(node.id),
+        dimmed: activeId !== null && node.id !== activeId && !adjacentIds.has(node.id),
       },
     })),
-    [hoveredId, adjacentIds]
+    [activeId, adjacentIds]
   );
 
   const edges = useMemo(() =>
     BASE_EDGES.map(edge => {
-      const active = edge.source === hoveredId || edge.target === hoveredId;
-      const faded  = hoveredId !== null && !active;
+      const active = edge.source === activeId || edge.target === activeId;
+      const faded  = activeId !== null && !active;
       return {
         ...edge,
         style: {
           ...edge.style,
-          opacity: faded ? 0.04 : hoveredId !== null ? 0.9 : (edge.style?.opacity ?? 0.3),
+          opacity: faded ? 0.04 : activeId !== null ? 0.9 : (edge.style?.opacity ?? 0.3),
           strokeWidth: active ? (Number(edge.style?.strokeWidth ?? 1)) + 0.5 : Number(edge.style?.strokeWidth ?? 1),
         },
       };
     }),
-    [hoveredId]
+    [activeId]
   );
 
   return (
@@ -472,8 +533,10 @@ export function SystemGraph() {
         nodes={nodes}
         edges={edges}
         nodeTypes={NODE_TYPES}
-        onNodeMouseEnter={(_, node) => setHoveredId(node.id)}
-        onNodeMouseLeave={() => setHoveredId(null)}
+        onNodeMouseEnter={handleNodeMouseEnter}
+        onNodeMouseLeave={handleNodeMouseLeave}
+        onNodeClick={handleNodeClick}
+        onPaneClick={handlePaneClick}
         fitView
         fitViewOptions={{ padding: 0.15 }}
         nodesDraggable={false}
@@ -496,12 +559,26 @@ export function SystemGraph() {
         />
       </ReactFlow>
 
-      {/* Node detail panel */}
-      {hoveredId && (
-        <div className="absolute top-3 right-3 z-10 pointer-events-auto">
-          <NodeInfoPanel nodeId={hoveredId} />
+      {/* Detail panel — appears on hover, stays when moused into, locks on click */}
+      {panelId && (
+        <div
+          className="absolute top-3 right-3 z-10"
+          onMouseEnter={handlePanelMouseEnter}
+          onMouseLeave={handlePanelMouseLeave}
+        >
+          <NodeInfoPanel
+            nodeId={panelId}
+            locked={!!lockedId}
+            onClose={() => { setLockedId(null); setHoveredId(null); }}
+          />
         </div>
       )}
+
+      <div className="absolute bottom-5 right-5 z-10">
+        <p className="text-[10px] font-mono text-white/15">
+          hover to explore · click to lock · drag to pan
+        </p>
+      </div>
     </div>
   );
 }
