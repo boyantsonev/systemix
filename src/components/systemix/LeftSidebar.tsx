@@ -16,7 +16,7 @@ export function LeftSidebar() {
 
   return (
     <aside
-      className="hidden md:flex w-[200px] shrink-0 bg-[oklch(13%_0.006_250)] dark:bg-[oklch(13%_0.006_250)] border-r border-border/50 flex-col overflow-y-auto"
+      className="hidden md:flex w-[200px] shrink-0 bg-sidebar border-r border-border/50 flex-col overflow-y-auto"
     >
       {/* Logo */}
       <div className="h-10 px-3 flex items-center border-b border-border/40">

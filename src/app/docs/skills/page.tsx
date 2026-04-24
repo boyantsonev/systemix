@@ -56,17 +56,11 @@ function SkillRow({ skill, index, numbered }: { skill: Skill; index: number; num
           <code className="bg-muted/60 px-1.5 py-0.5 rounded text-[12px] font-mono text-foreground whitespace-nowrap">
             {skill.command}
           </code>
-          <CopyBtn text={skill.command} />
         </div>
 
         <div className="flex-1 min-w-0">
           <p className="text-[13px] text-muted-foreground leading-relaxed">{skill.description}</p>
           <div className="flex items-center gap-2 flex-wrap mt-1.5">
-            {skill.triggersAgent && (
-              <span className="text-[10px] font-mono text-foreground/50 bg-muted/60 px-1.5 py-0.5 rounded">
-                {skill.triggersAgent}
-              </span>
-            )}
             {skill.mcp?.required?.map(mcp => (
               <span key={mcp} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/50 text-muted-foreground/60">
                 {mcp}
@@ -108,9 +102,27 @@ export default function SkillsPage() {
         {pipelineSkills.length} Claude Code slash commands. Each is a markdown prompt file installed to{" "}
         <code className="font-mono text-[14px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">~/.claude/skills/</code>.
       </p>
-      <p className="text-[14px] text-muted-foreground leading-relaxed mb-10">
+      <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
         Install a skill with <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npx systemix add figma</code>, or copy the prompt content below and save it as a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">.md</code> file manually.
       </p>
+
+      <div className="grid sm:grid-cols-2 gap-3 mb-10">
+        <div className="rounded-xl border border-border/40 px-4 py-4 bg-muted/20">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-foreground/60 mb-1.5">Figma MCP</p>
+          <p className="text-[12px] text-muted-foreground leading-relaxed">
+            Figma write operations (token sync, image push) use the{" "}
+            <span className="text-foreground font-medium">Figma Console MCP by TJ Pitre</span>.
+            Read operations use the official Figma REST MCP.
+          </p>
+        </div>
+        <div className="rounded-xl border border-border/40 px-4 py-4 bg-muted/20">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-foreground/60 mb-1.5">Agent runtime</p>
+          <p className="text-[12px] text-muted-foreground leading-relaxed">
+            Skills are executed by <span className="text-foreground font-medium">Hermes</span> — the Systemix agent runtime powered by{" "}
+            <span className="text-foreground font-medium">NousResearch Hermes LLM</span>. Hermes agents orchestrate MCP calls and route outputs to the contract.
+          </p>
+        </div>
+      </div>
 
       <hr className="border-border/40 mb-10" />
 

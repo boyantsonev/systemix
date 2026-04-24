@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTheme } from "next-themes";
+import { pipelineSkills } from "@/lib/data/pipeline";
 import {
   ReactFlow,
   Background,
@@ -27,7 +29,9 @@ type GraphNodeData = {
 
 // ── Colors ─────────────────────────────────────────────────────────────────────
 
-const TYPE_COLOR: Record<NType, { stroke: string; fill: string; text: string; glow: string }> = {
+type ColorSet = Record<NType, { stroke: string; fill: string; text: string; glow: string }>;
+
+const TYPE_COLOR_DARK: ColorSet = {
   source:   { stroke: "#7c3aed", fill: "#1a0f2e", text: "#c4b5fd", glow: "rgba(124,58,237,0.3)"  },
   skill:    { stroke: "#059669", fill: "#0a1f15", text: "#6ee7b7", glow: "rgba(5,150,105,0.3)"   },
   agent:    { stroke: "#d97706", fill: "#1c1407", text: "#fcd34d", glow: "rgba(217,119,6,0.3)"   },
@@ -37,13 +41,24 @@ const TYPE_COLOR: Record<NType, { stroke: string; fill: string; text: string; gl
   tool:     { stroke: "#0891b2", fill: "#031a1f", text: "#67e8f9", glow: "rgba(8,145,178,0.3)"   },
 };
 
+const TYPE_COLOR_LIGHT: ColorSet = {
+  source:   { stroke: "#7c3aed", fill: "#f5f0ff", text: "#5b21b6", glow: "rgba(124,58,237,0.12)" },
+  skill:    { stroke: "#059669", fill: "#ecfdf5", text: "#065f46", glow: "rgba(5,150,105,0.12)"  },
+  agent:    { stroke: "#d97706", fill: "#fffbeb", text: "#92400e", glow: "rgba(217,119,6,0.12)"  },
+  artifact: { stroke: "#2563eb", fill: "#eff6ff", text: "#1e40af", glow: "rgba(37,99,235,0.15)"  },
+  infra:    { stroke: "#e11d48", fill: "#fff1f2", text: "#9f1239", glow: "rgba(225,29,72,0.12)"  },
+  concept:  { stroke: "#64748b", fill: "#f8fafc", text: "#334155", glow: "rgba(71,85,105,0.08)"  },
+  tool:     { stroke: "#0891b2", fill: "#ecfeff", text: "#155e75", glow: "rgba(8,145,178,0.12)"  },
+};
+
 const RADIUS: Record<string, number> = { sm: 13, md: 17, lg: 28 };
 
 // ── Custom node ────────────────────────────────────────────────────────────────
 
 function GraphNode({ data }: NodeProps<Node<GraphNodeData>>) {
+  const { resolvedTheme } = useTheme();
   const { label, sub, ntype, size, dimmed } = data;
-  const col = TYPE_COLOR[ntype];
+  const col = (resolvedTheme === "light" ? TYPE_COLOR_LIGHT : TYPE_COLOR_DARK)[ntype];
   const r = RADIUS[size];
   const d = r * 2;
 
@@ -58,23 +73,17 @@ function GraphNode({ data }: NodeProps<Node<GraphNodeData>>) {
         userSelect: "none",
       }}
     >
-      {/* invisible handles for edge routing */}
       <Handle type="target" position={Position.Left}
         style={{ opacity: 0, width: 2, height: 2, border: "none", background: "transparent" }} />
       <Handle type="source" position={Position.Right}
         style={{ opacity: 0, width: 2, height: 2, border: "none", background: "transparent" }} />
 
       <svg width={d} height={d} style={{ overflow: "visible" }}>
-        {/* glow */}
         <circle cx={r} cy={r} r={r + 4} fill={col.glow} />
-        {/* fill */}
         <circle cx={r} cy={r} r={r - 1} fill={col.fill} stroke={col.stroke} strokeWidth={1.5} />
-        {/* inner dot for larger nodes */}
         {size === "lg" && (
           <circle cx={r} cy={r} r={4} fill={col.stroke} opacity={0.6} />
         )}
-
-        {/* label below */}
         <text
           x={r} y={d + 16}
           textAnchor="middle"
@@ -149,7 +158,7 @@ const BASE_NODES: Node<GraphNodeData>[] = [
   mkNode("components",      590, 110, "Components",       "artifact", "sm"),
 
   // ── Infrastructure ──
-  mkNode("hermes",          830, 255, "Hermes",           "agent",    "md", "Skill Runner"),
+  mkNode("hermes",          830, 255, "Hermes",           "agent",    "md", "NousResearch"),
   mkNode("quality",         790, 430, "Quality Score",    "concept",  "sm"),
   mkNode("hitl",            890, 490, "Drift Room",       "concept",  "sm", "HITL"),
 
@@ -175,14 +184,12 @@ const mkEdge = (
 });
 
 const BASE_EDGES: Edge[] = [
-  // ── reads (source → skill) ──
   mkEdge("figma-sfigma",        "figma-src",     "s-figma",       { stroke: "#7c3aed" }),
   mkEdge("figma-stokens",       "figma-src",     "s-tokens",      { stroke: "#7c3aed" }),
   mkEdge("css-stokens",         "css-src",       "s-tokens",      { stroke: "#7c3aed" }),
   mkEdge("figma-ssynk",         "figma-src",     "s-sync-figma",  { stroke: "#7c3aed", strokeDasharray: "3 3" }),
   mkEdge("storybook-sstory",    "storybook-src", "s-storybook",   { stroke: "#7c3aed" }),
 
-  // ── triggers (skill → agent) ──
   mkEdge("sfigma-ada",          "s-figma",       "ada",           { stroke: "#d97706" }),
   mkEdge("stokens-flux",        "s-tokens",      "flux",          { stroke: "#d97706" }),
   mkEdge("scomponent-ada",      "s-component",   "ada",           { stroke: "#d97706" }),
@@ -191,31 +198,26 @@ const BASE_EDGES: Edge[] = [
   mkEdge("sdrift-scout",        "s-drift",       "scout",         { stroke: "#d97706" }),
   mkEdge("ssync-flux",          "s-sync-figma",  "flux",          { stroke: "#d97706" }),
 
-  // ── writes to contract (agent → artifact) ──
   mkEdge("ada-contract",        "ada",           "contract",      { stroke: "#2563eb", strokeWidth: 1.5 }),
   mkEdge("flux-contract",       "flux",          "contract",      { stroke: "#2563eb", strokeWidth: 1.5 }),
   mkEdge("scout-contract",      "scout",         "contract",      { stroke: "#2563eb" }),
   mkEdge("sage-contract",       "sage",          "contract",      { stroke: "#2563eb" }),
 
-  // ── writes secondary artifacts ──
   mkEdge("ada-components",      "ada",           "components",    { stroke: "#2563eb" }),
   mkEdge("flux-bridge",         "flux",          "tokens-bridge", { stroke: "#2563eb" }),
   mkEdge("bridge-synk",         "tokens-bridge", "s-sync-figma",  { stroke: "#059669", strokeDasharray: "3 3" }),
 
-  // ── contract → serves ──
   mkEdge("contract-hermes",     "contract",      "hermes",        { stroke: "#e11d48", strokeWidth: 2 }, true),
 
-  // ── contract → quality / hitl ──
   mkEdge("contract-quality",    "contract",      "quality",       { stroke: "#475569" }),
   mkEdge("quality-hitl",        "quality",       "hitl",          { stroke: "#475569", strokeDasharray: "3 3" }),
 
-  // ── hermes → tools ──
   mkEdge("hermes-claude",       "hermes",        "claude-code",   { stroke: "#0891b2", strokeWidth: 1.5 }),
   mkEdge("hermes-cursor",       "hermes",        "cursor",        { stroke: "#0891b2", strokeWidth: 1.5 }),
   mkEdge("hermes-posthog",      "hermes",        "posthog",       { stroke: "#0891b2", strokeDasharray: "3 3" }),
 ];
 
-// ── Node metadata (descriptions + links + commands) ────────────────────────────
+// ── Node metadata ──────────────────────────────────────────────────────────────
 
 type NodeMeta = {
   desc: string;
@@ -225,7 +227,7 @@ type NodeMeta = {
 
 const NODE_META: Record<string, NodeMeta> = {
   "figma-src": {
-    desc: "Figma file — source of design variables, component specs, and variant definitions. Read via Official Figma REST MCP.",
+    desc: "Figma file — source of design variables, component specs, and variant definitions. Read via the official Figma REST MCP; write-back uses the Figma Console MCP by TJ Pitre (southleft).",
     docHrefs: [{ label: "contract.json →", href: "/docs/concepts/contract" }],
   },
   "css-src": {
@@ -310,8 +312,11 @@ const NODE_META: Record<string, NodeMeta> = {
     docHrefs: [{ label: "Skills library →", href: "/docs/skills" }],
   },
   "hermes": {
-    desc: "The Systemix skill runner. Executes Claude Code slash commands and routes outputs to the right MCP servers.",
-    docHrefs: [{ label: "Introduction →", href: "/docs/introduction" }],
+    desc: "The Systemix skill runner, powered by the NousResearch Hermes LLM. Hermes agents orchestrate skill execution, call MCP servers (Figma Console by TJ Pitre, Vercel, PostHog), and route structured outputs back to the contract.",
+    docHrefs: [
+      { label: "Introduction →", href: "/docs/introduction" },
+      { label: "Skills library →", href: "/docs/skills" },
+    ],
   },
   "quality": {
     desc: "Quality score (0–100%) from resolved token ratio, source coverage, and completeness. Below 80%, MCP server won't start.",
@@ -347,7 +352,7 @@ const TYPE_LABEL: Record<NType, string> = {
   tool:     "tool",
 };
 
-function CopyBtn({ text }: { text: string }) {
+function CopyBtn({ text, isDark }: { text: string; isDark: boolean }) {
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -356,7 +361,11 @@ function CopyBtn({ text }: { text: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono rounded border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-colors"
+      className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono rounded border transition-colors ${
+        isDark
+          ? "border-white/10 text-white/40 hover:text-white/70 hover:border-white/20"
+          : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"
+      }`}
     >
       {copied ? "✓ copied" : "copy"}
     </button>
@@ -364,21 +373,28 @@ function CopyBtn({ text }: { text: string }) {
 }
 
 function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => void }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
+
   const node = BASE_NODES.find(n => n.id === nodeId);
   const meta = NODE_META[nodeId];
   if (!node || !meta) return null;
 
   const { ntype, sub } = node.data;
-  const col = TYPE_COLOR[ntype];
+  const col = (isDark ? TYPE_COLOR_DARK : TYPE_COLOR_LIGHT)[ntype];
   const label = node.data.label;
+  const skillPrompt = meta.command
+    ? (pipelineSkills.find(s => s.command === meta.command)?.promptContent ?? meta.command)
+    : undefined;
 
   return (
     <div
       className="w-56 rounded-xl p-3.5"
       style={{
-        background: "rgba(8,8,22,0.92)",
+        background: isDark ? "rgba(8,8,22,0.92)" : "rgba(255,255,255,0.97)",
         backdropFilter: "blur(16px)",
         border: `1px solid ${col.stroke}40`,
+        boxShadow: isDark ? undefined : "0 4px 20px rgba(0,0,0,0.08)",
       }}
     >
       {/* Header */}
@@ -388,8 +404,14 @@ function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => voi
             <circle cx={4} cy={4} r={3.5} fill={col.fill} stroke={col.stroke} strokeWidth={1.5} />
           </svg>
           <div className="min-w-0">
-            <p className="text-[11px] font-mono font-semibold text-white/80 leading-tight">{label}</p>
-            {sub && <p className="text-[10px] font-mono text-white/30 mt-0.5">{sub}</p>}
+            <p className={`text-[11px] font-mono font-semibold leading-tight ${isDark ? "text-white/80" : "text-foreground"}`}>
+              {label}
+            </p>
+            {sub && (
+              <p className={`text-[10px] font-mono mt-0.5 ${isDark ? "text-white/30" : "text-muted-foreground"}`}>
+                {sub}
+              </p>
+            )}
             <p className="text-[9px] font-mono uppercase tracking-widest mt-0.5" style={{ color: col.stroke }}>
               {TYPE_LABEL[ntype]}
             </p>
@@ -397,7 +419,9 @@ function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => voi
         </div>
         <button
           onClick={onClose}
-          className="shrink-0 text-white/20 active:text-white/60 text-[11px] leading-none mt-0.5 p-1 -mr-1 -mt-0.5"
+          className={`shrink-0 text-[11px] leading-none mt-0.5 p-1 -mr-1 -mt-0.5 transition-opacity ${
+            isDark ? "text-white/20 active:text-white/60" : "text-muted-foreground/40 active:text-muted-foreground"
+          }`}
           aria-label="Close"
         >
           ✕
@@ -405,17 +429,21 @@ function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => voi
       </div>
 
       {/* Description */}
-      <p className="text-[11px] text-white/45 leading-relaxed font-mono mb-3">
+      <p className={`text-[11px] leading-relaxed font-mono mb-3 ${isDark ? "text-white/45" : "text-muted-foreground"}`}>
         {meta.desc}
       </p>
 
       {/* Command copy (skills only) */}
       {meta.command && (
-        <div className="flex items-center gap-2 mb-2.5 p-2 rounded-lg border border-white/6 bg-white/3">
+        <div
+          className={`flex items-center gap-2 mb-2.5 p-2 rounded-lg border ${
+            isDark ? "border-white/6 bg-white/3" : "border-border/40 bg-muted/30"
+          }`}
+        >
           <code className="text-[11px] font-mono flex-1" style={{ color: col.text }}>
             {meta.command}
           </code>
-          <CopyBtn text={meta.command} />
+          <CopyBtn text={skillPrompt ?? meta.command!} isDark={isDark} />
         </div>
       )}
 
@@ -426,7 +454,9 @@ function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => voi
             <a
               key={href}
               href={href}
-              className="text-[10px] font-mono text-white/25 hover:text-white/55 transition-colors"
+              className={`text-[10px] font-mono transition-colors ${
+                isDark ? "text-white/25 hover:text-white/55" : "text-muted-foreground/50 hover:text-muted-foreground"
+              }`}
             >
               {linkLabel}
             </a>
@@ -441,6 +471,12 @@ function NodeInfoPanel({ nodeId, onClose }: { nodeId: string; onClose: () => voi
 
 export function SystemGraph() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
+
+  const graphBg   = isDark ? "#080812" : "#f8fafc";
+  const dotColor  = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)";
+  const hintColor = isDark ? "text-white/15" : "text-muted-foreground/30";
 
   const adjacentIds = useMemo(() => {
     if (!selectedId) return new Set<string>();
@@ -480,7 +516,7 @@ export function SystemGraph() {
   );
 
   return (
-    <div className="w-full h-full relative" style={{ background: "#080812" }}>
+    <div className="w-full h-full relative" style={{ background: graphBg }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -496,16 +532,16 @@ export function SystemGraph() {
         zoomOnScroll
         minZoom={0.4}
         maxZoom={2.5}
-        colorMode="dark"
-        style={{ background: "#080812" }}
+        colorMode={isDark ? "dark" : "light"}
+        style={{ background: graphBg }}
         proOptions={{ hideAttribution: false }}
       >
         <Background
           variant={BackgroundVariant.Dots}
           gap={28}
           size={1}
-          color="rgba(255,255,255,0.04)"
-          style={{ background: "#080812" }}
+          color={dotColor}
+          style={{ background: graphBg }}
         />
       </ReactFlow>
 
@@ -516,7 +552,7 @@ export function SystemGraph() {
       )}
 
       <div className="absolute bottom-5 right-5 z-10">
-        <p className="text-[10px] font-mono text-white/15">
+        <p className={`text-[10px] font-mono ${hintColor}`}>
           tap to inspect · pinch to zoom · drag to pan
         </p>
       </div>
@@ -527,6 +563,10 @@ export function SystemGraph() {
 // ── Legend ─────────────────────────────────────────────────────────────────────
 
 export function GraphLegend() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
+  const TYPE_COLOR = isDark ? TYPE_COLOR_DARK : TYPE_COLOR_LIGHT;
+
   const entries: [NType, string][] = [
     ["source",   "Data source"],
     ["skill",    "Skill (slash command)"],
@@ -537,13 +577,19 @@ export function GraphLegend() {
   ];
 
   return (
-    <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-white/5 bg-black/40 backdrop-blur-sm">
+    <div className={`flex flex-col gap-1.5 p-3 rounded-xl border backdrop-blur-sm ${
+      isDark
+        ? "border-white/5 bg-black/40"
+        : "border-border/50 bg-background/90 shadow-sm"
+    }`}>
       {entries.map(([type, label]) => (
         <div key={type} className="flex items-center gap-2">
           <svg width={12} height={12}>
             <circle cx={6} cy={6} r={5} fill={TYPE_COLOR[type].fill} stroke={TYPE_COLOR[type].stroke} strokeWidth={1.5} />
           </svg>
-          <span className="text-[10px] font-mono text-white/40">{label}</span>
+          <span className={`text-[10px] font-mono ${isDark ? "text-white/40" : "text-muted-foreground"}`}>
+            {label}
+          </span>
         </div>
       ))}
     </div>

@@ -24,6 +24,27 @@ export default function IntroductionPage() {
       </section>
 
       <section className="mb-10">
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-4">Built on</h2>
+        <div className="space-y-3">
+          <div className="border border-border/40 rounded-xl px-4 py-4">
+            <p className="text-[13px] font-semibold text-foreground mb-1.5">Figma Console MCP — TJ Pitre</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              All Figma write operations — pushing token variables, placing screenshots, updating component descriptions — go through the{" "}
+              <span className="text-foreground font-medium">Figma Console MCP by TJ Pitre</span>. It executes the Figma Plugin API remotely via a Desktop Bridge, enabling bidirectional sync without leaving your terminal. Read operations use the official Figma REST MCP.
+            </p>
+          </div>
+          <div className="border border-border/40 rounded-xl px-4 py-4">
+            <p className="text-[13px] font-semibold text-foreground mb-1.5">Hermes — NousResearch LLM</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              The Systemix skill runner is called <span className="text-foreground font-medium">Hermes</span> and is powered by{" "}
+              <span className="text-foreground font-medium">NousResearch&apos;s Hermes LLM</span>. Hermes agents execute Claude Code slash commands, orchestrate multi-step MCP workflows, and write structured outputs back to{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>. The model is chosen for its strong instruction-following in agentic pipelines with long tool-call chains.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Who it&apos;s for</h2>
         <ul className="space-y-2">
           {[
