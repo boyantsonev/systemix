@@ -13,21 +13,21 @@ export const nav: NavSection[] = [
     section: "",
     items: [
       { label: "← Dashboard", href: "/dashboard" },
-      { label: "Pipeline",    href: "/pipeline"  },
     ],
   },
   {
-    section: "Operate",
+    section: "Docs",
     items: [
-      { label: "Run Queue", href: "/queue"                },
-      { label: "Drift",     href: "/drift"                },
-      { label: "Tokens",    href: "/design-system/tokens" },
+      { label: "Introduction",   href: "/docs/introduction"  },
+      { label: "Quick Install",  href: "/docs/quick-install" },
+      { label: "Setup Guide",    href: "/docs/guides/setup"  },
+      { label: "Skills",         href: "/docs/skills"        },
     ],
   },
   {
-    section: "Labs",
+    section: "Reference",
     items: [
-      { label: "Token Guard", href: "/token-guard" },
+      { label: "Architecture", href: "/graph" },
     ],
   },
 ];

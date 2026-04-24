@@ -133,11 +133,8 @@ function ActivityRow({ e }: { e: ActivityEvent }) {
 // ── Mobile nav drawer ─────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { label: "Pipeline",     href: "/pipeline"  },
-  { label: "Drift",        href: "/drift"      },
-  { label: "Tokens",       href: "/design-system/tokens" },
-  { label: "Docs",         href: "/docs"       },
-  { label: "Architecture", href: "/graph"      },
+  { label: "Docs",         href: "/docs"  },
+  { label: "Architecture", href: "/graph" },
 ];
 
 function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -197,10 +194,8 @@ export default function HomePage() {
           )}
           {/* Desktop nav links */}
           <nav className="hidden md:flex items-center gap-1 text-[11px] font-mono text-muted-foreground/50">
-            <Link href="/pipeline" className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Pipeline</Link>
-            <Link href="/drift"    className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Drift</Link>
-            <Link href="/docs"     className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Docs</Link>
-            <Link href="/graph"    className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Architecture</Link>
+            <Link href="/docs"  className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Docs</Link>
+            <Link href="/graph" className="px-2 py-1 rounded hover:bg-muted/40 hover:text-muted-foreground transition-colors">Architecture</Link>
           </nav>
           <ThemeToggle />
           {/* Mobile hamburger */}
