@@ -52,7 +52,7 @@ export default function SetupGuidePage() {
 
       <div>
         <Step n="1" title="Install">
-          <Cmd>npx @systemix/init</Cmd>
+          <Cmd>npx systemix init</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
             Answer the prompts: project name, codebase path, CSS entry point, Figma file key (optional).
           </p>
@@ -63,8 +63,8 @@ export default function SetupGuidePage() {
   tokens.bridge.json  ← hex/rgba conversion layer`}</pre>
         </Step>
 
-        <Step n="2" title="First scan">
-          <Cmd>systemix scan</Cmd>
+        <Step n="2" title="First sync">
+          <Cmd>npx systemix sync</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
             Systemix reads your CSS tokens, fetches Figma variables (if configured), and writes <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>.
           </p>
@@ -74,9 +74,9 @@ export default function SetupGuidePage() {
         </Step>
 
         <Step n="3" title="Review your drift">
-          <Cmd>systemix drift</Cmd>
+          <Cmd>npx systemix sync --dry-run</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
-            You&apos;ll see a list of conflicts. Start with <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">drifted</code> tokens — these are the highest-value items to resolve.
+            Shows conflicts without applying changes. Start with <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">drifted</code> tokens — these are the highest-value items to resolve. For a full annotated report, run the <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/drift-report</code> skill in Claude Code.
           </p>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">For each conflict, choose:</p>
           <div className="space-y-2 mb-3">
@@ -95,24 +95,23 @@ export default function SetupGuidePage() {
 
         <Step n="4" title="Raise your score">
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
-            Keep resolving conflicts until GIGO ≥ 0.80. Each resolved conflict raises the score. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">systemix scan</code> again to recalculate.
+            Keep resolving conflicts until GIGO ≥ 0.80. Each resolved conflict raises the score. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">npx systemix sync</code> again to recalculate.
           </p>
           <Note>
             You don&apos;t need to resolve everything — just enough to hit 0.80. Deferred tokens don&apos;t count against you until the threshold.
           </Note>
         </Step>
 
-        <Step n="5" title="Start the MCP server">
-          <Cmd>systemix serve</Cmd>
+        <Step n="5" title="Verify MCP setup">
+          <Cmd>npx systemix doctor</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
-            The server starts on <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">localhost:3845</code>. Add it to your Claude Code or Cursor config:
+            The MCP server is registered automatically during <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">init</code>. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">doctor</code> to confirm it&apos;s reachable. If you need to add it manually to <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">~/.claude.json</code>:
           </p>
           <pre className="bg-muted/20 border border-border/40 rounded-xl px-5 py-4 font-mono text-[12px] text-foreground/80 leading-relaxed overflow-x-auto">{`{
   "mcpServers": {
-    "systemix": {
-      "command": "systemix",
-      "args": ["serve"],
-      "port": 3845
+    "systemix-mcp": {
+      "command": "node",
+      "args": ["./packages/mcp-server/dist/index.js", "--project-root", "."]
     }
   }
 }`}</pre>

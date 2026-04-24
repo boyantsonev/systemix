@@ -238,7 +238,7 @@ export default function HomePage() {
           <div className="mt-8 md:mt-10 max-w-2xl rounded-lg border border-dashed border-border/50 px-5 py-4">
             <p className="text-[11px] text-muted-foreground/50 font-mono leading-relaxed">
               <span className="text-muted-foreground">Add a project →</span>{" "}
-              cd your-project && npx @systemix/init
+              cd your-project && npx systemix init
             </p>
           </div>
         </main>

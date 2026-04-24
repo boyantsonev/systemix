@@ -92,7 +92,7 @@ function Hero() {
           Systemix builds a verified contract between Figma, your codebase, and every AI tool in your workflow — so agents stop hallucinating design decisions.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <CopyCommand command="npx @systemix/init" />
+          <CopyCommand command="npx systemix init" />
           <Link
             href="/docs/quick-install"
             className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
@@ -299,9 +299,9 @@ function BottomCTA() {
 
         <div className="bg-muted/30 border border-border/40 rounded-xl px-5 py-5 font-mono text-[13px] space-y-2 mb-8">
           {[
-            { cmd: "npx @systemix/init", comment: "scaffold config + .systemix folder" },
-            { cmd: "systemix scan",      comment: "ingest sources, build contract.json" },
-            { cmd: "systemix serve",     comment: "start MCP server on localhost:3845" },
+            { cmd: "npx systemix init",   comment: "setup wizard — Figma, skills, MCP" },
+            { cmd: "npx systemix sync",   comment: "pull Figma tokens, build contract" },
+            { cmd: "npx systemix doctor", comment: "verify MCP + agent setup" },
           ].map(({ cmd, comment }) => (
             <div key={cmd} className="flex items-center gap-3">
               <span className="text-muted-foreground/30 select-none">$</span>

@@ -63,7 +63,7 @@ export default function QualityScorePage() {
       <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Hard stop at 0.80</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          If the score is below 0.80, <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">systemix serve</code> refuses to start. Serving ambiguous data to agents is worse than serving nothing — agents that get noisy answers don&apos;t fail loudly, they produce wrong output quietly.
+          If the score is below 0.80, the MCP server refuses to start. Serving ambiguous data to agents is worse than serving nothing — agents that get noisy answers don&apos;t fail loudly, they produce wrong output quietly.
         </p>
       </section>
 

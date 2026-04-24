@@ -70,29 +70,29 @@ export default function QuickInstallPage() {
 
         <div className="space-y-0">
           <Step n="1" title="Scaffold">
-            <CodeBlock>npx @systemix/init</CodeBlock>
+            <CodeBlock>npx systemix init</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
-              Creates a <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">.systemix/</code> folder with <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">systemix.json</code>, <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">tokens.bridge.json</code>, and an empty <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>.
+              Interactive wizard: enter your Figma file key, choose storage tier, install pipeline skills to <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">~/.claude/skills/</code>, and register the MCP server in <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">~/.claude.json</code>.
             </p>
           </Step>
 
-          <Step n="2" title="Scan">
-            <CodeBlock>systemix scan</CodeBlock>
+          <Step n="2" title="Sync">
+            <CodeBlock>npx systemix sync</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
-              Ingests your CSS tokens, runs reconciliation, and writes your first <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>. You&apos;ll see a quality score.
+              Pulls Figma variables, ingests your CSS tokens, runs reconciliation, and writes <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>. You&apos;ll see a quality score.
             </p>
             <p className="text-[12px] font-mono text-muted-foreground/60 mb-1">Expected output:</p>
             <OutputBlock>{`✓ Ingested 47 tokens from globals.css
 ✓ Ingested 31 variables from Figma (h1m7dfFILe1wGSfxwQ6U02)
-⚠  12 conflicts detected — run \`systemix drift\` to review
+⚠  12 conflicts detected — run /drift-report to review
 Quality score: 0.82 (amber)
 Contract written to .systemix/contract.json`}</OutputBlock>
           </Step>
 
-          <Step n="3" title="Serve">
-            <CodeBlock>systemix serve</CodeBlock>
+          <Step n="3" title="Verify">
+            <CodeBlock>npx systemix doctor</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
-              Starts the MCP server on <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">localhost:3845</code>. Your agent can now query the contract.
+              Checks that Figma MCP, figma-console-mcp, and the systemix-mcp server are all reachable. Your agent can now query the contract.
             </p>
           </Step>
         </div>
