@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SLogo } from "@/components/systemix/SLogo";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
+import { CopyCommand } from "@/components/systemix/CopyCommand";
 
 // ── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -91,10 +92,7 @@ function Hero() {
           Systemix builds a verified contract between Figma, your codebase, and every AI tool in your workflow — so agents stop hallucinating design decisions.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <div className="flex items-center gap-2 bg-muted/50 border border-border rounded-lg px-4 py-2.5 font-mono text-[13px] select-all cursor-text">
-            <span className="text-muted-foreground/40 select-none">$</span>
-            npx @systemix/init
-          </div>
+          <CopyCommand command="npx @systemix/init" />
           <Link
             href="/docs/quick-install"
             className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
