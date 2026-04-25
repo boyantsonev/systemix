@@ -161,7 +161,7 @@ export default function ContractLandingPage() {
               <span className="text-2xl font-mono text-muted-foreground/40 ml-1">/100</span>
             </div>
             <div className="pb-2">
-              <p className="text-[14px] font-mono font-medium text-foreground">GIGO Score</p>
+              <p className="text-[14px] font-mono font-medium text-foreground">Quality Score</p>
               <p className="text-[12px] font-mono"><ScoreLabel n={score.overall} /></p>
             </div>
           </div>

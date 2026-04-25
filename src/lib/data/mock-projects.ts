@@ -90,15 +90,15 @@ export const mockProjects: Project[] = [
 
 export const mockActivity: ActivityEvent[] = [
   { id: "1", type: "hitl_decision", description: "Approved: color.primary.500 — code wins", project: "Finova", ago: "32m ago", actor: "Boyan" },
-  { id: "2", type: "contract_built", description: "Contract rebuilt — GIGO 0.94 — 47 tokens", project: "Finova", ago: "34m ago" },
+  { id: "2", type: "contract_built", description: "Contract rebuilt — quality: 94 — 47 tokens", project: "Finova", ago: "34m ago" },
   { id: "3", type: "skill_run", description: "drift-triage — 3 conflicts classified", project: "Verdure", ago: "2h ago" },
   { id: "4", type: "drift_resolved", description: "radius.base resolved — code wins", project: "Verdure", ago: "3h ago", actor: "Boyan" },
-  { id: "5", type: "contract_built", description: "Contract rebuilt — GIGO 0.87 — 31 tokens", project: "Verdure", ago: "4h ago" },
+  { id: "5", type: "contract_built", description: "Contract rebuilt — quality: 87 — 31 tokens", project: "Verdure", ago: "4h ago" },
   { id: "6", type: "skill_run", description: "systemix-scan — codebase adapter", project: "NexaTech", ago: "1d ago" },
   { id: "7", type: "deploy", description: "Deployed — systemix-alpha.vercel.app", project: "Finova", ago: "1d ago" },
   { id: "8", type: "hitl_decision", description: "Deferred: color.muted — needs design review", project: "NexaTech", ago: "1d ago", actor: "Boyan" },
   { id: "9", type: "skill_run", description: "oklch-migrate — 12 tokens converted", project: "Finova", ago: "2d ago" },
-  { id: "10", type: "contract_built", description: "First contract built — GIGO 0.71 — 19 tokens", project: "NexaTech", ago: "2d ago" },
+  { id: "10", type: "contract_built", description: "First contract built — quality: 71 — 19 tokens", project: "NexaTech", ago: "2d ago" },
 ];
 
 export function getProject(slug: string): Project | undefined {

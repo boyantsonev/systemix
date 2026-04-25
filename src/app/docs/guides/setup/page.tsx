@@ -42,7 +42,7 @@ export default function SetupGuidePage() {
         Setup Guide
       </h1>
       <p className="text-[16px] text-muted-foreground leading-relaxed mb-4">
-        From install to a running MCP server with a GIGO score above 0.80. Estimated time: 20–30 minutes.
+        From install to a running MCP server with a quality score above 0.80. Estimated time: 20–30 minutes.
       </p>
       <p className="text-[14px] text-muted-foreground mb-10">
         Before you start, you&apos;ll need Node 18+, a codebase that uses CSS custom properties, and optionally a Figma file key (the part of the URL after <code className="font-mono text-[13px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/design/</code>).
@@ -69,7 +69,7 @@ export default function SetupGuidePage() {
             Systemix reads your CSS tokens, fetches Figma variables (if configured), and writes <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>.
           </p>
           <Note>
-            Checkpoint: you should see a GIGO score. If it&apos;s below 0.80, that&apos;s expected — you haven&apos;t resolved any conflicts yet.
+            Checkpoint: you should see a quality score. If it&apos;s below 0.80, that&apos;s expected — you haven&apos;t resolved any conflicts yet.
           </Note>
         </Step>
 
@@ -95,7 +95,7 @@ export default function SetupGuidePage() {
 
         <Step n="4" title="Raise your score">
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
-            Keep resolving conflicts until GIGO ≥ 0.80. Each resolved conflict raises the score. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">npx systemix sync</code> again to recalculate.
+            Keep resolving conflicts until quality score ≥ 0.80. Each resolved conflict raises the score. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">npx systemix sync</code> again to recalculate.
           </p>
           <Note>
             You don&apos;t need to resolve everything — just enough to hit 0.80. Deferred tokens don&apos;t count against you until the threshold.
@@ -134,7 +134,7 @@ export default function SetupGuidePage() {
         <div className="space-y-2">
           {[
             { href: "/docs/concepts/contract",   label: "contract.json — understand the output format" },
-            { href: "/docs/concepts/gigo-score", label: "GIGO Score — what moves the number" },
+            { href: "/docs/concepts/gigo-score", label: "Quality Score — what moves the number" },
             { href: "/docs/concepts/drift",      label: "Drift & Reconciliation — deep dive" },
           ].map(({ href, label }) => (
             <Link

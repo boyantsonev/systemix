@@ -71,7 +71,7 @@ export default function DriftPage() {
       <section>
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Why this matters for agents</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          An agent that reads a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">drifted</code> token without a rationale decision doesn&apos;t know which value to use. It will guess. The reconciliation process turns guesses into facts — and the GIGO score tracks how many facts you have.
+          An agent that reads a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">drifted</code> token without a rationale decision doesn&apos;t know which value to use. It will guess. The reconciliation process turns guesses into facts — and the quality score tracks how many facts you have.
         </p>
       </section>
     </article>
