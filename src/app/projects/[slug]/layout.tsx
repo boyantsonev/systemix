@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { getProject } from "@/lib/data/mock-projects";
 import { cn } from "@/lib/utils";
 
-function gigoColor(score: number) {
+function qualityColor(score: number) {
   if (score >= 0.90) return "text-emerald-500";
   if (score >= 0.80) return "text-amber-500";
   return "text-red-400";
@@ -48,8 +48,8 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
         </span>
 
         {p && (
-          <span className={`text-[11px] font-mono font-bold tabular-nums ${gigoColor(p.gigoScore)}`}>
-            {Math.round(p.gigoScore * 100)}%
+          <span className={`text-[11px] font-mono font-bold tabular-nums ${qualityColor(p.qualityScore)}`}>
+            {Math.round(p.qualityScore * 100)}%
           </span>
         )}
 

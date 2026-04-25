@@ -104,7 +104,7 @@ Contract written to .systemix/contract.json`}</OutputBlock>
           {[
             { href: "/docs/guides/setup",          label: "Read the Setup Guide for a full walkthrough" },
             { href: "/docs/concepts/contract",     label: "Learn about contract.json structure" },
-            { href: "/docs/concepts/gigo-score",   label: "Understand your quality score" },
+            { href: "/docs/concepts/quality-score",   label: "Understand your quality score" },
           ].map(({ href, label }) => (
             <Link
               key={href}

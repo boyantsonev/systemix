@@ -11,7 +11,7 @@ export type Project = {
   slug: string;
   name: string;
   status: ProjectStatus;
-  gigoScore: number;
+  qualityScore: number;
   lastSync: string;
   tokenCount: number;
   componentCount: number;
@@ -39,7 +39,7 @@ export const mockProjects: Project[] = [
     slug: "finova",
     name: "Finova",
     status: "active",
-    gigoScore: 0.94,
+    qualityScore: 0.94,
     lastSync: "2026-04-23T12:30:00Z",
     tokenCount: 47,
     componentCount: 12,
@@ -56,7 +56,7 @@ export const mockProjects: Project[] = [
     slug: "verdure",
     name: "Verdure",
     status: "staging",
-    gigoScore: 0.87,
+    qualityScore: 0.87,
     lastSync: "2026-04-23T08:15:00Z",
     tokenCount: 31,
     componentCount: 8,
@@ -73,7 +73,7 @@ export const mockProjects: Project[] = [
     slug: "nexatech",
     name: "NexaTech",
     status: "in-progress",
-    gigoScore: 0.71,
+    qualityScore: 0.71,
     lastSync: "2026-04-22T16:00:00Z",
     tokenCount: 19,
     componentCount: 4,

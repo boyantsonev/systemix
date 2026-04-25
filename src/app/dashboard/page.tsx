@@ -45,8 +45,8 @@ function ProjectCard({ p }: { p: Project }) {
             <span className="text-sm font-semibold text-foreground">{p.name}</span>
             <StatusBadge status={p.status} />
           </div>
-          <span className={`text-sm font-mono tabular-nums font-bold ${scoreColor(p.gigoScore)}`}>
-            {Math.round(p.gigoScore * 100)}%
+          <span className={`text-sm font-mono tabular-nums font-bold ${scoreColor(p.qualityScore)}`}>
+            {Math.round(p.qualityScore * 100)}%
           </span>
         </div>
         <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground mb-2.5">

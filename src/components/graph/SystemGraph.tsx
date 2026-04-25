@@ -322,7 +322,7 @@ const NODE_META: Record<string, NodeMeta> = {
   },
   "quality": {
     desc: "Quality score (0–100%) from resolved token ratio, source coverage, and completeness. Below 80%, MCP server won't start.",
-    docHrefs: [{ label: "Quality Score →", href: "/docs/concepts/gigo-score" }],
+    docHrefs: [{ label: "Quality Score →", href: "/docs/concepts/quality-score" }],
   },
   "hitl": {
     desc: "Human-in-the-loop checkpoint. Agent pauses here when a decision — token conflict, deploy approval — requires human review.",

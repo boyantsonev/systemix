@@ -26,7 +26,7 @@ export default function ContractPage() {
         <pre className="bg-muted/20 border border-border/40 rounded-xl px-5 py-5 font-mono text-[12px] text-foreground/80 leading-relaxed overflow-x-auto">{`{
   "meta": {
     "version": "1.0.0",
-    "gigoScore": 0.87,
+    "qualityScore": 0.87,
     "generatedAt": "2026-04-23T12:00:00Z",
     "sources": ["globals.css", "figma:h1m7dfFILe1wGSfxwQ6U02"]
   },
@@ -50,7 +50,7 @@ export default function ContractPage() {
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
           {[
             {
-              field: "meta.gigoScore",
+              field: "meta.qualityScore",
               desc: "Contract quality, 0.0–1.0. Below 0.80 stops the pipeline.",
             },
             {

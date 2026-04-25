@@ -134,7 +134,7 @@ export default function SetupGuidePage() {
         <div className="space-y-2">
           {[
             { href: "/docs/concepts/contract",   label: "contract.json — understand the output format" },
-            { href: "/docs/concepts/gigo-score", label: "Quality Score — what moves the number" },
+            { href: "/docs/concepts/quality-score", label: "Quality Score — what moves the number" },
             { href: "/docs/concepts/drift",      label: "Drift & Reconciliation — deep dive" },
           ].map(({ href, label }) => (
             <Link
