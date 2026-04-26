@@ -1,8 +1,8 @@
 export default function QualityScorePage() {
   const tiers = [
-    { score: "≥ 0.90", state: "Clean",   dot: "bg-emerald-500", body: "All conflicts resolved. Safe to use in agent workflows and CI." },
-    { score: "≥ 0.80", state: "Drifted", dot: "bg-amber-500",   body: "Unresolved conflicts exist. Agents will encounter ambiguous values. Triage before relying on the contract." },
-    { score: "< 0.80", state: "Blocked", dot: "bg-red-400",     body: "Too many unresolved conflicts. The MCP server refuses to start until the score is raised." },
+    { score: "≥ 80",  state: "Clean",           dot: "bg-emerald-500", body: "Most contracts are resolved. The design system is trustworthy for agent consumption." },
+    { score: "≥ 60",  state: "Needs attention",  dot: "bg-amber-500",   body: "Unresolved drift exists. Agents will encounter ambiguous tokens. Triage before relying on the contracts." },
+    { score: "< 60",  state: "Critical",         dot: "bg-red-400",     body: "Too many unresolved conflicts. The contract layer is not reliable. Resolve open drift before using in any agent workflow." },
   ];
 
   return (
@@ -12,7 +12,7 @@ export default function QualityScorePage() {
         Quality Score
       </h1>
       <p className="text-[16px] text-muted-foreground leading-relaxed mb-10">
-        A 0.0–1.0 measure of how resolved and sourced your <code className="font-mono text-[14px] bg-muted/60 px-1.5 py-0.5 rounded">contract.json</code> is. Below 0.80, the MCP server won&apos;t start.
+        A 0–100 measure of how clean your MDX contracts are — weighted by drift, unresolved conflicts, and missing Figma coverage.
       </p>
 
       <hr className="border-border/40 mb-10" />
@@ -20,20 +20,25 @@ export default function QualityScorePage() {
       <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">What it measures</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          The score reflects how much of your token set is fully reconciled — values agreed upon by both sources, or explicitly decided when they disagreed. A low score means agents reading the contract will encounter tokens where the right value is still ambiguous.
+          The score reflects how much of your token and component set is fully reconciled — values that match across sources, or conflicts where a human has made an explicit decision. A low score means agents reading the contracts will encounter tokens where the right value is still ambiguous.
         </p>
       </section>
 
       <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-4">Formula</h2>
-        <div className="bg-muted/20 border border-border/40 rounded-xl px-5 py-4 font-mono text-[13px] text-foreground/80 mb-5">
-          score = (resolved_tokens / total_tokens) × source_coverage × completeness
+        <div className="bg-muted/20 border border-border/40 rounded-xl px-5 py-4 font-mono text-[12px] text-foreground/80 leading-relaxed mb-5 space-y-1.5">
+          <div>tScore = (clean_tokens / total_tokens)</div>
+          <div className="text-muted-foreground/60">{"        "}- (drifted_unresolved × 0.05)</div>
+          <div className="text-muted-foreground/60">{"        "}- (missing_in_figma × 0.03)</div>
+          <div className="mt-2">cScore = clean_components / total_components</div>
+          <div className="mt-2 text-emerald-400/80">score = max(0, round(((tScore + cScore) / 2) × 100))</div>
         </div>
         <ul className="space-y-3">
           {[
-            { term: "resolved_tokens", desc: "tokens where drift is match or has an explicit rationale decision" },
-            { term: "source_coverage", desc: "fraction of tokens that have both a code and Figma value" },
-            { term: "completeness",    desc: "penalty for pending or missing tokens above a threshold" },
+            { term: "clean_tokens",        desc: "tokens where code and Figma agree, or where a resolve decision has been recorded" },
+            { term: "drifted_unresolved",  desc: "tokens flagged as drifted with no human decision yet — penalised at 5 points each" },
+            { term: "missing_in_figma",    desc: "tokens present in code but absent from Figma — penalised at 3 points each" },
+            { term: "clean_components",    desc: "components where parity is confirmed clean" },
           ].map(({ term, desc }) => (
             <li key={term} className="flex items-start gap-3 text-[14px] text-muted-foreground">
               <code className="shrink-0 font-mono text-[12px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground mt-0.5">{term}</code>
@@ -60,20 +65,13 @@ export default function QualityScorePage() {
         </div>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Hard stop at 0.80</h2>
-        <p className="text-[14px] text-muted-foreground leading-relaxed">
-          If the score is below 0.80, the MCP server refuses to start. Serving ambiguous data to agents is worse than serving nothing — agents that get noisy answers don&apos;t fail loudly, they produce wrong output quietly.
-        </p>
-      </section>
-
       <section>
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Improving your score</h2>
         <ul className="space-y-2">
           {[
-            "Resolve drifted tokens in the Drift Room — each resolved conflict raises the score",
-            "Connect both a codebase adapter and a Figma adapter to improve source coverage",
-            "Clear all pending tokens — deferred decisions count against completeness",
+            "Open /contract and resolve drifted tokens — each resolved conflict removes the unresolved penalty",
+            "Click a token with ΔE > 2.0 and choose code-wins or figma-wins — the decision is written back to the MDX frontmatter",
+            "Ensure your Figma token exports include all tokens defined in globals.css — gaps count as missing-in-figma",
           ].map((item) => (
             <li key={item} className="flex items-start gap-3 text-[14px] text-muted-foreground">
               <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-muted-foreground/40" />
