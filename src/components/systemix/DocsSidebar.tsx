@@ -16,7 +16,7 @@ const NAV = [
   {
     section: "Concepts",
     items: [
-      { label: "contract.json",          href: "/docs/concepts/contract"   },
+      { label: "MDX Contracts",            href: "/docs/concepts/contract"   },
       { label: "Quality Score",          href: "/docs/concepts/quality-score" },
       { label: "Drift & Reconciliation", href: "/docs/concepts/drift"      },
     ],
@@ -30,8 +30,9 @@ const NAV = [
   {
     section: "Reference",
     items: [
-      { label: "Skills library",  href: "/docs/skills" },
-      { label: "Architecture",    href: "/graph"        },
+      { label: "Skills library",  href: "/docs/skills"         },
+      { label: "Architecture",    href: "/graph"               },
+      { label: "Design System",   href: "/design-system/tokens" },
     ],
   },
 ];
