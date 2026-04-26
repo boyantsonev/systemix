@@ -16,10 +16,10 @@ export default function IntroductionPage() {
       <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">What it is</h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-4">
-          Systemix ingests tokens and components from multiple sources, reconciles conflicts by your rules, annotates decisions with rationale, and serves the result via MCP.
+          Systemix ingests tokens and components from multiple sources, runs perceptual drift detection, and has a local LLM author a human-readable contract for each one — with rationale, not just values.
         </p>
         <p className="text-[15px] text-muted-foreground leading-relaxed">
-          The output is a single file — <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">contract.json</code> — that represents the verified state of your design system at a point in time. Every token is traced to its source. Every conflict is recorded. Every decision is annotated with rationale.
+          The output is a directory of MDX files — one per token, one per component — stored in <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">contract/tokens/</code> and <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">contract/components/</code>. Each file has YAML frontmatter (value, figma-value, drift status, ΔE, resolve decision) and a prose body written by Hermes explaining the conflict and the rationale.
         </p>
       </section>
 
@@ -34,11 +34,10 @@ export default function IntroductionPage() {
             </p>
           </div>
           <div className="border border-border/40 rounded-xl px-4 py-4">
-            <p className="text-[13px] font-semibold text-foreground mb-1.5">Hermes — NousResearch LLM</p>
+            <p className="text-[13px] font-semibold text-foreground mb-1.5">Hermes — local Ollama LLM</p>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
-              The Systemix skill runner is called <span className="text-foreground font-medium">Hermes</span> and is powered by{" "}
-              <span className="text-foreground font-medium">NousResearch&apos;s Hermes LLM</span>. Hermes agents execute Claude Code slash commands, orchestrate multi-step MCP workflows, and write structured outputs back to{" "}
-              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract.json</code>. The model is chosen for its strong instruction-following in agentic pipelines with long tool-call chains.
+              <span className="text-foreground font-medium">Hermes</span> is a local LLM running via{" "}
+              <span className="text-foreground font-medium">Ollama</span> (<code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">hermes3</code> model at <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">localhost:11434</code>). It is invoked via prompt files, reads your CSS token values and Figma variable exports, and authors MDX contract files — one per token and component. No API key. No cloud. The model is chosen for strong instruction-following when writing structured YAML + prose output.
             </p>
           </div>
         </div>
@@ -74,7 +73,7 @@ export default function IntroductionPage() {
         <div className="grid sm:grid-cols-2 gap-3">
           {[
             { href: "/docs/quick-install", label: "Quick Install", sub: "Up and running in under 5 minutes" },
-            { href: "/docs/concepts/contract", label: "contract.json", sub: "How the contract is structured" },
+            { href: "/docs/concepts/contract", label: "MDX Contracts", sub: "How the contract is structured" },
             { href: "/docs/concepts/quality-score", label: "Quality Score", sub: "What quality means in Systemix" },
             { href: "/docs/guides/setup", label: "Setup Guide", sub: "Full walkthrough for your first project" },
           ].map(({ href, label, sub }) => (

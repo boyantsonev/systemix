@@ -170,8 +170,8 @@ function HowItWorks() {
     },
     {
       n: "04",
-      name: "Serve",
-      desc: "The contract is exposed via MCP. Any agent — Claude Code, Cursor, Copilot — can query tokens, check drift status, and read reconciliation decisions.",
+      name: "Resolve",
+      desc: "Conflicts surface in the contract UI. Each token shows both values, the perceptual difference (ΔE), and an inline decision control. Every resolution is recorded with rationale. The quality score tracks how many contracts are clean.",
     },
   ];
 
@@ -290,36 +290,46 @@ function QualityGate() {
 }
 
 function BottomCTA() {
+  const steps = [
+    { n: "1", label: "Run Hermes locally", cmd: "ollama pull hermes3", comment: "local LLM — no API key needed" },
+    { n: "2", label: "Start the UI",       cmd: "npm run dev",         comment: "open /contract in the browser" },
+    { n: "3", label: "Resolve drift",      cmd: "",                    comment: "click any token → see ΔE → decide" },
+  ];
+
   return (
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-[1.75rem] font-black tracking-tight mb-10">
-          Start in three commands.
+        <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
+          How the POC runs today.
         </h2>
+        <p className="text-[15px] text-muted-foreground leading-relaxed mb-10 max-w-xl">
+          No CLI yet. Hermes authors contracts locally via Ollama. The quality score and drift resolution live in the browser.
+        </p>
 
-        <div className="bg-muted/30 border border-border/40 rounded-xl px-5 py-5 font-mono text-[13px] space-y-2 mb-8">
-          {[
-            { cmd: "npx systemix init",   comment: "setup wizard — Figma, skills, MCP" },
-            { cmd: "npx systemix sync",   comment: "pull Figma tokens, build contract" },
-            { cmd: "npx systemix doctor", comment: "verify MCP + agent setup" },
-          ].map(({ cmd, comment }) => (
-            <div key={cmd} className="flex items-center gap-3">
-              <span className="text-muted-foreground/30 select-none">$</span>
-              <span className="text-foreground">{cmd}</span>
-              <span className="text-muted-foreground/40 hidden sm:inline">{"# " + comment}</span>
+        <div className="space-y-px rounded-xl overflow-hidden border border-border/40 mb-8">
+          {steps.map(({ n, label, cmd, comment }) => (
+            <div key={n} className="flex items-start gap-4 px-5 py-4 bg-background border-b border-border/40 last:border-0">
+              <span className="shrink-0 text-[11px] font-mono text-muted-foreground/30 tabular-nums pt-0.5">{n}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-bold text-foreground mb-1">{label}</p>
+                {cmd && (
+                  <code className="text-[12px] font-mono text-muted-foreground/70">{cmd}</code>
+                )}
+                <span className="text-[12px] font-mono text-muted-foreground/40 ml-2"># {comment}</span>
+              </div>
             </div>
           ))}
         </div>
 
-        <p className="text-[14px] text-muted-foreground mb-6">
-          Your agent can now ask: &quot;What are the colour tokens?&quot; and get a sourced, versioned answer.
+        <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-xl">
+          Each token gets a contract file: code value, Figma value, perceptual distance, and a rationale written by Hermes. You approve or override. The score rises.
         </p>
 
         <a
-          href="/docs/guides/setup"
+          href="/docs/quick-install"
           className="text-[13px] font-medium text-foreground hover:opacity-70 transition-opacity"
         >
-          Read the getting started guide →
+          See the full workflow →
         </a>
       </div>
     </section>
