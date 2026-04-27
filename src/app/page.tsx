@@ -112,6 +112,10 @@ function Hero() {
             Read the docs →
           </Link>
         </div>
+
+        <p className="text-[12px] font-mono text-muted-foreground/40 mt-8 max-w-md mx-auto leading-relaxed">
+          When an agent asks &quot;what is <code className="text-muted-foreground/60">--color-primary</code>?&quot; — the contract answers. Not a hallucination.
+        </p>
       </div>
     </section>
   );

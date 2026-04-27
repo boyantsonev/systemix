@@ -20,7 +20,9 @@
     "connect",
     "check-parity",
     "deploy-annotate",
-    "sync-docs"
+    "sync-docs",
+    "contract-query",
+    "contract-diff"
   ],
   "requires": {
     "mcp": [
