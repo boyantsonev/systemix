@@ -6,9 +6,10 @@
   "homepage": "https://systemix-alpha.vercel.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pivotool/systemix"
+    "url": "https://github.com/boyantsonev/systemix-poc"
   },
   "license": "MIT",
+  "publishConfig": { "access": "public" },
   "bin": {
     "systemix": "./bin/cli.js"
   },

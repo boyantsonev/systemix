@@ -9,6 +9,7 @@ const { tokenProfile } = require("../src/commands/token-profile");
 const { schedule } = require("../src/commands/schedule");
 const { tokenGuard } = require("../src/commands/token-guard");
 const { update } = require("../src/commands/update");
+const { tokens } = require("../src/commands/tokens");
 
 const [, , command, ...args] = process.argv;
 
@@ -25,6 +26,7 @@ const HELP = `
     npx systemix sync [options]     Sync design tokens and components
     npx systemix schedule [sub]     Schedule workflow runs to off-peak windows
     npx systemix token-profile [dir] Scan for token inefficiency patterns
+    npx systemix tokens              Convert globals.css → .systemix/tokens.bridge.json
     npx systemix token-guard [sub]   Manage TokenGuard (status|reset|remove)
 
   Sync options:
@@ -90,6 +92,9 @@ async function main() {
       break;
     case "update":
       await update(args);
+      break;
+    case "tokens":
+      await tokens(args);
       break;
     case "help":
     case "--help":

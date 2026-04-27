@@ -228,8 +228,19 @@ async function init() {
   }
   console.log(`  ✓  File key: ${fileKey}\n`);
 
-  // ── Step 2: Storage tier ──────────────────────────────────────────────────
-  console.log("  (2/6) Storage tier:");
+  // ── Step 2: Figma API token ───────────────────────────────────────────────
+  console.log("  (2/7) Figma Personal Access Token");
+  console.log("        Get one at: figma.com → Account Settings → Personal access tokens");
+  const figmaTokenInput = await ask("  FIGMA_ACCESS_TOKEN (leave blank to skip): ");
+  const figmaToken = figmaTokenInput.trim() || null;
+  if (figmaToken) {
+    console.log("  ✓  Token saved to ~/.systemix/config.json\n");
+  } else {
+    console.log("  -  Skipped. Set FIGMA_ACCESS_TOKEN env var before running /sync-to-figma.\n");
+  }
+
+  // ── Step 3: Storage tier ──────────────────────────────────────────────────
+  console.log("  (3/7) Storage tier:");
   STORAGE_TIERS.forEach((t) =>
     console.log(`    (${t.key}) ${t.label}`)
   );
@@ -239,8 +250,8 @@ async function init() {
     STORAGE_TIERS[1]; // default: git-tracked
   console.log(`  ✓  Storage: ${selectedTier.label}\n`);
 
-  // ── Step 3: MCP check ─────────────────────────────────────────────────────
-  console.log("  (3/6) Checking MCP configuration in ~/.claude.json ...");
+  // ── Step 4: MCP check ─────────────────────────────────────────────────────
+  console.log("  (4/7) Checking MCP configuration in ~/.claude.json ...");
   const mcp = detectMcpConfig();
 
   if (!mcp.figmaMcp) {
@@ -263,9 +274,9 @@ async function init() {
 
   console.log();
 
-  // ── Step 4: Install skills ────────────────────────────────────────────────
+  // ── Step 5: Install skills ────────────────────────────────────────────────
   const installAns = await ask(
-    `  (4/6) Install all ${ALL_SKILLS.length} skills to ~/.claude/skills/? [Y/n]: `
+    `  (5/7) Install all ${ALL_SKILLS.length} skills to ~/.claude/skills/? [Y/n]: `
   );
   const doInstall =
     installAns.trim() === "" || installAns.trim().toLowerCase() === "y";
@@ -280,8 +291,8 @@ async function init() {
     );
   }
 
-  // ── Step 5: .gitignore ────────────────────────────────────────────────────
-  console.log("  (5/6) Verifying .gitignore ...");
+  // ── Step 6: .gitignore ────────────────────────────────────────────────────
+  console.log("  (6/7) Verifying .gitignore ...");
   const added = ensureGitignore(projectRoot);
   if (added.length === 0) {
     console.log("  ✓  .gitignore already up to date\n");
@@ -289,8 +300,8 @@ async function init() {
     console.log(`  ✓  Added to .gitignore: ${added.join(", ")}\n`);
   }
 
-  // ── Step 6: Register systemix-mcp ────────────────────────────────────────
-  console.log("  (6/6) Registering systemix-mcp server...");
+  // ── Step 7: Register systemix-mcp ────────────────────────────────────────
+  console.log("  (7/7) Registering systemix-mcp server...");
   const clients = detectClients();
   const detectedClients = clients.filter(c => c.exists);
 
@@ -341,19 +352,19 @@ async function init() {
   };
   fs.writeFileSync(systemixJsonPath, JSON.stringify(systemixJson, null, 2) + "\n", "utf8");
 
-  // ~/.systemix/config.json — first time only
+  // ~/.systemix/config.json — create or merge figmaToken into existing
   const userConfigDir = path.join(os.homedir(), ".systemix");
-  if (!fs.existsSync(USER_CONFIG_PATH)) {
-    fs.mkdirSync(userConfigDir, { recursive: true });
-    const userConfig = {
-      storageMode: selectedTier.value,
-      defaultBrand: "default",
-    };
-    fs.writeFileSync(USER_CONFIG_PATH, JSON.stringify(userConfig, null, 2) + "\n", "utf8");
-    console.log("  ✓  Created ~/.systemix/config.json");
+  fs.mkdirSync(userConfigDir, { recursive: true });
+  let userConfig = { storageMode: selectedTier.value, defaultBrand: "default" };
+  if (fs.existsSync(USER_CONFIG_PATH)) {
+    try { userConfig = JSON.parse(fs.readFileSync(USER_CONFIG_PATH, "utf8")); } catch { /* keep default */ }
+    console.log("  ✓  ~/.systemix/config.json already exists — merged");
   } else {
-    console.log("  ✓  ~/.systemix/config.json already exists — skipped");
+    console.log("  ✓  Created ~/.systemix/config.json");
   }
+  if (figmaToken) userConfig.figmaToken = figmaToken;
+  userConfig.storageMode = selectedTier.value;
+  fs.writeFileSync(USER_CONFIG_PATH, JSON.stringify(userConfig, null, 2) + "\n", "utf8");
 
   console.log("  ✓  Wrote .systemix/project-context.json");
   console.log("  ✓  Wrote .systemix/systemix.json");
