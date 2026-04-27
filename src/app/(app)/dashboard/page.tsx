@@ -52,6 +52,7 @@ function ProjectCard({ p }: { p: Project }) {
             {[
               p.driftCount > 0 && `${p.driftCount} drifted`,
               p.pendingHitl > 0 && `${p.pendingHitl} pending`,
+              (p.pendingHypotheses ?? 0) > 0 && `${p.pendingHypotheses} hypotheses`,
             ].filter(Boolean).join(" · ")}
           </p>
         )}
@@ -61,8 +62,14 @@ function ProjectCard({ p }: { p: Project }) {
             <AdapterDot status={p.adapters.codebase} />
             <AdapterDot status={p.adapters.figma} />
             <AdapterDot status={p.adapters.storybook} />
+            {p.adapters.posthog && (
+              <AdapterDot status={p.adapters.posthog} />
+            )}
           </div>
-          <span className="font-mono">{connectedCount}/3 adapters</span>
+          <span className="font-mono">{connectedCount}/{p.adapters.posthog ? 4 : 3} adapters</span>
+          {(p.experiments ?? 0) > 0 && (
+            <span className="font-mono text-emerald-400/60">{p.experiments} experiments</span>
+          )}
         </div>
       </div>
 
@@ -91,11 +98,12 @@ function ProjectCard({ p }: { p: Project }) {
 }
 
 const ACTIVITY_ICONS: Record<ActivityEventType, { glyph: string; color: string }> = {
-  contract_built: { glyph: "◆", color: "text-violet-400" },
-  drift_resolved: { glyph: "✓", color: "text-emerald-500" },
-  hitl_decision:  { glyph: "◎", color: "text-amber-500"  },
-  skill_run:      { glyph: "▷", color: "text-blue-400"   },
-  deploy:         { glyph: "↑", color: "text-emerald-500" },
+  contract_built:       { glyph: "◆", color: "text-violet-400"  },
+  drift_resolved:       { glyph: "✓", color: "text-emerald-500" },
+  hitl_decision:        { glyph: "◎", color: "text-amber-500"   },
+  skill_run:            { glyph: "▷", color: "text-blue-400"    },
+  deploy:               { glyph: "↑", color: "text-emerald-500" },
+  hypothesis_validated: { glyph: "◈", color: "text-emerald-400" },
 };
 
 function ActivityRow({ e }: { e: ActivityEvent }) {

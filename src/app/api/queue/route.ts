@@ -6,38 +6,57 @@ export const dynamic = "force-dynamic";
 
 const QUEUE_PATH = path.join(process.cwd(), ".systemix", "queue.json");
 
-// Demo cards shown when queue.json doesn't exist yet
 const DEMO_CARDS = [
+  // ── Hypothesis validation (systemix-landing UAT) ──────────────────────────
+  {
+    id: "demo-hyp-1",
+    type: "hypothesis-validation",
+    project: "systemix-landing",
+    hypothesis: "Hero framing: 'Memory Layer' vs 'is lying to you'",
+    metric: "CTA click rate",
+    baselineRate: 0.032,
+    variantRate: 0.047,
+    confidenceLevel: 0.87,
+    sessions: 1240,
+    proposal: "Promote variant B: update hero headline to 'The Memory Layer for managing design systems'. Update contract rationale.",
+    context: "Hermes synthesis — variant B outperforms baseline across all scroll depths. Signal is clean.",
+    requestedAt: "2026-04-27T08:00:00.000Z",
+    status: "pending",
+  },
+  // ── Standard drift / instrumentation cards ────────────────────────────────
   {
     id: "demo-1",
     type: "drift-resolution",
+    project: "finova",
     token: "color.primary.500",
     filePath: "contract/tokens/color-primary-500.mdx",
     proposed: "code-wins",
     context: "Code #0063c4 vs Figma #0052a3 — ΔE 7.2, Tier 3 (obvious). Code reflects the Q1 brand refresh.",
-    requestedAt: "2026-04-27T08:00:00.000Z",
+    requestedAt: "2026-04-27T07:30:00.000Z",
     confidence: 0.91,
     status: "pending",
   },
   {
     id: "demo-2",
     type: "instrumentation-approval",
+    project: "systemix-landing",
     component: "Button",
     filePath: "src/components/ui/button.tsx",
     proposed: "posthog.capture('button_click', { variant, size, label })",
     context: "Hermes wants to add PostHog instrumentation to capture Button interaction events.",
-    requestedAt: "2026-04-27T07:30:00.000Z",
+    requestedAt: "2026-04-27T07:00:00.000Z",
     confidence: 0.84,
     status: "pending",
   },
   {
     id: "demo-3",
     type: "new-token",
+    project: "finova",
     token: "color.accent.violet",
     filePath: "contract/tokens/color-accent-violet.mdx",
     proposed: "Add to Figma variable library as Semantic/color.accent.violet",
     context: "Token #7c3aed exists in globals.css but has no Figma counterpart. Missing-in-Figma.",
-    requestedAt: "2026-04-27T07:00:00.000Z",
+    requestedAt: "2026-04-26T18:00:00.000Z",
     confidence: 0.88,
     status: "pending",
   },
@@ -60,16 +79,24 @@ function writeQueue(data: unknown) {
   fs.renameSync(tmp, QUEUE_PATH);
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const projectSlug = searchParams.get("project") ?? null;
+
   const queue = readQueue();
   if (!queue) {
+    const cards = projectSlug
+      ? DEMO_CARDS.filter(c => !("project" in c) || c.project === projectSlug)
+      : DEMO_CARDS;
     return NextResponse.json({
-      cards: DEMO_CARDS,
-      pendingCount: DEMO_CARDS.length,
+      cards,
+      pendingCount: cards.filter(c => c.status === "pending").length,
       isDemo: true,
     });
   }
-  const cards = queue.cards ?? [];
+  const cards = (queue.cards ?? []).filter(
+    (c: { project?: string }) => !projectSlug || !c.project || c.project === projectSlug
+  );
   const pendingCount = cards.filter((c: { status: string }) => c.status === "pending").length;
   return NextResponse.json({ cards, pendingCount, isDemo: false });
 }

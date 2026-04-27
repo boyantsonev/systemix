@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { HitlQueue } from "@/components/systemix/HitlQueue";
+import { getProject } from "@/lib/data/mock-projects";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -173,6 +175,7 @@ const ALL_CONFLICTS: DriftConflict[] = [
 
 function getConflicts(slug: string): DriftConflict[] {
   const counts: Record<string, number> = { finova: 4, verdure: 6, nexatech: 8 };
+  if (slug === "systemix-landing") return [];
   return ALL_CONFLICTS.slice(0, counts[slug] ?? 4);
 }
 
@@ -295,6 +298,35 @@ export default function DriftPage() {
     { id: "all",     label: "All" },
     { id: "other",   label: "Other" },
   ];
+
+  // Hypothesis Lab — for projects with no Figma but with PostHog
+  const project = getProject(slug);
+  const isHypothesisProject = project?.adapters.figma === "disconnected"
+    && project?.adapters.posthog === "connected";
+
+  if (isHypothesisProject) {
+    return (
+      <div className="flex-1 overflow-y-auto px-6 py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-[14px] font-bold text-foreground">Hypothesis Lab</h2>
+            <span className="text-[10px] font-mono text-emerald-400 border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+              posthog connected
+            </span>
+            {(project.experiments ?? 0) > 0 && (
+              <span className="text-[10px] font-mono text-muted-foreground/40">
+                {project.experiments} active experiment{project.experiments !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-lg">
+            No Figma file — drift detection runs on hypotheses instead. Hermes synthesizes PostHog experiment results and proposes contract updates for your approval.
+          </p>
+          <HitlQueue projectSlug={slug} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
