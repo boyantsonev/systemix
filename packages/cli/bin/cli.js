@@ -10,6 +10,7 @@ const { schedule } = require("../src/commands/schedule");
 const { tokenGuard } = require("../src/commands/token-guard");
 const { update } = require("../src/commands/update");
 const { tokens } = require("../src/commands/tokens");
+const { watch } = require("../src/commands/watch");
 
 const [, , command, ...args] = process.argv;
 
@@ -27,6 +28,7 @@ const HELP = `
     npx systemix schedule [sub]     Schedule workflow runs to off-peak windows
     npx systemix token-profile [dir] Scan for token inefficiency patterns
     npx systemix tokens              Convert globals.css → .systemix/tokens.bridge.json
+    npx systemix watch               Continuous Hermes run — watch CSS + poll Figma
     npx systemix token-guard [sub]   Manage TokenGuard (status|reset|remove)
 
   Sync options:
@@ -43,6 +45,10 @@ const HELP = `
     npx systemix schedule list      List all scheduled systemix runs
     npx systemix schedule clear     Remove all systemix cron entries
     npx systemix schedule run       Schedule a sync run (--when, --command)
+
+  Watch options:
+    --dry-run                       Log proposed writes without executing
+    --interval <n>                  Figma poll interval in seconds (default: 60)
 
   Workflows:
     figma-to-code  (alias: figma)   /figma → /tokens → /component → /storybook → /deploy
@@ -95,6 +101,9 @@ async function main() {
       break;
     case "tokens":
       await tokens(args);
+      break;
+    case "watch":
+      await watch(args);
       break;
     case "help":
     case "--help":
