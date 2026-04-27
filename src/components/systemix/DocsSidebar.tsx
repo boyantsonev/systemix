@@ -18,9 +18,13 @@ const NAV: { section: string; items: { label: string; href: string; external?: b
   {
     section: "Concepts",
     items: [
-      { label: "MDX Contracts",            href: "/docs/concepts/contract"      },
-      { label: "Quality Score",            href: "/docs/concepts/quality-score" },
-      { label: "Drift & Reconciliation",   href: "/docs/concepts/drift"         },
+      { label: "Memory Layer",             href: "/docs/concepts/memory-layer"           },
+      { label: "Hypothesis Validation",    href: "/docs/concepts/hypothesis-validation"  },
+      { label: "Hermes",                   href: "/docs/concepts/hermes"                 },
+      { label: "HITL & Decision Queue",    href: "/docs/concepts/hitl"                   },
+      { label: "MDX Contracts",            href: "/docs/concepts/contract"               },
+      { label: "Drift & Reconciliation",   href: "/docs/concepts/drift"                  },
+      { label: "Quality Score",            href: "/docs/concepts/quality-score"          },
     ],
   },
   {
