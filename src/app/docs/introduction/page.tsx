@@ -21,28 +21,24 @@ export default function IntroductionPage() {
       </section>
 
       <section className="mb-10">
-        <h2 className="text-[1.15rem] font-bold tracking-tight mb-5">Two use cases. One infrastructure.</h2>
-        <div className="space-y-3">
-          <div className="border border-border/40 rounded-xl px-5 py-5">
-            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">Use case 01</p>
-            <p className="text-[14px] font-semibold text-foreground mb-2">Test faster. Measure what you actually designed.</p>
-            <p className="text-[13px] text-muted-foreground leading-relaxed">
-              If a token drifted before your test ran, PostHog gave you an answer to the wrong question. Systemix keeps tokens and components in sync with your Figma source so every variant ships clean. The feedback loop runs on real data.
-            </p>
-            <p className="text-[12px] text-muted-foreground/50 mt-3">
-              For: product teams, agencies, AI-assisted workflows
-            </p>
-          </div>
-          <div className="border border-border/40 rounded-xl px-5 py-5">
-            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">Use case 02</p>
-            <p className="text-[14px] font-semibold text-foreground mb-2">Know what you actually have before you redesign anything.</p>
-            <p className="text-[13px] text-muted-foreground leading-relaxed">
-              Inherited a platform nobody fully documented? Systemix audits every token and component, surfaces drift with perceptual accuracy (ΔE), and gives you a structured path from chaos to a clean baseline. One number — the quality score — tells you when the system is trustworthy enough to build on.
-            </p>
-            <p className="text-[12px] text-muted-foreground/50 mt-3">
-              For: enterprise design system teams, platform redesign projects, design ops
-            </p>
-          </div>
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">One memory layer. Five use cases.</h2>
+        <p className="text-[14px] text-muted-foreground leading-relaxed mb-5">
+          The contract is the constant. What changes is the problem it solves.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {([
+            { audience: "Product teams",        headline: "Measure what you actually designed.",          sub: "Token drift corrupts A/B test results before they run." },
+            { audience: "Agencies",             headline: "Deliver on a verified baseline every sprint.", sub: "Client approves Figma. Systemix proves code matches." },
+            { audience: "Legacy systems",       headline: "Know what you have before you redesign.",      sub: "Quality score rises as you resolve conflicts." },
+            { audience: "AI-assisted builders", headline: "Give your agents a memory.",                   sub: "Contract files replace hallucinated token values." },
+            { audience: "Consultancies",        headline: "Turn audits into a repeatable deliverable.",   sub: "Structured findings in hours, not weeks." },
+          ] as const).map(({ audience, headline, sub }) => (
+            <div key={audience} className="border border-border/40 rounded-xl px-4 py-4">
+              <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">{audience}</p>
+              <p className="text-[13px] font-semibold text-foreground mb-1">{headline}</p>
+              <p className="text-[12px] text-muted-foreground">{sub}</p>
+            </div>
+          ))}
         </div>
       </section>
 

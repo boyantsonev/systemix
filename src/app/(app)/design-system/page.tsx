@@ -72,9 +72,17 @@ function computeScore(tokens: TokenRecord[], components: ComponentRecord[]) {
   const totalC            = components.length;
   const cleanC            = components.filter(c => c.parity === "clean").length;
 
-  const tScore  = totalT === 0 ? 1 : (cleanT / totalT) - (driftedUnresolved * 0.05) - (missingInFigma * 0.03);
-  const cScore  = totalC === 0 ? 1 : cleanC / totalC;
-  const overall = Math.max(0, Math.round(((tScore + cScore) / 2) * 100));
+  // Score = quality-of-verified × coverage-multiplier.
+  // "missing-in-figma" means unsynced, not wrong — exclude from quality, count in coverage.
+  const verifiedTokens    = tokens.filter(t => t.status !== "missing-in-figma");
+  const verifiedClean     = verifiedTokens.filter(t => t.status === "clean").length;
+  const verifiedUnresolved= verifiedTokens.filter(t => t.status === "drifted" && !t.resolved).length;
+  const qualityOfVerified = verifiedTokens.length === 0 ? 0.5
+    : Math.max(0, (verifiedClean / verifiedTokens.length) - (verifiedUnresolved * 0.1));
+  const coverage          = totalT === 0 ? 1 : verifiedTokens.length / totalT;
+  const tScore            = qualityOfVerified * (0.5 + coverage * 0.5);
+  const cScore            = totalC === 0 ? 1 : cleanC / totalC;
+  const overall           = Math.max(0, Math.round(((tScore + cScore) / 2) * 100));
 
   return {
     overall,
@@ -212,43 +220,55 @@ export default function DesignSystemOverview() {
         </div>
       </div>
 
-      {/* Issues */}
+      {/* Issues — drifted first, then missing-in-figma, capped at 10 */}
       {(tokenIssues.length + componentIssues.length) > 0 && (
         <div className="mb-10">
-          <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-3">
-            Issues ({tokenIssues.length + componentIssues.length})
-          </p>
-          <div className="rounded-lg border border-border/50 overflow-hidden divide-y divide-border/30">
-            {tokenIssues.map(t => (
-              <Link
-                key={t.slug}
-                href={`/design-system/tokens/${t.slug}`}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors"
-              >
-                <span className="flex-1 font-mono text-[13px] text-foreground">{t.name}</span>
-                <StatusPill status={t.status} />
-                {t.status === "drifted" && !t.resolved && (
-                  <span className="text-[10px] font-mono text-orange-400/80">unresolved</span>
-                )}
-                {t.collection && (
-                  <span className="text-[10px] font-mono text-muted-foreground/50">{t.collection}</span>
-                )}
-                <span className="text-muted-foreground/30 text-[11px]">→</span>
-              </Link>
-            ))}
-            {componentIssues.map(c => (
-              <Link
-                key={c.slug}
-                href={`/design-system/components/${c.slug}`}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors"
-              >
-                <span className="flex-1 font-mono text-[13px] text-foreground">{c.name}</span>
-                <StatusPill status={c.parity} />
-                <span className="text-[10px] font-mono text-muted-foreground/50">component</span>
-                <span className="text-muted-foreground/30 text-[11px]">→</span>
-              </Link>
-            ))}
-          </div>
+          {(() => {
+            const driftedFirst = [
+              ...tokenIssues.filter(t => t.status === "drifted"),
+              ...componentIssues,
+              ...tokenIssues.filter(t => t.status === "missing-in-figma"),
+            ];
+            const shown  = driftedFirst.slice(0, 10);
+            const hidden = driftedFirst.length - shown.length;
+            return (
+              <>
+                <div className="flex items-baseline gap-3 mb-3">
+                  <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest">
+                    Issues ({tokenIssues.length + componentIssues.length})
+                  </p>
+                  {hidden > 0 && (
+                    <Link href="/design-system/tokens" className="text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+                      +{hidden} more →
+                    </Link>
+                  )}
+                </div>
+                <div className="rounded-lg border border-border/50 overflow-hidden divide-y divide-border/30">
+                  {shown.map(item => {
+                    const isToken = "status" in item;
+                    const href    = isToken ? `/design-system/tokens/${item.slug}` : `/design-system/components/${item.slug}`;
+                    const status  = isToken ? item.status : (item as ComponentRecord).parity;
+                    return (
+                      <Link key={item.slug} href={href} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors">
+                        <span className="flex-1 font-mono text-[13px] text-foreground">{item.name}</span>
+                        <StatusPill status={status} />
+                        {isToken && item.status === "drifted" && !item.resolved && (
+                          <span className="text-[10px] font-mono text-orange-400/80">unresolved</span>
+                        )}
+                        {isToken && item.collection && (
+                          <span className="text-[10px] font-mono text-muted-foreground/50">{item.collection}</span>
+                        )}
+                        {!isToken && (
+                          <span className="text-[10px] font-mono text-muted-foreground/50">component</span>
+                        )}
+                        <span className="text-muted-foreground/30 text-[11px]">→</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })()}
         </div>
       )}
 
