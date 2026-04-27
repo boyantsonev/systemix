@@ -39,8 +39,8 @@ export function DesignSystemSidebar({
   return (
     <aside className="hidden md:flex w-[220px] shrink-0 flex-col border-r border-border/50 sticky top-11 h-[calc(100vh-44px)] overflow-y-auto bg-background">
       <nav className="flex-1 py-4 px-3 space-y-5 overflow-y-auto">
-        {/* Pinned overview link */}
-        <div>
+        {/* Pinned links */}
+        <div className="space-y-0.5">
           <Link
             href="/design-system"
             className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[13px] transition-colors ${
@@ -55,6 +55,16 @@ export function DesignSystemSidebar({
                 {openCount}
               </span>
             )}
+          </Link>
+          <Link
+            href="/design-system/decisions"
+            className={`flex items-center px-2 py-1.5 rounded-md text-[13px] transition-colors ${
+              pathname === "/design-system/decisions"
+                ? "bg-muted text-foreground font-medium"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            Decisions
           </Link>
         </div>
         {/* Tokens grouped by collection */}
