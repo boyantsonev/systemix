@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { SLogo } from "./SLogo";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -35,6 +36,7 @@ const NAV: { section: string; items: { label: string; href: string; external?: b
 
 export function DocsSidebar() {
   const pathname = usePathname();
+  const ph = usePostHog();
 
   return (
     <aside className="hidden md:flex w-[220px] shrink-0 flex-col border-r border-border/50 sticky top-0 h-screen overflow-y-auto bg-background">
@@ -58,6 +60,7 @@ export function DocsSidebar() {
                   <Link
                     key={href}
                     href={href}
+                    onClick={() => ph.capture("docs_nav_click", { label, href, section })}
                     className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[13px] transition-colors ${
                       active
                         ? "bg-muted text-foreground font-medium"

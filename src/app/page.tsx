@@ -154,111 +154,107 @@ function HowItWorks() {
           How it works
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          You run slash commands inside Claude Code or Cursor. Systemix reads your Figma file and CSS, detects drift, and surfaces each conflict for a human decision. Every resolved token raises the quality score.
+          PostHog tells you what happened. Hermes reads the contract memory — past results, prior decisions, rationale — and tells you why and what to test next. Every decision is written back to the contract so the next hypothesis starts from known ground.
         </p>
 
-        {/* Pipeline diagram */}
-        <div className="grid grid-cols-3 gap-3 mb-3">
-          {/* Column 1 — Sources */}
+        {/* Hypothesis validation loop */}
+        <div className="rounded-xl border border-border/40 bg-muted/5 overflow-hidden mb-6">
+          <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between">
+            <span className="text-[11px] font-mono text-muted-foreground/50">Hypothesis validation — what the loop looks like</span>
+            <Link
+              href="/dashboard"
+              className="text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+            >
+              Open Dashboard →
+            </Link>
+          </div>
+
+          {/* Experiment result */}
+          <div className="px-4 py-4 border-b border-border/20">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-mono font-medium bg-cyan-500/15 text-cyan-400 border-cyan-500/30">
+                experiment
+              </span>
+              <span className="text-[13px] font-mono text-foreground">Hero headline — variant A vs B</span>
+              <span className="text-[10px] font-mono text-emerald-400 ml-auto">87% confidence</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {[
+                { label: "Baseline (A)",  value: "3.2% CTR",  color: "text-muted-foreground" },
+                { label: "Variant (B)",   value: "4.7% CTR",  color: "text-emerald-400"       },
+                { label: "Delta",         value: "+47%  ↑",   color: "text-emerald-400"       },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="rounded-lg border border-border/40 px-3 py-2.5">
+                  <p className="text-[10px] font-mono text-muted-foreground/50 mb-1">{label}</p>
+                  <p className={`text-[13px] font-mono font-medium ${color}`}>{value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Hermes synthesis */}
+            <div className="rounded-lg bg-muted/30 border border-border/30 px-3 py-2.5 mb-4">
+              <p className="text-[10px] font-mono text-amber-400/70 uppercase tracking-widest mb-1.5">Hermes synthesis</p>
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                Variant B shows significant uplift at 87% confidence. Contract memory: the provocative framing tested in March performed 23% below baseline on the same segment. Recommend promoting variant B and updating the contract rationale.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button className="px-3 py-1.5 rounded border border-border/50 text-[11px] font-mono text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+                Promote variant
+              </button>
+              <button className="px-3 py-1.5 rounded border border-border/50 text-[11px] font-mono text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+                Run longer
+              </button>
+              <span className="text-[11px] font-mono text-muted-foreground/30 ml-2">— decision is written to the contract</span>
+            </div>
+          </div>
+
+          {/* Memory trace */}
+          <div className="px-4 py-3 flex items-center gap-3 opacity-50">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-mono font-medium bg-blue-500/15 text-blue-400 border-blue-500/30">
+              remembered
+            </span>
+            <span className="text-[12px] font-mono text-muted-foreground">Hero headline — contract updated 2026-04-27</span>
+            <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">next test will read this</span>
+          </div>
+        </div>
+
+        {/* Pipeline reference — secondary */}
+        <div className="grid grid-cols-3 gap-3 mb-6 opacity-70">
           <div className="space-y-2">
             <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/40 mb-3 px-1">Sources</p>
             {[
-              { label: "Figma variables", color: "text-violet-400" },
-              { label: "globals.css",     color: "text-blue-400"   },
-              { label: "components/",     color: "text-emerald-400" },
+              { label: "PostHog events", color: "bg-cyan-400"    },
+              { label: "contract/",      color: "bg-blue-400"    },
+              { label: "globals.css",    color: "bg-violet-400"  },
             ].map(({ label, color }) => (
               <div key={label} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border/40 bg-muted/10">
-                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${color.replace("text-", "bg-")}`} />
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${color}`} />
                 <span className="text-[12px] font-mono text-muted-foreground truncate">{label}</span>
               </div>
             ))}
           </div>
-
-          {/* Column 2 — Skills (arrow + commands) */}
           <div className="space-y-2">
             <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/40 mb-3 px-1">Skills</p>
-            {[
-              "/figma",
-              "/tokens",
-              "/component",
-              "/storybook",
-            ].map((cmd) => (
+            {["/tokens", "/component", "/drift-report", "/deploy"].map((cmd) => (
               <div key={cmd} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border/40 bg-muted/10">
                 <span className="text-muted-foreground/20 text-[10px] shrink-0">→</span>
                 <code className="text-[12px] font-mono text-foreground/70">{cmd}</code>
               </div>
             ))}
           </div>
-
-          {/* Column 3 — Outputs */}
           <div className="space-y-2">
             <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/40 mb-3 px-1">Output</p>
             <div className="px-3 py-2 rounded-lg border border-border/40 bg-muted/10">
               <p className="text-[12px] font-mono text-muted-foreground">contract/</p>
-              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">MDX file per token + component</p>
+              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">memory per token + decision</p>
             </div>
             <div className="px-3 py-2 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
               <p className="text-[12px] font-mono text-emerald-400">Score 83 / 100</p>
-              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">healthy · 2 drifted</p>
+              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">healthy · 2 pending</p>
             </div>
-          </div>
-        </div>
-
-        {/* Concrete triage mockup */}
-        <div className="rounded-xl border border-border/40 bg-muted/5 overflow-hidden mb-6">
-          <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between">
-            <span className="text-[11px] font-mono text-muted-foreground/50">Contract triage — what drift looks like</span>
-            <Link
-              href="/design-system"
-              className="text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground transition-colors"
-            >
-              Open Design System →
-            </Link>
-          </div>
-
-          {/* Token row with drift */}
-          <div className="px-4 py-4 border-b border-border/20">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-mono font-medium bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
-                drifted
-              </span>
-              <code className="text-[13px] font-mono text-foreground">--color-primary</code>
-              <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">ΔE 4.2</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="rounded-lg border border-border/40 px-3 py-2.5">
-                <p className="text-[10px] font-mono text-muted-foreground/50 mb-1">CSS (code)</p>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shrink-0" style={{ background: "oklch(0.45 0.18 250)" }} />
-                  <code className="text-[11px] font-mono text-foreground/80 truncate">oklch(0.45 0.18 250)</code>
-                </div>
-              </div>
-              <div className="rounded-lg border border-border/40 px-3 py-2.5">
-                <p className="text-[10px] font-mono text-muted-foreground/50 mb-1">Figma variable</p>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded shrink-0" style={{ background: "#1a73e8" }} />
-                  <code className="text-[11px] font-mono text-foreground/80">#1a73e8</code>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="px-3 py-1.5 rounded border border-border/50 text-[11px] font-mono text-muted-foreground hover:text-foreground hover:border-border transition-colors">
-                Accept CSS
-              </button>
-              <button className="px-3 py-1.5 rounded border border-border/50 text-[11px] font-mono text-muted-foreground hover:text-foreground hover:border-border transition-colors">
-                Accept Figma
-              </button>
-              <span className="text-[11px] font-mono text-muted-foreground/30 ml-2">— each decision raises the score</span>
-            </div>
-          </div>
-
-          {/* Clean token row */}
-          <div className="px-4 py-3 flex items-center gap-3 opacity-50">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-mono font-medium bg-green-500/15 text-green-400 border-green-500/30">
-              clean
-            </span>
-            <code className="text-[12px] font-mono text-muted-foreground">--color-background</code>
-            <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">resolved</span>
           </div>
         </div>
 
