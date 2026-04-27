@@ -12,6 +12,7 @@
  *   events   — emit_event, list_events
  *   hitl     — push_hitl_task, resolve_hitl_task, list_hitl_tasks
  *   workflow — list_workflows, get_workflow
+ *   contract — contract_get_token, contract_list_drifted, contract_get_component, contract_get_quality_score
  *
  * Usage:
  *   systemix-mcp --project-root /path/to/project
@@ -29,6 +30,7 @@ const bridge_js_1 = require("./tools/bridge.js");
 const events_js_1 = require("./tools/events.js");
 const hitl_js_1 = require("./tools/hitl.js");
 const workflow_js_1 = require("./tools/workflow.js");
+const contract_js_1 = require("./tools/contract.js");
 // ---------------------------------------------------------------------------
 // CLI args — parse --project-root
 // ---------------------------------------------------------------------------
@@ -59,6 +61,10 @@ const tools = [
     hitl_js_1.listHitlTasksDefinition,
     workflow_js_1.listWorkflowsDefinition,
     workflow_js_1.getWorkflowDefinition,
+    contract_js_1.contractGetTokenDefinition,
+    contract_js_1.contractListDriftedDefinition,
+    contract_js_1.contractGetComponentDefinition,
+    contract_js_1.contractGetQualityScoreDefinition,
 ];
 // Map tool name → handler, bound to projectRoot
 const handlers = new Map([
@@ -75,6 +81,10 @@ const handlers = new Map([
     [hitl_js_1.listHitlTasksDefinition.name, (a) => (0, hitl_js_1.listHitlTasksHandler)(a, PROJECT_ROOT)],
     [workflow_js_1.listWorkflowsDefinition.name, (a) => (0, workflow_js_1.listWorkflowsHandler)(a, PROJECT_ROOT)],
     [workflow_js_1.getWorkflowDefinition.name, (a) => (0, workflow_js_1.getWorkflowHandler)(a, PROJECT_ROOT)],
+    [contract_js_1.contractGetTokenDefinition.name, (a) => (0, contract_js_1.contractGetTokenHandler)(a, PROJECT_ROOT)],
+    [contract_js_1.contractListDriftedDefinition.name, (a) => (0, contract_js_1.contractListDriftedHandler)(a, PROJECT_ROOT)],
+    [contract_js_1.contractGetComponentDefinition.name, (a) => (0, contract_js_1.contractGetComponentHandler)(a, PROJECT_ROOT)],
+    [contract_js_1.contractGetQualityScoreDefinition.name, (_a) => (0, contract_js_1.contractGetQualityScoreHandler)({}, PROJECT_ROOT)],
 ]);
 // ---------------------------------------------------------------------------
 // Server

@@ -11,6 +11,7 @@
  *   events   — emit_event, list_events
  *   hitl     — push_hitl_task, resolve_hitl_task, list_hitl_tasks
  *   workflow — list_workflows, get_workflow
+ *   contract — contract_get_token, contract_list_drifted, contract_get_component, contract_get_quality_score
  *
  * Usage:
  *   systemix-mcp --project-root /path/to/project
@@ -68,6 +69,17 @@ import {
   getWorkflowHandler,
 } from "./tools/workflow.js";
 
+import {
+  contractGetTokenDefinition,
+  contractGetTokenHandler,
+  contractListDriftedDefinition,
+  contractListDriftedHandler,
+  contractGetComponentDefinition,
+  contractGetComponentHandler,
+  contractGetQualityScoreDefinition,
+  contractGetQualityScoreHandler,
+} from "./tools/contract.js";
+
 import type { ToolHandler, ToolResult } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -104,6 +116,10 @@ const tools = [
   listHitlTasksDefinition,
   listWorkflowsDefinition,
   getWorkflowDefinition,
+  contractGetTokenDefinition,
+  contractListDriftedDefinition,
+  contractGetComponentDefinition,
+  contractGetQualityScoreDefinition,
 ];
 
 // Map tool name → handler, bound to projectRoot
@@ -121,6 +137,10 @@ const handlers = new Map<string, (args: Record<string, unknown>) => Promise<Tool
   [listHitlTasksDefinition.name, (a) => listHitlTasksHandler(a as Parameters<typeof listHitlTasksHandler>[0], PROJECT_ROOT)],
   [listWorkflowsDefinition.name, (a) => listWorkflowsHandler(a, PROJECT_ROOT)],
   [getWorkflowDefinition.name, (a) => getWorkflowHandler(a as Parameters<typeof getWorkflowHandler>[0], PROJECT_ROOT)],
+  [contractGetTokenDefinition.name, (a) => contractGetTokenHandler(a as Parameters<typeof contractGetTokenHandler>[0], PROJECT_ROOT)],
+  [contractListDriftedDefinition.name, (a) => contractListDriftedHandler(a as Parameters<typeof contractListDriftedHandler>[0], PROJECT_ROOT)],
+  [contractGetComponentDefinition.name, (a) => contractGetComponentHandler(a as Parameters<typeof contractGetComponentHandler>[0], PROJECT_ROOT)],
+  [contractGetQualityScoreDefinition.name, (_a) => contractGetQualityScoreHandler({}, PROJECT_ROOT)],
 ]);
 
 // ---------------------------------------------------------------------------
