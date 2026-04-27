@@ -143,6 +143,14 @@ export default function ContractLandingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto px-6 py-12">
 
+        {/* ── What is this ─────────────────────────────────────── */}
+        <div className="mb-10">
+          <h1 className="text-[1.5rem] font-black tracking-tight mb-1">Contract</h1>
+          <p className="text-[14px] text-muted-foreground leading-relaxed max-w-xl">
+            Every token and component where Figma and your code disagree shows up here. Review the difference, pick the right value, and the quality score rises. Run <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/tokens</code> or <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/figma</code> inside Claude Code or Cursor to populate this view.
+          </p>
+        </div>
+
         {/* ── Quality Score ─────────────────────────────────────── */}
         <div className="mb-10">
           <p className="text-[11px] font-mono text-muted-foreground uppercase tracking-widest mb-4">
