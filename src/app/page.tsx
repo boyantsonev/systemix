@@ -30,10 +30,10 @@ function LandingNav() {
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           <Link
-            href="/contract"
+            href="/design-system"
             className="text-[12px] font-medium border border-border text-foreground px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors"
           >
-            Try Contract →
+            Try Design System →
           </Link>
           <Link
             href="/docs/quick-install"
@@ -226,10 +226,10 @@ function HowItWorks() {
           <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between">
             <span className="text-[11px] font-mono text-muted-foreground/50">Contract triage — what drift looks like</span>
             <Link
-              href="/contract"
+              href="/design-system"
               className="text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground transition-colors"
             >
-              Open triage →
+              Open Design System →
             </Link>
           </div>
 
@@ -299,16 +299,10 @@ function SectionGlossary() {
       desc: "Quality score overview across all your projects. Shows which projects have drifted tokens, pending decisions, and how connected each adapter is.",
     },
     {
-      name: "Contract",
-      href: "/contract",
-      tag: "triage",
-      desc: "The drift resolution workspace. Every token and component with a mismatch shows up here with both values side-by-side. You review the difference and make a decision. The score rises.",
-    },
-    {
       name: "Design System",
-      href: "/design-system/tokens",
-      tag: "docs",
-      desc: "Browse the verified token and component library — the live documentation that Hermes authors as you resolve drift. This is the output, not the inbox.",
+      href: "/design-system",
+      tag: "triage + docs",
+      desc: "Token and component parity in one place. See what drifted, compare code vs Figma values, make a resolution decision, and read the documentation Hermes authors as you go.",
     },
     {
       name: "Skills",
@@ -458,7 +452,7 @@ function QualityGate() {
 function BottomCTA() {
   const steps = [
     { n: "1", label: "Run Hermes locally", cmd: "ollama pull hermes3", comment: "local LLM — no API key needed" },
-    { n: "2", label: "Start the UI",       cmd: "npm run dev",         comment: "open /contract in the browser" },
+    { n: "2", label: "Start the UI",       cmd: "npm run dev",         comment: "open /design-system in the browser" },
     { n: "3", label: "Resolve drift",      cmd: "",                    comment: "click any token → see ΔE → decide" },
   ];
 

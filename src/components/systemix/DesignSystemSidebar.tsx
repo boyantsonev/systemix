@@ -23,9 +23,11 @@ function StatusDot({ status }: { status: string }) {
 export function DesignSystemSidebar({
   tokens,
   components,
+  openCount = 0,
 }: {
   tokens: TokenNav[];
   components: ComponentNav[];
+  openCount?: number;
 }) {
   const pathname = usePathname();
 
@@ -37,6 +39,24 @@ export function DesignSystemSidebar({
   return (
     <aside className="hidden md:flex w-[220px] shrink-0 flex-col border-r border-border/50 sticky top-11 h-[calc(100vh-44px)] overflow-y-auto bg-background">
       <nav className="flex-1 py-4 px-3 space-y-5 overflow-y-auto">
+        {/* Pinned overview link */}
+        <div>
+          <Link
+            href="/design-system"
+            className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[13px] transition-colors ${
+              pathname === "/design-system"
+                ? "bg-muted text-foreground font-medium"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            Overview
+            {openCount > 0 && (
+              <span className="text-[10px] font-mono text-orange-400/80 bg-orange-500/10 border border-orange-500/20 px-1.5 py-0.5 rounded">
+                {openCount}
+              </span>
+            )}
+          </Link>
+        </div>
         {/* Tokens grouped by collection */}
         {Object.entries(collections).map(([collection, items]) => (
           <div key={collection}>
@@ -107,7 +127,7 @@ export function DesignSystemSidebar({
 
       <div className="h-12 border-t border-border/50 flex items-center justify-between px-5">
         <span className="text-[11px] text-muted-foreground/40 font-mono">
-          {tokens.length}t · {components.length}c
+          {tokens.length}t · {components.length}c{openCount > 0 ? ` · ${openCount} open` : ""}
         </span>
         <ThemeToggle />
       </div>

@@ -76,8 +76,8 @@ export default function TokensDocIndexPage() {
         <div className="flex gap-3 mb-10 text-[12px] font-mono">
           {drifted > 0 && <span className="text-yellow-400/80">{drifted} drifted</span>}
           {missing > 0 && <span className="text-blue-400/80">{missing} missing in Figma</span>}
-          <Link href="/contract" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-            → resolve in contract triage
+          <Link href="/design-system" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+            → see all open issues
           </Link>
         </div>
       )}

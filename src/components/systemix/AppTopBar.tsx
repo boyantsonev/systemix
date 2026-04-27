@@ -8,9 +8,8 @@ import { SLogo } from "./SLogo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const APP_NAV = [
-  { label: "Dashboard",     href: "/dashboard" },
-  { label: "Contract",      href: "/contract"  },
-  { label: "Design System", href: "/design-system/tokens" },
+  { label: "Dashboard",     href: "/dashboard"     },
+  { label: "Design System", href: "/design-system" },
 ];
 
 const SECONDARY_NAV = [
@@ -19,7 +18,7 @@ const SECONDARY_NAV = [
 ];
 
 function isActive(pathname: string, href: string) {
-  if (href === "/design-system/tokens") return pathname.startsWith("/design-system");
+  if (href === "/design-system") return pathname.startsWith("/design-system");
   return pathname === href || pathname.startsWith(href + "/");
 }
 

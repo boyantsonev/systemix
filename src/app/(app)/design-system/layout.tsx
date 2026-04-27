@@ -47,10 +47,12 @@ function readComponentsForNav(): ComponentNav[] {
 export default function DesignSystemLayout({ children }: { children: React.ReactNode }) {
   const tokens     = readTokensForNav();
   const components = readComponentsForNav();
+  const openCount  = tokens.filter(t => t.status === "drifted" || t.status === "missing-in-figma").length
+                   + components.filter(c => c.parity !== "clean" && c.parity !== "unknown").length;
 
   return (
     <div className="flex bg-background text-foreground" style={{ minHeight: "calc(100vh - 44px)" }}>
-      <DesignSystemSidebar tokens={tokens} components={components} />
+      <DesignSystemSidebar tokens={tokens} components={components} openCount={openCount} />
       <div className="flex-1 min-w-0">
         {/* Mobile section header — shows current section name + hamburger for sidebar */}
         <DesignSystemMobileHeader tokens={tokens} components={components} />

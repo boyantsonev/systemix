@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -10,16 +10,16 @@ import { TokenResolveControl } from "@/components/contract/TokenResolveControl";
 const TOKEN_DIR = join(process.cwd(), "contract", "tokens");
 
 type Fm = {
-  token?:             string;
-  value?:             string;
-  "figma-value"?:     string | null;
-  status?:            string;
-  resolved?:          boolean;
-  collection?:        string;
-  source?:            string;
-  "delta-e"?:         number | null;
-  "last-updated"?:    string;
-  "last-resolver"?:   string | null;
+  token?:              string;
+  value?:              string;
+  "figma-value"?:      string | null;
+  status?:             string;
+  resolved?:           boolean;
+  collection?:         string;
+  source?:             string;
+  "delta-e"?:          number | null;
+  "last-updated"?:     string;
+  "last-resolver"?:    string | null;
   "resolve-decision"?: string | null;
 };
 
@@ -72,7 +72,7 @@ function StatusPill({ status }: { status: string }) {
 
 export default async function TokenDocPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const filePath = join(TOKEN_DIR, `${slug}.mdx`);
+  const filePath  = join(TOKEN_DIR, `${slug}.mdx`);
 
   let raw: string;
   try { raw = readFileSync(filePath, "utf8"); } catch { notFound(); return; }
@@ -85,17 +85,16 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
   const showResolve = status === "drifted" && fm.resolved === false;
   const isColorTok  = isColor(fm.value);
   const hasFigma    = fm["figma-value"] != null && fm["figma-value"] !== "null";
-  const de          = isColorTok && hasFigma
-    ? computeDeltaE(fm.value!, fm["figma-value"]!)
-    : null;
+  const de          = isColorTok && hasFigma ? computeDeltaE(fm.value!, fm["figma-value"]!) : null;
   const codeHex     = isColorTok ? toHex(fm.value!) : null;
+  const hasContent  = content.trim().length > 0;
 
   return (
     <article>
       {/* Breadcrumb */}
       <p className="text-[13px] font-mono text-muted-foreground mb-3">
-        <Link href="/design-system/tokens" className="hover:text-foreground transition-colors">
-          Tokens
+        <Link href="/design-system" className="hover:text-foreground transition-colors">
+          Design System
         </Link>
         {fm.collection && (
           <span className="text-muted-foreground/40"> · {fm.collection}</span>
@@ -115,7 +114,7 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
 
       {/* Color swatches */}
       {isColorTok && (
-        <div className="mb-10">
+        <div className="mb-8">
           <div className={`flex gap-4 ${hasFigma ? "" : "max-w-xs"}`}>
             <div className="flex-1">
               <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-2">Code</p>
@@ -151,14 +150,7 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
         </div>
       )}
 
-      <hr className="border-border/40 mb-8" />
-
-      {/* Prose body — primary content */}
-      <div className="prose prose-sm prose-invert max-w-none text-muted-foreground leading-relaxed mb-10 [&_code]:text-foreground/80 [&_code]:bg-muted/60 [&_code]:px-1 [&_code]:rounded [&_code]:text-[12px]">
-        <MDXRemote source={content} />
-      </div>
-
-      {/* Resolve control — contextual, only when needed */}
+      {/* Drift triage — immediately after evidence, before prose */}
       {showResolve && (
         <div className="rounded-xl border border-yellow-500/25 bg-yellow-500/5 px-4 py-4 mb-8">
           <p className="text-[11px] font-mono text-yellow-400/80 uppercase tracking-widest mb-3">
@@ -168,7 +160,32 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
         </div>
       )}
 
-      {/* Metadata — secondary */}
+      <hr className="border-border/40 mb-8" />
+
+      {/* Prose body */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest">Documentation</p>
+        <a
+          href={`vscode://file/${filePath}`}
+          className="text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground border border-border/30 px-2 py-0.5 rounded hover:border-border/60 transition-colors"
+        >
+          Edit in editor
+        </a>
+      </div>
+
+      {hasContent ? (
+        <div className="prose prose-sm prose-invert max-w-none text-muted-foreground leading-relaxed mb-10 [&_code]:text-foreground/80 [&_code]:bg-muted/60 [&_code]:px-1 [&_code]:rounded [&_code]:text-[12px]">
+          <MDXRemote source={content} />
+        </div>
+      ) : (
+        <p className="font-mono text-[13px] text-muted-foreground/40 mb-10">
+          No documentation yet. Run{" "}
+          <code className="text-muted-foreground/60">/tokens</code>{" "}
+          in Claude Code or Cursor to have Hermes write this page.
+        </p>
+      )}
+
+      {/* Metadata */}
       <div className="rounded-xl border border-border/40 bg-muted/10 px-4 py-2 mb-8 divide-y divide-border/20">
         {!isColorTok && fm.value && (
           <div className="flex gap-3 py-2">
@@ -214,20 +231,13 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
         )}
       </div>
 
-      {/* Used by — placeholder until SYSTMIX-242 */}
+      {/* Used by — placeholder */}
       <div className="rounded-xl border border-border/40 px-4 py-4">
         <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-1">Used by</p>
         <p className="text-[13px] text-muted-foreground/40">
           Component reverse index coming in a future update.
         </p>
       </div>
-
-      <Link
-        href="/contract"
-        className="mt-10 inline-block text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground transition-colors"
-      >
-        → resolve in contract triage
-      </Link>
     </article>
   );
 }

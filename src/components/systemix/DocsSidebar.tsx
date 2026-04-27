@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { SLogo } from "./SLogo";
 import { ThemeToggle } from "./ThemeToggle";
 
-const NAV = [
+const NAV: { section: string; items: { label: string; href: string; external?: boolean }[] }[] = [
   {
     section: "Getting Started",
     items: [
@@ -27,9 +27,8 @@ const NAV = [
     items: [
       { label: "Skills library",  href: "/docs/skills",           external: false },
       { label: "Architecture",    href: "/docs/architecture",    external: false },
-      { label: "Design System",   href: "/design-system/tokens", external: true  },
-      { label: "Contract",        href: "/contract",             external: true  },
-      { label: "Dashboard",       href: "/dashboard",            external: true  },
+      { label: "Design System",   href: "/design-system", external: true  },
+      { label: "Dashboard",       href: "/dashboard",     external: true  },
     ],
   },
 ];

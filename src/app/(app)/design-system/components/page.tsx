@@ -62,8 +62,8 @@ export default function ComponentsDocIndexPage() {
       {drifted > 0 && (
         <div className="flex gap-3 mb-10 text-[12px] font-mono">
           <span className="text-yellow-400/80">{drifted} drifted</span>
-          <Link href="/contract" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-            → resolve in contract triage
+          <Link href="/design-system" className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+            → see all open issues
           </Link>
         </div>
       )}
