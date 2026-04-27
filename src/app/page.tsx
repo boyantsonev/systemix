@@ -54,7 +54,7 @@ function LandingFooter() {
         <div className="flex items-center gap-2">
           <SLogo size={14} className="text-muted-foreground/40" />
           <span className="text-[12px] text-muted-foreground/40 font-mono">
-            The design contract layer for agents and teams.
+            One infrastructure. Two use cases.
           </span>
         </div>
         <div className="flex items-center gap-4 text-[12px] text-muted-foreground/40 font-mono">
@@ -84,12 +84,15 @@ function Hero() {
   return (
     <section className="pt-24 pb-24">
       <div className="max-w-3xl mx-auto text-center">
+        <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-6">
+          One infrastructure · Two use cases
+        </p>
         <h1 className="text-[2.75rem] sm:text-[3.5rem] font-black tracking-tight leading-[1.1] mb-6">
-          Your design tokens are<br />
-          <span className="text-muted-foreground">lying to your agents.</span>
+          The design system<br />
+          <span className="text-muted-foreground">contract layer.</span>
         </h1>
-        <p className="text-[17px] text-muted-foreground leading-relaxed max-w-lg mx-auto mb-10">
-          Systemix builds a verified contract between Figma, your codebase, and every AI tool in your workflow — so agents stop hallucinating design decisions.
+        <p className="text-[17px] text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
+          Systemix builds a verified contract between Figma, your codebase, and every tool in your workflow — so you can validate design hypotheses fast, or reconcile years of drift with confidence.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <CopyCommand command="npx systemix init" />
@@ -109,15 +112,15 @@ function Problem() {
   const pains = [
     {
       label: "Figma drift",
-      body: "Variable collections and CSS tokens diverge without anyone noticing.",
+      body: "Variable collections and CSS tokens diverge without anyone noticing — quietly poisoning every prototype that ships.",
     },
     {
-      label: "Agent hallucination",
-      body: "LLMs confidently use the wrong token name because your sources disagree.",
+      label: "Unreliable data",
+      body: "PostHog tells you the variant won. But if the token drifted before the test, you measured the wrong thing.",
     },
     {
-      label: "No audit trail",
-      body: "When a decision changes, there's no record of why — just a diff no one remembers.",
+      label: "Unknown baseline",
+      body: "Years of software, a Figma file nobody fully trusts, hundreds of tokens with no clear owner. Before redesigning, you need to know what you actually have.",
     },
   ];
 
@@ -125,16 +128,16 @@ function Problem() {
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
-          Design systems drift.<br />Agents make it worse.
+          Design systems drift.<br />Everything downstream suffers.
         </h2>
         <div className="text-[15px] text-muted-foreground leading-relaxed space-y-4 mb-14 max-w-2xl">
           <p>
             Figma says <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">primary</code> is{" "}
             <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">#1a56db</code>. Your CSS says{" "}
-            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">oklch(0.45 0.18 250)</code>. Your agent picks whichever it saw last and ships it.
+            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">oklch(0.45 0.18 250)</code>. Your agent ships whichever it saw last. Your test measures a variant nobody designed.
           </p>
           <p>
-            The problem isn&apos;t your team. It&apos;s that nothing formally owns the contract between your design system&apos;s sources of truth.
+            The problem isn&apos;t your team. Nothing formally owns the contract between your design system&apos;s sources of truth.
           </p>
         </div>
 
@@ -212,36 +215,67 @@ function HowItWorks() {
   );
 }
 
-function UseCases() {
-  const personas = [
-    {
-      label: "Consultancies managing multiple client themes",
-      body: "You maintain 8 brands on one design system. Each client has token overrides, custom fonts, and a Figma file that's always slightly out of date. Systemix tracks which tokens are client-specific, which are shared, and flags the moment a shared base token breaks a client theme.",
-    },
-    {
-      label: "AI-first product teams",
-      body: "Your agents write components. They need to know what tokens exist, which are deprecated, and whether the contract is clean enough to trust. Systemix is the MCP server your agents query before touching anything.",
-    },
-    {
-      label: "Solo engineers with a design system debt problem",
-      body: "You've got 200 hardcoded hex values, a Figma file no one fully trusts, and a backlog of \"fix the tokens\" tickets. Systemix gives you a score, a ranked list of conflicts, and a path to ≥ 90%.",
-    },
-  ];
-
+function TwoUseCases() {
   return (
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
+        <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-4">
+          One infrastructure · Two use cases
+        </p>
         <h2 className="text-[1.75rem] font-black tracking-tight mb-14">
-          Built for teams where design<br />and code both matter.
+          Same contract layer.<br />Different problem solved.
         </h2>
 
-        <div className="space-y-px">
-          {personas.map(({ label, body }) => (
-            <div key={label} className="py-6 border-b border-border/40 last:border-0">
-              <p className="text-[14px] font-bold text-foreground mb-2">{label}</p>
-              <p className="text-[13px] text-muted-foreground leading-relaxed max-w-2xl">{body}</p>
+        <div className="grid sm:grid-cols-2 gap-px bg-border/40 rounded-xl overflow-hidden border border-border/40">
+          {/* Use case 1 */}
+          <div className="bg-background px-6 py-8">
+            <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-3">
+              Use case 01
+            </p>
+            <p className="text-[16px] font-bold text-foreground mb-3 leading-snug">
+              Prototype and validate hypotheses fast
+            </p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-6">
+              Design is the backbone of your testing loop. Ship a variant, measure it with PostHog, iterate. The contract layer keeps tokens and components clean so your data reflects design intent — not drift. When the design system is trustworthy, the feedback loop is fast.
+            </p>
+            <div className="space-y-1.5">
+              {[
+                "Product teams shipping and testing variants",
+                "Agencies building fast prototypes for clients",
+                "AI-assisted workflows where agents author components",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2 text-[12px] text-muted-foreground">
+                  <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-muted-foreground/40" />
+                  {item}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Use case 2 */}
+          <div className="bg-background px-6 py-8 border-t sm:border-t-0 sm:border-l border-border/40">
+            <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-3">
+              Use case 02
+            </p>
+            <p className="text-[16px] font-bold text-foreground mb-3 leading-snug">
+              Reconcile a legacy platform at scale
+            </p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-6">
+              Years of software, a Figma file nobody fully trusts, hundreds of tokens with no clear owner. Before redesigning, you need to know what you actually have. Systemix audits every token and component, surfaces drift with perceptual accuracy (ΔE), and gives the team a structured path from chaos to a clean baseline.
+            </p>
+            <div className="space-y-1.5">
+              {[
+                "Enterprise design system teams doing platform redesigns",
+                "Design ops managing drift across multiple codebases",
+                "Consultancies inheriting a client's messy token layer",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2 text-[12px] text-muted-foreground">
+                  <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-muted-foreground/40" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -250,9 +284,9 @@ function UseCases() {
 
 function QualityGate() {
   const tiers = [
-    { score: "≥ 90%", state: "Clean",   dot: "bg-emerald-500", body: "All conflicts resolved. Agent reads are reliable." },
-    { score: "≥ 80%", state: "Drifted", dot: "bg-amber-500",   body: "Unresolved conflicts exist. Agents will encounter ambiguous values." },
-    { score: "< 80%", state: "Blocked", dot: "bg-red-400",     body: "Too many unresolved conflicts. The MCP server refuses to start." },
+    { score: "≥ 80", state: "Clean",           dot: "bg-emerald-500", body: "Most contracts are resolved. The design system is trustworthy — for agents, for prototypes, and for stakeholder sign-off." },
+    { score: "≥ 60", state: "Needs attention", dot: "bg-amber-500",   body: "Unresolved drift exists. Prototypes may ship inconsistencies. Triage before relying on the contract." },
+    { score: "< 60", state: "Critical",        dot: "bg-red-400",     body: "Too many unresolved conflicts. The contract is not reliable. Resolve open drift before using in any workflow." },
   ];
 
   return (
@@ -262,7 +296,7 @@ function QualityGate() {
           A quality score on every contract.
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          Systemix calculates a quality score (0–100%) from the ratio of resolved tokens, source coverage, and completeness. Below 80%, the MCP server won&apos;t start — serving a low-quality contract to agents is worse than serving nothing.
+          Systemix calculates a 0–100 quality score from the ratio of clean tokens, unresolved drift, and missing Figma coverage. It&apos;s the single number that tells you whether the design system can be trusted downstream — for testing, for agents, for a platform migration.
         </p>
 
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
@@ -282,7 +316,7 @@ function QualityGate() {
         </div>
 
         <p className="text-[13px] text-muted-foreground leading-relaxed mt-6 max-w-xl">
-          The score rises as you resolve conflicts and connect sources. It drops when Figma and code drift apart.
+          The score rises as you resolve conflicts. It drops when Figma and code drift apart. Both use cases converge on the same target: ≥ 80.
         </p>
       </div>
     </section>
@@ -345,8 +379,8 @@ export default function LandingPage() {
       <main className="max-w-4xl mx-auto px-6">
         <Hero />
         <Problem />
+        <TwoUseCases />
         <HowItWorks />
-        <UseCases />
         <QualityGate />
         <BottomCTA />
       </main>

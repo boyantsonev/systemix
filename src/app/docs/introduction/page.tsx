@@ -8,7 +8,7 @@ export default function IntroductionPage() {
         The design contract layer<br />for your agents.
       </h1>
       <p className="text-[16px] text-muted-foreground leading-relaxed mb-10">
-        Systemix is an open-source tool that builds and maintains a verified contract between your Figma design system, your codebase, and the AI agents working on both.
+        Systemix is an open-source tool that builds and maintains a verified contract between your Figma design system and your codebase — one infrastructure, two use cases: validate design hypotheses fast, or reconcile years of drift with confidence.
       </p>
 
       <hr className="border-border/40 mb-10" />
@@ -44,26 +44,36 @@ export default function IntroductionPage() {
       </section>
 
       <section className="mb-10">
-        <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Who it&apos;s for</h2>
-        <ul className="space-y-2">
-          {[
-            "Design system teams who need agents to understand their token structure",
-            "Consultancies managing multiple client themes on one codebase",
-            "Any team where Figma and code have drifted and agents are making it worse",
-          ].map((item) => (
-            <li key={item} className="flex items-start gap-3 text-[14px] text-muted-foreground leading-relaxed">
-              <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-muted-foreground/40" />
-              {item}
-            </li>
-          ))}
-        </ul>
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-5">Two use cases. One infrastructure.</h2>
+        <div className="space-y-3">
+          <div className="border border-border/40 rounded-xl px-5 py-5">
+            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">Use case 01</p>
+            <p className="text-[14px] font-semibold text-foreground mb-2">Prototype and validate hypotheses fast</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              Design is the backbone of your testing loop. Keep the token and component layer clean so prototypes reflect design intent — not drift. PostHog measures what was actually designed. The feedback loop is fast and reliable.
+            </p>
+            <p className="text-[12px] text-muted-foreground/50 mt-3">
+              For: product teams, agencies, AI-assisted workflows
+            </p>
+          </div>
+          <div className="border border-border/40 rounded-xl px-5 py-5">
+            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">Use case 02</p>
+            <p className="text-[14px] font-semibold text-foreground mb-2">Reconcile a legacy platform at scale</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              Years of software, a Figma file nobody fully trusts, hundreds of tokens with no clear owner. Systemix audits every token and component, surfaces drift with perceptual accuracy (ΔE), and gives the team a structured path from chaos to a clean, trustworthy baseline.
+            </p>
+            <p className="text-[12px] text-muted-foreground/50 mt-3">
+              For: enterprise design system teams, platform redesign projects, design ops
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="mb-12">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">The one-liner</h2>
         <div className="bg-muted/30 border border-border/40 rounded-xl px-5 py-5">
           <p className="text-[15px] leading-relaxed">
-            Agents stop hallucinating design decisions when they have a verified, sourced contract to read from.
+            When the contract between design and code is verified, everything downstream — prototypes, tests, agents, migrations — gets faster and more reliable.
           </p>
         </div>
       </section>
