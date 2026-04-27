@@ -44,9 +44,9 @@ export default function SetupGuidePage() {
       <p className="text-[16px] text-muted-foreground leading-relaxed mb-4">
         From install to a working contract layer — Hermes authors your MDX files, the UI shows drift and a live quality score. Estimated time: 15–20 minutes.
       </p>
-      <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl px-4 py-3 mb-10">
-        <p className="text-[12px] font-mono text-amber-500/80">
-          No CLI yet — <code className="text-amber-400">npx systemix init</code> is on the roadmap. This is the direct POC workflow.
+      <div className="bg-muted/30 border border-border/40 rounded-xl px-4 py-3 mb-10">
+        <p className="text-[12px] font-mono text-muted-foreground/70">
+          POC workflow — runs directly from the cloned repo. <code className="text-foreground/70">npx systemix init</code> is available for new projects.
         </p>
       </div>
 
@@ -83,56 +83,39 @@ export default function SetupGuidePage() {
           </Note>
         </Step>
 
-        <Step n="2" title="Prepare your token inputs">
-          <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
-            Hermes needs two inputs to author contracts: your CSS token values and your Figma variable exports.
+        <Step n="2" title="Convert tokens to bridge format">
+          <Cmd>npm run tokens</Cmd>
+          <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
+            Reads <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">src/app/globals.css</code> and converts every CSS custom property from OKLCH to hex + Figma RGBA, writing <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">.systemix/tokens.bridge.json</code>. This is the input Hermes reads when authoring contracts.
           </p>
-          <div className="space-y-3 mb-3">
-            {[
-              {
-                label: "globals.css",
-                desc: "Your CSS custom properties — Hermes reads the variable names and values directly.",
-              },
-              {
-                label: "Figma export",
-                desc: "Export your Figma variables as JSON or CSV with hex or HSL values. OKLCH is not supported — convert first if needed.",
-              },
-            ].map(({ label, desc }) => (
-              <div key={label} className="flex items-start gap-4 border border-border/40 rounded-xl px-4 py-3.5">
-                <code className="shrink-0 font-mono text-[12px] text-foreground/80 bg-muted/60 px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap">{label}</code>
-                <p className="text-[13px] text-muted-foreground leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
           <Note>
-            If you don&apos;t have a Figma export yet, Hermes will still author contracts — tokens without a Figma counterpart will be marked <code className="font-mono text-[11px]">missing-in-figma</code> and penalised in the quality score.
+            If you don&apos;t have a Figma sync yet, that&apos;s fine — tokens without a Figma counterpart will be marked <code className="font-mono text-[11px]">missing-in-figma</code> and penalised in the quality score until the sync runs.
           </Note>
         </Step>
 
-        <Step n="3" title="Author contracts">
+        <Step n="3" title="Generate contracts with Hermes">
+          <Cmd>npm run generate-contracts</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
-            Hermes reads your inputs via a prompt file and writes one MDX file per token to{" "}
-            <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract/tokens/</code>.
+            Walks the bridge file and calls Hermes to author one MDX file per token to{" "}
+            <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract/tokens/</code>. Falls back to placeholder prose if Ollama is not running — re-run after starting Ollama to fill it in.
           </p>
-          <p className="text-[12px] font-mono text-muted-foreground/60 mb-1.5">Each contract file looks like:</p>
+          <p className="text-[12px] font-mono text-muted-foreground/60 mb-1.5">Each generated contract looks like:</p>
           <pre className="bg-muted/20 border border-border/40 rounded-xl px-4 py-4 font-mono text-[12px] text-muted-foreground leading-relaxed overflow-x-auto mb-4">{`---
 token: color-primary
 value: oklch(0.45 0.18 250)
-figma-value: "#0063c4"
-status: drifted
+figma-value: null
+status: missing-in-figma
 resolved: false
-delta-e: 8.3
 collection: Semantic
-last-updated: 2026-04-26
+source: css
+last-updated: 2026-04-27
+last-resolver: null
 resolve-decision: null
-evidence-posthog: null
 ---
 
-The primary brand colour differs between code (oklch(0.45 0.18 250)) and
-Figma (#0063c4). ΔE 8.3 — clearly visible, not perceptually equivalent.
-
-A human decision is required: update code to match Figma, or lock the
-code value and update Figma to reflect it.`}</pre>
+The primary brand colour is defined in code as oklch(0.45 0.18 250).
+It has not yet been verified against a Figma variable. Until the Figma
+sync runs, this token carries missing-in-figma status.`}</pre>
           <p className="text-[13px] text-muted-foreground leading-relaxed">
             Component contracts go to{" "}
             <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract/components/</code>. Each file follows the same frontmatter + prose structure.
@@ -143,7 +126,7 @@ code value and update Figma to reflect it.`}</pre>
           <Cmd>npm run dev</Cmd>
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
             Open{" "}
-            <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/contract</code>{" "}
+            <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/design-system</code>{" "}
             in the browser. The MDX Indexer reads all contract files at build time and computes your quality score — the clean / drifted / unresolved split is shown at the top.
           </p>
           <Note>
@@ -153,8 +136,7 @@ code value and update Figma to reflect it.`}</pre>
 
         <Step n="5" title="Resolve drift">
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
-            Click any drifted token to go to{" "}
-            <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/contract/[slug]</code>. The detail view shows side-by-side colour swatches, the ΔE perceptual distance, and an inline resolve control.
+            Click any drifted token in <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/design-system</code> to go to its detail page. It shows side-by-side colour swatches, the ΔE perceptual distance, and an inline resolve control.
           </p>
           <div className="space-y-2 mb-4">
             {[

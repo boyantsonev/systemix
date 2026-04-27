@@ -1,14 +1,24 @@
 export default function ContractPage() {
-  const frontmatterFields = [
-    { field: "token / component", desc: "Canonical name of the token or component. Used as the slug." },
-    { field: "value",             desc: "The code-side value — from globals.css or the codebase." },
-    { field: "figma-value",       desc: "The Figma export value. Always hex or HSL — never OKLCH." },
+  const tokenFields = [
+    { field: "token",             desc: "CSS variable name without the -- prefix. Used as the slug for routing." },
+    { field: "value",             desc: "The CSS-side value — taken from globals.css." },
+    { field: "figma-value",       desc: "The Figma variable value as hex. Null until a Figma sync runs." },
     { field: "status",            desc: "clean · drifted · missing-in-figma" },
-    { field: "resolved",          desc: "Boolean. True once a human has made a decision." },
-    { field: "delta-e",           desc: "CIEDE2000 perceptual distance between code and Figma values. < 2.0 = imperceptible." },
-    { field: "resolve-decision",  desc: "code-wins or figma-wins — written by the resolve control." },
-    { field: "evidence-posthog",  desc: "30-day usage count from PostHog. Informs resolution decisions." },
-    { field: "last-updated",      desc: "ISO date of the last write — by Hermes or by the resolve API." },
+    { field: "resolved",          desc: "Boolean. True once a human has accepted a decision." },
+    { field: "collection",        desc: "Figma variable collection this token belongs to (Semantic, Status, Spacing & Radius)." },
+    { field: "source",            desc: "Always css for tokens generated from globals.css." },
+    { field: "last-updated",      desc: "ISO date of the last write — by generate-contracts or by the resolve API." },
+    { field: "last-resolver",     desc: "Who resolved: human email or hermes. Null if unresolved." },
+    { field: "resolve-decision",  desc: "code-wins or figma-wins — written by the inline resolve control." },
+  ];
+
+  const componentFields = [
+    { field: "component",           desc: "Component name. Used as the slug." },
+    { field: "parity",              desc: "clean · drifted · unknown" },
+    { field: "path",                desc: "Relative path to the component source file." },
+    { field: "figma-node",          desc: "Figma node URL for the corresponding component. Null if not mapped." },
+    { field: "evidence-storybook",  desc: "URL to the component's Storybook story. Null if not linked." },
+    { field: "last-updated",        desc: "ISO date of the last write." },
   ];
 
   return (
@@ -43,25 +53,36 @@ status: drifted
 resolved: false
 source: css
 collection: Semantic
-delta-e: 8.3
-last-updated: 2026-04-26
+last-updated: 2026-04-27
 last-resolver: null
 resolve-decision: null
-evidence-posthog: null
 ---
 
 The primary brand colour differs between code (oklch(0.45 0.18 250)) and
 Figma (#0063c4). ΔE 8.3 — clearly visible, not perceptually equivalent.
 
 This is an active drift requiring a human decision: either update the code
-to match Figma, or lock the code value and update Figma to reflect it.
-The 1px OKLCH shift affects all surfaces using the primary token.`}</pre>
+to match Figma, or lock the code value and update Figma to reflect it.`}</pre>
       </section>
 
       <section className="mb-10">
-        <h2 className="text-[1.15rem] font-bold tracking-tight mb-5">Frontmatter fields</h2>
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-5">Token frontmatter schema</h2>
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
-          {frontmatterFields.map(({ field, desc }) => (
+          {tokenFields.map(({ field, desc }) => (
+            <div key={field} className="flex items-start gap-4 px-4 py-4 bg-background border-b border-border/40 last:border-0">
+              <code className="shrink-0 font-mono text-[12px] text-foreground/80 bg-muted/60 px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap">
+                {field}
+              </code>
+              <p className="text-[13px] text-muted-foreground leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-5">Component frontmatter schema</h2>
+        <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
+          {componentFields.map(({ field, desc }) => (
             <div key={field} className="flex items-start gap-4 px-4 py-4 bg-background border-b border-border/40 last:border-0">
               <code className="shrink-0 font-mono text-[12px] text-foreground/80 bg-muted/60 px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap">
                 {field}
@@ -75,17 +96,17 @@ The 1px OKLCH shift affects all surfaces using the primary token.`}</pre>
       <section className="mb-10">
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Who writes it</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed mb-3">
-          Hermes (local Ollama, <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">hermes3</code> model) reads your CSS token values and Figma variable exports, then authors each MDX file — frontmatter and prose rationale. The MDX Indexer reads all contracts at build time, computes the quality score, and powers the <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">/contract</code> UI.
+          <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npm run generate-contracts</code> walks <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">.systemix/tokens.bridge.json</code> and calls Hermes (<code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">hermes3</code> via Ollama) to write each MDX file — frontmatter and prose rationale. If Ollama is not available it falls back to a placeholder body.
         </p>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          When you resolve a drift decision in the UI, the resolve API writes <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">resolved: true</code> and <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">resolve-decision</code> back to the frontmatter. The file is the source of truth — not a database.
+          When you resolve a drift decision in the UI, the resolve API (<code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">POST /api/contract/resolve</code>) writes <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">resolved: true</code> and <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">resolve-decision</code> back to the MDX frontmatter. The file is the source of truth — not a database.
         </p>
       </section>
 
       <section>
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Who reads it</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          Today: the MDX Indexer and the <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">/contract</code> UI. Next: the Systemix MCP server will expose contracts to agents via tool calls — so when an agent asks &quot;what is the primary colour?&quot; it gets a sourced, versioned, human-approved answer.
+          Today: the <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">/design-system</code> UI (quality score, drift triage, prose documentation). Next: the Systemix MCP server exposes contracts to agents via tool calls — so when an agent asks &quot;what is the primary colour?&quot; it gets a sourced, versioned, human-approved answer from the contract file, not from a hallucination.
         </p>
       </section>
     </article>

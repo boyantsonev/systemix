@@ -42,14 +42,9 @@ export default function QuickInstallPage() {
       <h1 className="text-[2rem] font-black tracking-tight leading-[1.15] mb-4">
         Quick Install
       </h1>
-      <p className="text-[16px] text-muted-foreground leading-relaxed mb-4">
-        The POC workflow — Hermes authors your contracts locally, the UI shows you the quality score and drift.
+      <p className="text-[16px] text-muted-foreground leading-relaxed mb-10">
+        Clone the repo, pull Hermes, run two scripts — you have a live quality score and inline drift triage in under 5 minutes.
       </p>
-      <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl px-4 py-3 mb-10">
-        <p className="text-[12px] font-mono text-amber-500/80">
-          No CLI yet — <code className="text-amber-400">npx systemix init</code> is on the roadmap. This is the direct workflow.
-        </p>
-      </div>
 
       <hr className="border-border/40 mb-10" />
 
@@ -59,8 +54,7 @@ export default function QuickInstallPage() {
           {[
             "Node 18 or later",
             "Ollama installed — ollama.com",
-            "A codebase with CSS custom properties in globals.css",
-            "Figma token values exported as hex or HSL (not OKLCH)",
+            "Git — to clone the repo",
           ].map((item) => (
             <li key={item} className="flex items-start gap-3 text-[14px] text-muted-foreground">
               <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-muted-foreground/40" />
@@ -74,43 +68,56 @@ export default function QuickInstallPage() {
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-6">Steps</h2>
 
         <div className="space-y-0">
-          <Step n="1" title="Pull the Hermes model">
+          <Step n="1" title="Clone and install">
+            <CodeBlock>git clone https://github.com/boyantsonev/systemix-poc && cd systemix-poc && npm install</CodeBlock>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              The repo is a Next.js app with npm workspaces. One install sets up the web app, the CLI package, and the MCP server.
+            </p>
+          </Step>
+
+          <Step n="2" title="Pull the Hermes model">
             <CodeBlock>ollama pull hermes3</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
-              Hermes is the local LLM that authors your MDX contract files. It runs entirely on your machine via Ollama at{" "}
+              Hermes is the local LLM that authors your MDX contract files. Runs entirely on your machine via Ollama at{" "}
               <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">localhost:11434</code> — no API key, no cloud.
             </p>
           </Step>
 
-          <Step n="2" title="Author contracts">
+          <Step n="3" title="Convert tokens, then generate contracts">
+            <CodeBlock>npm run tokens</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
-              Hermes reads your <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">globals.css</code> token values and your Figma variable exports, then writes one MDX file per token to <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract/tokens/</code>.
+              Reads <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">src/app/globals.css</code>, converts every CSS custom property from OKLCH to hex + Figma RGBA, and writes <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">.systemix/tokens.bridge.json</code>.
             </p>
-            <p className="text-[12px] font-mono text-muted-foreground/60 mb-1">Each contract file looks like:</p>
+            <CodeBlock>npm run generate-contracts</CodeBlock>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
+              Walks the bridge file and calls Hermes to author one MDX contract per token, written to <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">contract/tokens/</code>. If Ollama is not running, placeholder prose is written instead — you can run again later to fill it in.
+            </p>
+            <p className="text-[12px] font-mono text-muted-foreground/60 mb-1">Each generated contract looks like:</p>
             <OutputBlock>{`---
 token: color-primary
 value: oklch(0.45 0.18 250)
-figma-value: "#0063c4"
-status: drifted
+figma-value: null
+status: missing-in-figma
 resolved: false
-delta-e: 8.3
 collection: Semantic
-last-updated: 2026-04-26
+source: css
+last-updated: 2026-04-27
+last-resolver: null
+resolve-decision: null
 ---
 
-The primary brand colour differs between code (oklch) and Figma (#0063c4).
-ΔE 8.3 — clearly visible. Code and Figma are not perceptually equivalent.
-A human decision is required: update code to match Figma, or lock code and
-update Figma.`}</OutputBlock>
+The primary brand colour is defined in code as oklch(0.45 0.18 250) and
+has not yet been verified against a Figma variable. Until the Figma sync
+runs, this token carries missing-in-figma status.`}</OutputBlock>
           </Step>
 
-          <Step n="3" title="Inspect in the UI">
+          <Step n="4" title="Open the Design System">
             <CodeBlock>npm run dev</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">
-              Open <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/contract</code> in the browser. The quality score shows your clean / drifted / unresolved split.
+              Open <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/design-system</code> in the browser. The quality score shows your clean / drifted / unresolved split.
             </p>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
-              Click any token to see the side-by-side colour swatches, the ΔE value, and an inline resolve control — choose <strong className="text-foreground font-medium">code wins</strong> or <strong className="text-foreground font-medium">Figma wins</strong>. The decision is written back to the MDX frontmatter. The score updates on the next page load.
+              Click any token to see the side-by-side colour swatches, the ΔE value (when Figma data is present), and an inline resolve control — choose <strong className="text-foreground font-medium">code wins</strong> or <strong className="text-foreground font-medium">Figma wins</strong>. The decision is written back to the MDX frontmatter and the score updates.
             </p>
           </Step>
         </div>

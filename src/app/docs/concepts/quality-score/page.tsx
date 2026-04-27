@@ -69,7 +69,7 @@ export default function QualityScorePage() {
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">Improving your score</h2>
         <ul className="space-y-2">
           {[
-            "Open /contract and resolve drifted tokens — each resolved conflict removes the unresolved penalty",
+            "Open /design-system and resolve drifted tokens — each resolved conflict removes the unresolved penalty",
             "Click a token with ΔE > 2.0 and choose code-wins or figma-wins — the decision is written back to the MDX frontmatter",
             "Ensure your Figma token exports include all tokens defined in globals.css — gaps count as missing-in-figma",
           ].map((item) => (
