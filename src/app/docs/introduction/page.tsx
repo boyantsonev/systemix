@@ -21,7 +21,7 @@ export default function IntroductionPage() {
       </section>
 
       <section className="mb-10">
-        <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">One memory layer. Five use cases.</h2>
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-3">One evidence layer. Two ways teams use it.</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed mb-5">
           The contract is the constant. What changes is the problem it solves.
         </p>

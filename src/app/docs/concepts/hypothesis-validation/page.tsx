@@ -174,7 +174,7 @@ rationale: |
       <section className="mb-6">
         <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">See also</h2>
         <div className="flex flex-col gap-1.5 text-[13px] font-mono">
-          <a href="/docs/concepts/memory-layer" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ Memory Layer — how decisions persist across agents and sprints</a>
+          <a href="/docs/concepts/evidence-layer" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ Evidence Layer — how production results persist across agents and sprints</a>
           <a href="/docs/concepts/hermes" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ Hermes — the synthesis engine that reads the contract</a>
           <a href="/docs/concepts/hitl" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ HITL & Decision Queue — approving hypothesis cards</a>
         </div>
