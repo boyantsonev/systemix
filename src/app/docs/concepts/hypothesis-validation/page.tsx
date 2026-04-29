@@ -154,7 +154,7 @@ rationale: |
       <section className="mb-10">
         <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">Multi-agent orchestration</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed mb-4">
-          The hypothesis loop is designed to be composable. Growth agents surface the opportunity. Marketing and ad creative agents write the variants. Hermes synthesizes results against memory and generates the HITL card. The approval writes the decision back. Each agent reads the contract for context — and writes to it when the loop closes.
+          The hypothesis loop is designed to be composable. Growth agents surface the opportunity. Marketing and ad creative agents write the variants. Hermes synthesizes results against the contract evidence and generates the HITL card. The approval writes the decision back. Each agent reads the contract for context — and writes to it when the loop closes.
         </p>
         <div className="space-y-2">
           {[
