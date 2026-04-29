@@ -33,6 +33,7 @@ type QueueCard = {
   variantRate?: number;
   confidenceLevel?: number;
   sessions?: number;
+  proposal?: string;
 };
 
 // ── Card type config ──────────────────────────────────────────────────────────
@@ -146,13 +147,21 @@ function HypothesisCard({
           </div>
         )}
 
-        {/* Hermes proposal */}
-        <p className="text-[11px] text-muted-foreground/60 leading-relaxed pl-5 mb-3">
+        {/* Hermes synthesis */}
+        <p className="text-[11px] text-muted-foreground/60 leading-relaxed pl-5 mb-2.5">
           {card.context}
         </p>
 
+        {/* Proposed action */}
+        {card.proposal && (
+          <div className="pl-5 mb-3 rounded-lg border border-emerald-500/15 bg-emerald-500/5 px-3 py-2">
+            <p className="text-[9px] font-mono text-emerald-400/60 uppercase tracking-widest mb-1">Hermes recommends</p>
+            <p className="text-[11px] font-mono text-emerald-300/80 leading-relaxed">{card.proposal}</p>
+          </div>
+        )}
+
         {/* Actions */}
-        {isPending && (
+        {isPending ? (
           <div className="pl-5 flex items-center gap-1.5">
             <button
               onClick={() => onAction(card.id, "approved")}
@@ -173,7 +182,15 @@ function HypothesisCard({
               Discard
             </button>
           </div>
-        )}
+        ) : card.status === "approved" ? (
+          <p className="pl-5 text-[10px] font-mono text-emerald-400/50">
+            ✓ evidence written to contract
+          </p>
+        ) : card.status === "rejected" ? (
+          <p className="pl-5 text-[10px] font-mono text-muted-foreground/30">
+            rejection recorded — Hermes will not re-propose this direction
+          </p>
+        ) : null}
       </div>
     </div>
   );
