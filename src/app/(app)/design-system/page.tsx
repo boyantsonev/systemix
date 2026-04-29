@@ -147,7 +147,7 @@ export default function DesignSystemOverview() {
             href="/contract"
             className="shrink-0 text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground border border-border/30 px-2.5 py-1.5 rounded hover:border-border/60 transition-colors whitespace-nowrap"
           >
-            Contract memory →
+            Contract evidence →
           </Link>
         </div>
       </div>

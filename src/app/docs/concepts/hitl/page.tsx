@@ -66,7 +66,7 @@ export default function HitlPage() {
       <section className="mb-10">
         <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">What happens after approval</h2>
         <p className="text-[14px] text-muted-foreground leading-relaxed mb-4">
-          Every approval triggers a sequence — not just the action, but the memory write:
+          Every approval triggers a sequence — not just the action, but the evidence write:
         </p>
         <div className="space-y-2">
           {[
