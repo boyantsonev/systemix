@@ -119,8 +119,8 @@ export const mockProjects: Project[] = [
 ];
 
 export const mockActivity: ActivityEvent[] = [
-  { id: "0a", type: "hypothesis_validated", description: "Hypothesis: hero framing variant — 1,240 sessions, 87% conf", project: "Systemix Landing", ago: "2h ago" },
-  { id: "0b", type: "skill_run", description: "Hermes synthesis report generated — 2 experiments, 1 signal", project: "Systemix Landing", ago: "3h ago" },
+  { id: "0a", type: "hypothesis_validated", description: "Evidence Layer vs Memory Layer — variant B +47% CTA · 87% conf · 1,240 sessions", project: "Systemix Landing", ago: "2h ago" },
+  { id: "0b", type: "skill_run", description: "Hermes synthesized PostHog results — promote decision queued for HITL review", project: "Systemix Landing", ago: "3h ago" },
   { id: "1", type: "hitl_decision", description: "Approved: color.primary.500 — code wins", project: "Finova", ago: "32m ago", actor: "Boyan" },
   { id: "2", type: "contract_built", description: "Contract rebuilt — quality: 94 — 47 tokens", project: "Finova", ago: "34m ago" },
   { id: "3", type: "skill_run", description: "drift-triage — 3 conflicts classified", project: "Verdure", ago: "2h ago" },
