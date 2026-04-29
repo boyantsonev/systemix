@@ -113,9 +113,9 @@ export default function ContractPage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <div className="border-b border-border/50 px-4 md:px-8 py-5">
-        <h1 className="text-[1.1rem] font-black tracking-tight">Contract Memory</h1>
+        <h1 className="text-[1.1rem] font-black tracking-tight">Contract Evidence</h1>
         <p className="text-[12px] text-muted-foreground mt-0.5">
-          Institutional memory layer — rationale, PostHog evidence, and decision history for every token and component.
+          Evidence layer — production results, rationale, and decision history attached to every token and component.
         </p>
       </div>
 

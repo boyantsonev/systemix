@@ -17,7 +17,7 @@ export default function HitlPage() {
           Human-in-the-Loop is the gate between Hermes&apos;s analysis and a write to your codebase or Figma. Systemix doesn&apos;t auto-apply changes it&apos;s uncertain about. Instead it surfaces a card in the dashboard queue — with context, evidence, and a pre-filled recommendation — so a human can approve, reject, or modify in one click.
         </p>
         <p className="text-[14px] text-muted-foreground leading-relaxed">
-          The queue persists in <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">.systemix/queue.json</code>. Cards stay until resolved. Every resolution is written to the relevant contract MDX files as part of the memory layer.
+          The queue persists in <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">.systemix/queue.json</code>. Cards stay until resolved. Every resolution is written back into the relevant contract MDX file as evidence — alongside the value, the rationale, and any prior experiments.
         </p>
       </section>
 
@@ -43,7 +43,7 @@ export default function HitlPage() {
               type: "hypothesis",
               label: "Hypothesis validation",
               color: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-              body: "A PostHog experiment has enough data. Hermes synthesizes the result against contract memory and proposes an action. Options: promote the winning variant, run the test longer for more confidence, or reject the hypothesis.",
+              body: "A PostHog experiment has enough data. Hermes synthesizes the result against contract evidence and proposes an action. Options: promote the winning variant, run the test longer for more confidence, or reject the hypothesis.",
               example: "Hero headline A/B: variant B +47% CTR at 87% confidence — promote?",
             },
           ].map(({ type, label, color, body, example }) => (

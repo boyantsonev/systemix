@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SLogo } from "@/components/systemix/SLogo";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { NavCTAs, InstallCommand, SectionTrack } from "@/components/systemix/LandingEvents";
+
+export const metadata: Metadata = {
+  title: "Systemix — Every component is a guess until production proves it.",
+  description: "The evidence layer for design systems. Production results, attributed to the variant, written into your component contracts. Open source. MCP-native.",
+};
 
 // ── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -46,7 +52,7 @@ function LandingFooter() {
         <div className="flex items-center gap-2">
           <SLogo size={14} className="text-muted-foreground/40" />
           <span className="text-[12px] text-muted-foreground/40 font-mono">
-            The Memory Layer for managing design systems.
+            The Evidence Layer for design systems.
           </span>
         </div>
         <div className="flex items-center gap-4 text-[12px] text-muted-foreground/40 font-mono">
@@ -77,14 +83,14 @@ function Hero() {
     <section className="pt-24 pb-24">
       <div className="max-w-3xl mx-auto text-center">
         <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-6">
-          The Memory Layer for managing design systems
+          The Evidence Layer for design systems
         </p>
         <h1 className="text-[2.75rem] sm:text-[3.5rem] font-black tracking-tight leading-[1.1] mb-6">
-          Your design system<br />
-          <span className="text-muted-foreground">is lying to you.</span>
+          Every component is a guess<br />
+          <span className="text-muted-foreground">until production proves it.</span>
         </h1>
         <p className="text-[17px] text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
-          Token drift means your A/B test measured a variant nobody designed. Your platform migration starts from a Figma file nobody fully trusts. Systemix puts a verified contract between your design system and everything downstream — so the feedback loop is clean, and the baseline is real.
+          Your A/B test measured a variant nobody designed. Your agent shipped a token Figma deprecated last quarter. Systemix is the layer where every component carries its production evidence — so the next design decision is informed by what actually worked, not by what got documented.
         </p>
 
         <div className="flex justify-center">
@@ -92,7 +98,7 @@ function Hero() {
         </div>
 
         <p className="text-[12px] font-mono text-muted-foreground/40 mt-6 max-w-md mx-auto leading-relaxed">
-          When an agent asks &quot;what is <code className="text-muted-foreground/60">--color-primary</code>?&quot; — the contract answers. Not a hallucination.
+          When an agent asks &quot;what is <code className="text-muted-foreground/60">--color-primary</code>?&quot; — the contract answers with the value, the rationale, and the experiment that proved it.
         </p>
       </div>
     </section>
@@ -165,16 +171,16 @@ function WorksWith() {
 function Problem() {
   const pains = [
     {
-      label: "Figma drift",
-      body: "Variable collections and CSS tokens diverge without anyone noticing — quietly poisoning every prototype that ships.",
+      label: "Lost rationale",
+      body: "The variant that won in March is now a hex value with no story attached. Six months later the same dead-end gets proposed again, by a human or an agent.",
     },
     {
-      label: "Unreliable data",
-      body: "PostHog tells you the variant won. But if the token drifted before the test, you measured the wrong thing.",
+      label: "Stale context",
+      body: "Your agent reads the current token value but not the experiment that set it. It ships whichever color was in the file last — not the one production validated.",
     },
     {
-      label: "Unknown baseline",
-      body: "Years of software, a Figma file nobody fully trusts, hundreds of tokens with no clear owner. Before redesigning, you need to know what you actually have.",
+      label: "Blind baseline",
+      body: "PostHog says variant B won. But if the token drifted before the test, you measured a variant nobody designed. The result isn't wrong — it's about the wrong thing.",
     },
   ];
 
@@ -182,16 +188,14 @@ function Problem() {
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
-          Design systems drift.<br />Everything downstream suffers.
+          Storybook tells your agent what exists.<br />Nobody tells it what worked.
         </h2>
         <div className="text-[15px] text-muted-foreground leading-relaxed space-y-4 mb-14 max-w-2xl">
           <p>
-            Figma says <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">primary</code> is{" "}
-            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">#1a56db</code>. Your CSS says{" "}
-            <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded">oklch(0.45 0.18 250)</code>. Your agent ships whichever it saw last. Your test measures a variant nobody designed.
+            You can document a component. You can sync it across Figma and code. You can write a story for it. But you still can&apos;t answer the question that decides the next sprint: <em>did this design decision work?</em> The answer lives in PostHog, in someone&apos;s head, or in a Slack thread from March.
           </p>
           <p>
-            The problem isn&apos;t your team. Nothing formally owns the contract between your design system&apos;s sources of truth.
+            Systemix writes the answer back into the component&apos;s contract — measured in production, attributed to the variant, dated. The next agent reading it sees the evidence, not just the value.
           </p>
         </div>
 
@@ -216,7 +220,7 @@ function HowItWorks() {
           How it works
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          PostHog tells you what happened. Hermes reads the contract memory — past results, prior decisions, rationale — and tells you why and what to test next. Every decision is written back to the contract so the next hypothesis starts from known ground.
+          Every component on Systemix is a hypothesis. PostHog measures whether it worked. Hermes reads the result against the contract — past experiments, prior decisions, what&apos;s already been tried — and writes the evidence back as a structured line in the component&apos;s MDX file. The next agent, the next sprint, starts from that ground.
         </p>
 
         {/* Hypothesis validation loop */}
@@ -258,7 +262,7 @@ function HowItWorks() {
             <div className="rounded-lg bg-muted/30 border border-border/30 px-3 py-2.5 mb-4">
               <p className="text-[10px] font-mono text-amber-400/70 uppercase tracking-widest mb-1.5">Hermes synthesis</p>
               <p className="text-[12px] text-muted-foreground leading-relaxed">
-                Variant B shows significant uplift at 87% confidence. Contract memory: the provocative framing tested in March performed 23% below baseline on the same segment. Recommend promoting variant B and updating the contract rationale.
+                Variant B converted +47% at 87% confidence. Contract evidence: the provocative framing tested in March underperformed by 23% on the same segment. Recommend promoting B and writing the rationale into the contract before the next iteration.
               </p>
             </div>
 
@@ -269,17 +273,17 @@ function HowItWorks() {
               <button className="px-3 py-1.5 rounded border border-border/50 text-[11px] font-mono text-muted-foreground hover:text-foreground hover:border-border transition-colors">
                 Run longer
               </button>
-              <span className="text-[11px] font-mono text-muted-foreground/30 ml-2">— decision is written to the contract</span>
+              <span className="text-[11px] font-mono text-muted-foreground/30 ml-2">— evidence is written back to the contract</span>
             </div>
           </div>
 
-          {/* Memory trace */}
+          {/* Evidence trace */}
           <div className="px-4 py-3 flex items-center gap-3 opacity-50">
             <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-mono font-medium bg-blue-500/15 text-blue-400 border-blue-500/30">
-              remembered
+              evidence
             </span>
-            <span className="text-[12px] font-mono text-muted-foreground">Hero headline — contract updated 2026-04-27</span>
-            <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">next test will read this</span>
+            <span className="text-[12px] font-mono text-muted-foreground">Hero headline — contract carries 3 prior experiments + current decision</span>
+            <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">next agent will read this</span>
           </div>
         </div>
 
@@ -311,7 +315,7 @@ function HowItWorks() {
             <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground/40 mb-3 px-1">Output</p>
             <div className="px-3 py-2 rounded-lg border border-border/40 bg-muted/10">
               <p className="text-[12px] font-mono text-muted-foreground">contract/</p>
-              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">memory per token + decision</p>
+              <p className="text-[10px] font-mono text-muted-foreground/40 mt-0.5">evidence per token + decision</p>
             </div>
             <div className="px-3 py-2 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
               <p className="text-[12px] font-mono text-emerald-400">Score 83 / 100</p>
@@ -337,19 +341,19 @@ function SectionGlossary() {
       name: "Dashboard",
       href: "/dashboard",
       tag: "app",
-      desc: "Quality score overview across all your projects. Shows which projects have drifted tokens, pending decisions, and how connected each adapter is.",
+      desc: "One score per project. See which contracts have fresh production evidence, which have unresolved drift, and which are running blind. The Beta starting point.",
     },
     {
       name: "Design System",
       href: "/design-system",
       tag: "triage + docs",
-      desc: "Token and component parity in one place. See what drifted, compare code vs Figma values, make a resolution decision, and read the documentation Hermes authors as you go.",
+      desc: "Every token and component, with its contract open beside it. Evidence rows from PostHog, drift status, and the prose Hermes wrote — readable by humans and agents alike.",
     },
     {
       name: "Skills",
       href: "/docs/skills",
       tag: "commands",
-      desc: "Slash commands you run inside Claude Code, Cursor, or any MCP editor. /figma reads Figma. /tokens syncs variables. /component maps code to design. /storybook links stories.",
+      desc: "Slash commands inside Claude Code, Cursor, or any MCP editor. /component reads the contract before generating. /tokens syncs values. /evidence pulls the latest PostHog results into the contract.",
     },
   ];
 
@@ -360,7 +364,7 @@ function SectionGlossary() {
           What each part does
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          Four tools. One workflow.
+          Three surfaces. One contract underneath. The contract is where the evidence lives — everything else reads it or writes to it.
         </p>
         <div className="grid sm:grid-cols-2 gap-3">
           {tools.map(({ name, href, tag, desc }) => (
@@ -385,29 +389,14 @@ function SectionGlossary() {
 function TwoUseCases() {
   const cases = [
     {
-      audience: "Product teams",
-      headline: "Measure what you actually designed.",
-      body: "If a token drifted before your test ran, PostHog gave you an answer to the wrong question. Systemix keeps tokens in sync with Figma so every variant ships clean and the feedback loop runs on real data.",
+      audience: "Product teams shipping with Cursor or Claude Code",
+      headline: "Stop guessing what your agent will pick.",
+      body: "Your agent reads the contract before it ships. Every token, every component carries the value, the rationale, and the production result that justified it. No more rediscovering the same dead-end variant six months apart.",
     },
     {
-      audience: "Agencies",
-      headline: "Deliver on a verified baseline every sprint.",
-      body: "Client approves the Figma. You ship the code. Systemix proves they match — and writes the rationale so the next agency doesn't have to reverse-engineer your decisions.",
-    },
-    {
-      audience: "Legacy design systems",
-      headline: "Know what you have before you redesign.",
-      body: "Inherited a platform nobody documented? Systemix audits every token and component, surfaces drift with perceptual accuracy (ΔE), and gives you a quality score that rises as you resolve conflicts.",
-    },
-    {
-      audience: "AI-assisted builders",
-      headline: "Give your agents a memory.",
-      body: "When an agent asks what --color-primary is, it reads the contract — not a stale comment or a hallucinated value. Every resolved token becomes a fact the whole pipeline can trust.",
-    },
-    {
-      audience: "Consultancies",
-      headline: "Turn audits into a repeatable deliverable.",
-      body: "Run the pipeline on a client's repo. Export the contract. Hand over a structured audit with quality scores, drift findings, and Hermes-authored rationale — in hours, not weeks.",
+      audience: "Teams already running PostHog or Statsig",
+      headline: "Close the loop your analytics never closed.",
+      body: "PostHog tells you variant B won. Systemix writes that result into the component's contract — attributed to the variant, dated, with confidence. Your next experiment starts from known ground, not a fresh guess.",
     },
   ];
 
@@ -415,7 +404,7 @@ function TwoUseCases() {
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-4">
-          One memory layer · Five use cases
+          The evidence layer · Two ways teams use it
         </p>
         <h2 className="text-[1.75rem] font-black tracking-tight mb-12">
           Same contract. Different problem solved.
@@ -443,19 +432,19 @@ function TwoUseCases() {
 
 function QualityGate() {
   const tiers = [
-    { score: "≥ 80", state: "Clean",           dot: "bg-emerald-500", body: "Most contracts are resolved. The design system is trustworthy — for agents, for prototypes, and for stakeholder sign-off." },
-    { score: "≥ 60", state: "Needs attention", dot: "bg-amber-500",   body: "Unresolved drift exists. Prototypes may ship inconsistencies. Triage before relying on the contract." },
-    { score: "< 60", state: "Critical",        dot: "bg-red-400",     body: "Too many unresolved conflicts. The contract is not reliable. Resolve open drift before using in any workflow." },
+    { score: "≥ 80", state: "Evidence-ready",  dot: "bg-emerald-500", body: "Contract is backed. Tokens are resolved against Figma, drift is cleared, recent production evidence is attached. Safe for agents to read, safe for the next experiment to build on." },
+    { score: "≥ 60", state: "Partial evidence", dot: "bg-amber-500",   body: "Some claims are unbacked. Either drift is unresolved or production data is missing. Your agent will still read the contract — but the next decision is partly a guess." },
+    { score: "< 60", state: "Unbacked",         dot: "bg-red-400",     body: "Too many open questions. Tokens drift, no recent production data, or contradictions Hermes flagged. Don't ship from this contract until it's triaged." },
   ];
 
   return (
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
-          A quality score on every contract.
+          An evidence score on every contract.
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-12 max-w-xl">
-          Systemix calculates a 0–100 quality score from the ratio of clean tokens, unresolved drift, and missing Figma coverage. It&apos;s the single number that tells you whether the design system can be trusted downstream — for testing, for agents, for a platform migration.
+          Systemix scores every contract from 0 to 100. The score reflects how much of the component is backed by evidence: tokens resolved, drift cleared, production results attached. It&apos;s the single number that tells your agent — and your team — whether the contract is ready to be relied on.
         </p>
 
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40">
@@ -475,7 +464,7 @@ function QualityGate() {
         </div>
 
         <p className="text-[13px] text-muted-foreground leading-relaxed mt-6 max-w-xl">
-          The score rises as you resolve conflicts. It drops when Figma and code drift apart. Both use cases converge on the same target: ≥ 80.
+          The score rises as evidence accumulates. It drops when Figma drifts, when PostHog data goes stale, or when a decision is overridden without rationale. Target: ≥ 80 on every contract your agent reads.
         </p>
       </div>
     </section>
@@ -484,9 +473,9 @@ function QualityGate() {
 
 function BottomCTA() {
   const steps = [
-    { n: "1", label: "Run Hermes locally", cmd: "ollama pull hermes3", comment: "local LLM — no API key needed" },
-    { n: "2", label: "Start the UI",       cmd: "npm run dev",         comment: "open /design-system in the browser" },
-    { n: "3", label: "Resolve drift",      cmd: "",                    comment: "click any token → see ΔE → decide" },
+    { n: "1", label: "Run Hermes locally",        cmd: "ollama pull hermes3", comment: "local LLM — no API key, no design data leaving your machine" },
+    { n: "2", label: "Open the contract surface", cmd: "npm run dev",         comment: "/design-system in your browser — every contract, every score" },
+    { n: "3", label: "Pull evidence in",          cmd: "npx systemix watch",  comment: "continuous Hermes run — pulls PostHog evidence into every contract" },
   ];
 
   return (
@@ -496,7 +485,7 @@ function BottomCTA() {
           Run it locally.
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-10 max-w-xl">
-          Hermes authors contracts locally via Ollama — no API key, no cloud. The quality score and drift resolution live in the browser.
+          Hermes runs on Ollama — no API key, no cloud, no design data leaving your machine. PostHog stays where it already is. The contract lives in your repo. Systemix is the layer that ties them together.
         </p>
 
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40 mb-8">
@@ -515,7 +504,7 @@ function BottomCTA() {
         </div>
 
         <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-xl">
-          Each token gets a contract file: code value, Figma value, perceptual distance, and a rationale written by Hermes. You approve or override. The score rises.
+          Every component gets a DESIGN.md-shaped contract: tokens, components, rationale, and a Production Evidence section Hermes writes from your PostHog events. You approve. The score rises. The next agent reads forward.
         </p>
 
         <Link

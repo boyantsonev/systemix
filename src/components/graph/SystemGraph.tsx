@@ -161,7 +161,7 @@ const BASE_NODES: Node<GraphNodeData>[] = [
   mkNode("hermes",          830, 255, "Hermes",           "agent",    "md", "Ollama / local"),
   mkNode("mdx-indexer",     720, 390, "MDX Indexer",      "infra",    "sm"),
   mkNode("quality",         790, 480, "Quality Score",    "concept",  "sm"),
-  mkNode("hitl",            890, 540, "Drift Room",       "concept",  "sm", "HITL"),
+  mkNode("hitl",            890, 540, "Decision Queue",   "concept",  "sm", "HITL"),
   mkNode("contract-ui",     800, 610, "/contract UI",     "concept",  "sm"),
 
   // ── Tools ──
@@ -216,6 +216,7 @@ const BASE_EDGES: Edge[] = [
   mkEdge("quality-hitl",        "quality",       "hitl",          { stroke: "#475569", strokeDasharray: "3 3" }),
   mkEdge("contract-contractui", "contract",      "contract-ui",   { stroke: "#475569", strokeDasharray: "3 3" }),
   mkEdge("posthog-contract",    "posthog",       "contract",      { stroke: "#0891b2", strokeDasharray: "4 2", opacity: 0.35 }),
+  mkEdge("hitl-contract",       "hitl",          "contract",      { stroke: "#0891b2", strokeWidth: 1.5, strokeDasharray: "3 3" }, true),
 
   mkEdge("hermes-claude",       "hermes",        "claude-code",   { stroke: "#0891b2", strokeWidth: 1.5 }),
   mkEdge("hermes-cursor",       "hermes",        "cursor",        { stroke: "#0891b2", strokeWidth: 1.5 }),
@@ -319,10 +320,10 @@ const NODE_META: Record<string, NodeMeta> = {
     docHrefs: [{ label: "Skills library →", href: "/docs/skills" }],
   },
   "hermes": {
-    desc: "Local LLM running via Ollama (hermes3 model, http://localhost:11434). Invoked by prompt files to author MDX contracts — it reads source data (token values, usage counts, screenshot paths) and writes the frontmatter + rationale prose back to contract/tokens/ and contract/components/.",
+    desc: "Local LLM running via Ollama (hermes3, localhost:11434). Authors MDX contracts when CSS or Figma changes. Polls PostHog for experiment results and synthesizes them against contract evidence — past experiments, prior decisions, what was already tried — then writes a hypothesis-validation card to the Decision Queue or directly to the contract when confidence is high.",
     docHrefs: [
-      { label: "Introduction →", href: "/docs/introduction" },
-      { label: "Skills library →", href: "/docs/skills" },
+      { label: "Hermes →", href: "/docs/concepts/hermes" },
+      { label: "Evidence Layer →", href: "/docs/concepts/evidence-layer" },
     ],
   },
   "quality": {
@@ -330,8 +331,8 @@ const NODE_META: Record<string, NodeMeta> = {
     docHrefs: [{ label: "Quality Score →", href: "/docs/concepts/quality-score" }],
   },
   "hitl": {
-    desc: "Human-in-the-loop checkpoint. Agent pauses here when a decision — token conflict, deploy approval — requires human review. Implemented via .pending.json sidecar files; CLI presents a Y/N prompt; HITL_AUTO_APPROVE=1 for CI.",
-    docHrefs: [{ label: "Drift & Reconciliation →", href: "/docs/concepts/drift" }],
+    desc: "Decision Queue — three card types surfaced by Hermes: drift-resolution (CSS vs Figma divergence), instrumentation-approval (PostHog capture calls), hypothesis-validation (experiment result → promote / run longer / discard). Every approved decision is written back into the relevant contract as evidence.",
+    docHrefs: [{ label: "HITL & Decision Queue →", href: "/docs/concepts/hitl" }],
   },
   "mdx-indexer": {
     desc: "Reads all MDX contract files at build time, parses YAML frontmatter, and computes the quality score via CIEDE2000 perceptual distance (culori). Classifies token drift as imperceptible (ΔE < 2) vs. real. Powers the /contract UI and the dashboard quality metric.",
@@ -350,8 +351,8 @@ const NODE_META: Record<string, NodeMeta> = {
     docHrefs: [{ label: "Quick Install →", href: "/docs/quick-install" }],
   },
   "posthog": {
-    desc: "Product analytics — three event streams: /deploy sends a release annotation (timestamp + quality score at ship time); /drift-report sends the quality score metric for trending; Hermes sends operational skill-run events (counts, durations).",
-    docHrefs: [{ label: "Architecture →", href: "/graph" }],
+    desc: "Production evidence source. Hermes polls PostHog experiment results and synthesizes them against the contract — prior decisions, what was already tried, baseline rates. Winning variants get written back into the contract MDX as a dated evidence record. /deploy also sends quality score annotations at ship time.",
+    docHrefs: [{ label: "Evidence Layer →", href: "/docs/concepts/evidence-layer" }],
   },
 };
 

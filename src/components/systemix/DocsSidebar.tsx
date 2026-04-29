@@ -18,7 +18,7 @@ const NAV: { section: string; items: { label: string; href: string; external?: b
   {
     section: "Concepts",
     items: [
-      { label: "Memory Layer",             href: "/docs/concepts/memory-layer"           },
+      { label: "Evidence Layer",           href: "/docs/concepts/evidence-layer"         },
       { label: "Hypothesis Validation",    href: "/docs/concepts/hypothesis-validation"  },
       { label: "Hermes",                   href: "/docs/concepts/hermes"                 },
       { label: "HITL & Decision Queue",    href: "/docs/concepts/hitl"                   },

@@ -35,7 +35,7 @@ export default function HermesPage() {
             },
             {
               label: "Hypothesis validation cards",
-              body: "When PostHog experiment results are available, Hermes synthesizes the result against the contract memory and writes a HITL card to the queue — including its recommended action and the reasoning chain.",
+              body: "When PostHog experiment results are available, Hermes synthesizes the result against the contract evidence and writes a HITL card to the queue — including its recommended action and the reasoning chain.",
             },
             {
               label: "Drift rationale",
@@ -88,7 +88,7 @@ npm run generate-contracts -- --no-hermes`}</pre>
       <section className="mb-6">
         <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">See also</h2>
         <div className="flex flex-col gap-1.5 text-[13px] font-mono">
-          <a href="/docs/concepts/memory-layer" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ The Memory Layer — what Hermes writes into</a>
+          <a href="/docs/concepts/evidence-layer" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ The Evidence Layer — what Hermes writes into</a>
           <a href="/docs/concepts/hitl" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ HITL & Decision Queue — Hermes-generated cards</a>
           <a href="/docs/architecture" className="text-muted-foreground/60 hover:text-muted-foreground transition-colors">→ Architecture — how Hermes connects to everything</a>
         </div>
