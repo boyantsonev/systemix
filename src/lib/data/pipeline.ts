@@ -746,9 +746,364 @@ export const agentDefinitions: AgentDefinition[] = [
   },
 ];
 
-// ── Skills from the Figma × Storybook × Claude pipeline (6 core skills) ──────
+// ── Skills library ────────────────────────────────────────────────────────────
+// Groups: the-loop | design-system | deploy | utilities
 
 export const pipelineSkills: Skill[] = [
+  // ── The loop ──────────────────────────────────────────────────────────────
+  {
+    command: "/hypothesis",
+    name: "Create Hypothesis",
+    description: "Define what you're testing. Creates an MDX contract with the metric, baseline, variants, and prose rationale. Step 1 of the loop.",
+    file: "~/.claude/skills/hypothesis/SKILL.md",
+    triggersAgent: "Hermes",
+    category: "pipeline",
+    group: "the-loop",
+    mcp: { required: [] },
+    promptContent: `---
+description: Define a hypothesis. Creates an MDX contract file for what you're testing.
+argument-hint: [experiment-name] [optional: component or page]
+---
+
+# /hypothesis — Define a Hypothesis
+
+Creates (or updates) an MDX contract for an experiment. The contract is the single source of truth for what you're testing, what Hermes reads when evidence arrives, and what agents reference before making decisions.
+
+## Usage
+\`\`\`
+/hypothesis hero-cta
+/hypothesis checkout-button "Does the green button outperform the grey one on CTR?"
+\`\`\`
+
+## Steps
+
+1. **Parse arguments from $ARGUMENTS**:
+   - Experiment name (slug) — used as the contract filename
+   - Optional: hypothesis statement in quotes
+
+2. **Check if a contract already exists** at \`contract/experiments/[name].mdx\`. If it does, read it and show the current state before asking what to update.
+
+3. **Ask the user if not provided**:
+   - What component or page is this experiment on?
+   - What is the hypothesis? ("We believe [X] will achieve [metric] because [rationale]")
+   - What metric are you tracking? (CTR, conversion, scroll depth, etc.)
+   - What is the current baseline value?
+   - What are the variants? (control / variant-b, etc.)
+
+4. **Write the MDX contract**:
+
+\`\`\`mdx
+---
+component: [component-or-page]
+status: draft
+metric: [metric-name]
+baseline-rate: [value]
+variants: [control, variant-b]
+posthog-event: [event-name]
+figma-node: [if provided]
+last-updated: [today]
+---
+
+## [Experiment Name]
+
+[Hypothesis statement in prose]
+
+### What we're testing
+
+[Description of the variants and what differs between them]
+
+### Metric
+
+[Metric name] — current baseline: [value]
+
+### Evidence
+
+*No evidence yet. Run \`/measure\` to add instrumentation, then \`/experiment\` to set up the A/B test.*
+\`\`\`
+
+5. **Report**:
+   - Contract written at: \`contract/experiments/[name].mdx\`
+   - Next step: run \`/measure [component]\` to add PostHog instrumentation
+
+## Notes
+- Contracts live in \`contract/experiments/\` by default
+- The frontmatter is machine-readable — Hermes and the MCP server read it
+- The prose body is human-readable — write it so a future agent understands what was tested and why`,
+  },
+  {
+    command: "/measure",
+    name: "Add Instrumentation",
+    description: "Instrument a component with PostHog capture calls. Reads the contract for what to measure. Shows the diff before writing. Step 2 of the loop.",
+    file: "~/.claude/skills/measure/SKILL.md",
+    triggersAgent: "Hermes",
+    category: "pipeline",
+    group: "the-loop",
+    mcp: { required: [], optional: ["posthog-mcp"] },
+    promptContent: `---
+description: Add PostHog instrumentation to a component. Reads the experiment contract for what to measure.
+argument-hint: [component-name-or-path] [optional: event-name]
+---
+
+# /measure — Add Instrumentation
+
+Instruments a component to capture the signals your hypothesis needs. Reads the experiment contract to understand what to track, proposes the capture calls, and writes only after approval.
+
+## Usage
+\`\`\`
+/measure HeroCTA
+/measure src/components/HeroCTA.tsx button_click
+\`\`\`
+
+## Steps
+
+1. **Resolve the component** from $ARGUMENTS. If not found, ask the user.
+
+2. **Read the experiment contract**: Check \`contract/experiments/\` for a contract that references this component. Read the \`posthog-event\` and \`metric\` fields.
+
+3. **Read the component**: Understand its structure, existing events, and interaction points.
+
+4. **Propose instrumentation** based on the hypothesis metric:
+   - CTR/click metrics → click handler on the primary action
+   - Scroll depth → intersection observer
+   - Conversion → form submission or route change
+
+5. **Show the diff before writing**:
+   \`\`\`tsx
+   + import { usePostHog } from 'posthog-js/react';
+   + const posthog = usePostHog();
+
+   + posthog.capture('button_click', {
+   +   variant: featureFlag ?? 'control',
+   +   component: 'HeroCTA',
+   + });
+   \`\`\`
+
+6. **HITL gate**: Ask for confirmation before writing.
+
+7. **Update the contract frontmatter**:
+   \`\`\`yaml
+   posthog-instrumented: true
+   posthog-event: [event-name]
+   instrumented-at: [today]
+   \`\`\`
+
+8. **Report**: Files changed, event name, properties captured, contract updated.
+
+## Notes
+- Uses \`posthog-js/react\` (\`usePostHog()\` hook). Adapt to the project's PostHog setup.
+- Always add a \`variant\` property so A/B results can be segmented in PostHog.
+- The event name in the contract must match exactly what PostHog receives.`,
+  },
+  {
+    command: "/experiment",
+    name: "Set Up A/B Test",
+    description: "Wire a PostHog feature flag into the component to serve the variant. Updates the contract with experiment configuration. Step 3 of the loop.",
+    file: "~/.claude/skills/experiment/SKILL.md",
+    triggersAgent: "Hermes",
+    category: "pipeline",
+    group: "the-loop",
+    mcp: { required: [], optional: ["posthog-mcp"] },
+    promptContent: `---
+description: Wire a PostHog feature flag into a component to serve A/B variants.
+argument-hint: [experiment-name] [optional: component-name]
+---
+
+# /experiment — Set Up A/B Test
+
+Wires a PostHog feature flag into a component to serve the experiment variant. Updates the contract with the experiment configuration.
+
+## Usage
+\`\`\`
+/experiment hero-cta
+/experiment hero-cta HeroCTA
+\`\`\`
+
+## Steps
+
+1. **Read the experiment contract** from \`contract/experiments/[name].mdx\`.
+
+2. **Confirm the variants**: Show the variants from the contract. Ask if any changes before proceeding.
+
+3. **Generate the feature flag usage**:
+   \`\`\`tsx
+   const flags = useFeatureFlagPayload('[experiment-name]');
+   const variant = flags?.variant ?? 'control';
+   \`\`\`
+
+4. **Wire the variant into the component**:
+   \`\`\`tsx
+   {variant === 'variant-b' ? (
+     <Button>Start the loop</Button>
+   ) : (
+     <Button>Get started</Button>
+   )}
+   \`\`\`
+
+5. **Show the PostHog flag definition to create in the PostHog dashboard**:
+   - Flag key: \`[experiment-name]\`
+   - Rollout: 50% / 50%
+   - Variants: control, variant-b
+
+6. **HITL gate**: Show all proposed changes before writing.
+
+7. **Update the contract**:
+   \`\`\`yaml
+   posthog-flag: [experiment-name]
+   experiment-started: [today]
+   status: running
+   \`\`\`
+
+8. **Report**: Component updated, flag key to create in PostHog, contract status → \`running\`.
+
+## Notes
+- You must create the feature flag in PostHog manually — Systemix reads results but does not manage flag creation.
+- Once the flag is live, run \`/evidence [name]\` to start pulling results.
+- The flag key must match the contract slug exactly.`,
+  },
+  {
+    command: "/evidence",
+    name: "Pull Evidence",
+    description: "Pull PostHog experiment results and write the outcome back into the MDX contract. Queues a HITL card. Step 4 of the loop.",
+    file: "~/.claude/skills/evidence/SKILL.md",
+    triggersAgent: "Hermes",
+    category: "pipeline",
+    group: "the-loop",
+    mcp: { required: [], optional: ["posthog-mcp"] },
+    promptContent: `---
+description: Pull PostHog experiment results and write the outcome into the MDX contract.
+argument-hint: [experiment-name]
+---
+
+# /evidence — Pull Experiment Evidence
+
+Reads PostHog experiment results and writes the outcome back into the MDX contract frontmatter. Queues a HITL card for Hermes to synthesize.
+
+## Usage
+\`\`\`
+/evidence hero-cta
+/evidence hero-cta --sessions 1200 --control 3.2% --variant 4.7% --confidence 0.87
+\`\`\`
+
+## Steps
+
+1. **Read the experiment contract** from \`contract/experiments/[name].mdx\`.
+
+2. **Collect evidence** — two modes:
+   a. **Manual input**: Use \`--sessions\`, \`--control\`, \`--variant\`, \`--confidence\` if provided.
+   b. **PostHog API**: If \`POSTHOG_API_KEY\` is available, fetch experiment results for the flag key in the contract.
+
+3. **Validate significance**: Flag if confidence < 0.80. Don't block — just note.
+
+4. **Write evidence back into the contract frontmatter**:
+   \`\`\`yaml
+   last-experiment: [name]
+   last-result: variant-b-wins  # or: no-winner, control-wins, insufficient-data
+   confidence: 0.87
+   sessions: 1240
+   baseline-rate: 0.032
+   variant-rate: 0.047
+   evidence-date: [today]
+   status: evidence-ready
+   \`\`\`
+
+5. **Write the evidence section in prose**:
+   \`\`\`
+   ### Evidence — [date]
+
+   Variant B outperformed control by +47% CTR at 87% confidence
+   across 1,240 sessions. Consistent across all scroll depths.
+   \`\`\`
+
+6. **Queue a HITL card**: Add an entry to \`.systemix/queue.json\` for Hermes synthesis.
+
+7. **Report**: Contract updated, HITL card queued. Next: run \`/hermes [name]\` or check the Dashboard → Queue.
+
+## Notes
+- The prose evidence section is what Hermes reads before synthesizing. Write it clearly.
+- If confidence is below threshold, status stays \`running\` — run the experiment longer.
+- Run \`/hermes [name]\` after this to trigger Hermes synthesis.`,
+  },
+  {
+    command: "/hermes",
+    name: "Run Hermes",
+    description: "Trigger Hermes (local Ollama LLM) to synthesize contract evidence and write a decision recommendation to the HITL queue. Step 5 of the loop.",
+    file: "~/.claude/skills/hermes/SKILL.md",
+    triggersAgent: "Hermes",
+    category: "pipeline",
+    group: "the-loop",
+    mcp: { required: ["ollama"] },
+    promptContent: `---
+description: Trigger Hermes to synthesize evidence from a contract and queue a HITL decision.
+argument-hint: [experiment-name or "all"]
+---
+
+# /hermes — Run Hermes Synthesis
+
+Triggers Hermes (local Ollama LLM) to read an experiment contract, synthesize the evidence against prior decisions, and write a recommendation to the HITL queue.
+
+## Usage
+\`\`\`
+/hermes hero-cta
+/hermes all   # synthesize all contracts with status: evidence-ready
+\`\`\`
+
+## Steps
+
+1. **Resolve the target contract(s)**:
+   - Named experiment: read \`contract/experiments/[name].mdx\`
+   - \`all\`: find all contracts with \`status: evidence-ready\`
+
+2. **Check Ollama is running**:
+   \`\`\`bash
+   curl -s http://localhost:11434/api/tags
+   \`\`\`
+   If not: show setup instructions and stop.
+
+3. **Build the Hermes prompt** — include:
+   - Full contract frontmatter + prose body
+   - Evidence section (baseline, variant, confidence, sessions)
+   - Prior experiment history (any previous Evidence sections)
+   - The hypothesis and what was tested
+
+4. **Run Hermes via Ollama API**:
+   \`\`\`bash
+   curl http://localhost:11434/api/generate -d '{
+     "model": "hermes3",
+     "prompt": "[built prompt]",
+     "stream": false
+   }'
+   \`\`\`
+
+5. **Parse Hermes output**:
+   - Decision: \`promote-variant\` / \`run-longer\` / \`reject\`
+   - Rationale (1-3 sentences)
+   - Confidence: high / medium / low
+
+6. **Write back to the contract**:
+   \`\`\`yaml
+   hermes-decision: promote-variant
+   hermes-confidence: high
+   hermes-at: [today]
+   status: awaiting-hitl
+   \`\`\`
+   And append to the prose:
+   \`\`\`
+   ### Hermes Synthesis — [date]
+
+   [Hermes rationale prose]
+   \`\`\`
+
+7. **Queue the HITL card**: Write to \`.systemix/queue.json\`.
+
+8. **Report**: Synthesis written, HITL card queued. Check Dashboard → Queue to approve.
+
+## Notes
+- Requires Ollama at \`localhost:11434\`. Any Ollama-compatible model works — \`hermes3\` is the default.
+- Install: \`brew install ollama && ollama pull hermes3\`
+- Hermes reads the full contract history to avoid re-proposing directions already rejected.
+- After synthesis, approve or reject from the HITL queue at /queue.`,
+  },
+  // ── Design system ──────────────────────────────────────────────────────────
   {
     command: "/figma",
     name: "Extract from Figma",
@@ -756,7 +1111,7 @@ export const pipelineSkills: Skill[] = [
     file: "~/.claude/skills/figma/SKILL.md",
     triggersAgent: "Ada",
     category: "pipeline",
-    group: "sync-loop",
+    group: "design-system",
     mcp: { required: ["figma-mcp"] },
     promptContent: `---
 description: Extract design context from a Figma URL using Official Figma REST MCP
@@ -792,7 +1147,7 @@ Run this first. Shows exactly what Claude sees before generating anything.
     file: "~/.claude/skills/tokens/SKILL.md",
     triggersAgent: "Flux",
     category: "pipeline",
-    group: "sync-loop",
+    group: "design-system",
     mcp: { required: ["figma-mcp"] },
     promptContent: `---
 description: Sync Figma design tokens to CSS custom properties
@@ -829,7 +1184,7 @@ description: Sync Figma design tokens to CSS custom properties
     file: "~/.claude/skills/component/SKILL.md",
     triggersAgent: "Ada",
     category: "pipeline",
-    group: "output",
+    group: "design-system",
     mcp: { required: ["figma-mcp"] },
     promptContent: `---
 description: Generate a React TypeScript component + Storybook story from a Figma URL
@@ -867,7 +1222,7 @@ description: Generate a React TypeScript component + Storybook story from a Figm
     file: "~/.claude/skills/storybook/SKILL.md",
     triggersAgent: "Sage",
     category: "pipeline",
-    group: "quality",
+    group: "deploy",
     mcp: { required: ["storybook-mcp"] },
     promptContent: `---
 description: Read, verify, and update Storybook stories. Compares screenshots against the Figma spec and reports drift.
@@ -924,7 +1279,7 @@ Storybook operation for: $ARGUMENTS
     file: "~/.claude/skills/deploy/SKILL.md",
     triggersAgent: "Ship",
     category: "pipeline",
-    group: "output",
+    group: "deploy",
     mcp: { required: ["vercel-mcp"], optional: ["posthog-mcp"] },
     promptContent: `---
 description: Build and deploy the project to Vercel, then post the preview URL as a comment on the relevant Figma node.
@@ -986,7 +1341,7 @@ description: Build and deploy the project to Vercel, then post the preview URL a
     file: "~/.claude/skills/sync-to-figma/SKILL.md",
     triggersAgent: "Flux",
     category: "tools",
-    group: "sync-loop",
+    group: "utilities",
     mcp: { required: ["figma-console-mcp"] },
     promptContent: `---
 description: Push CSS custom property values from the codebase back to Figma variables. Reverse of /tokens. Use when you've made code-side token changes that should be reflected in Figma.
@@ -1023,53 +1378,6 @@ Run this after you've intentionally changed token values in \`globals.css\` and 
 
 - Variables are updated only, never created. If a CSS variable has no matching Figma variable, it is flagged but not auto-created.
 - The \`figma-writer\` agent will always ask for confirmation before writing to Figma.`,
-  },
-  {
-    command: "/figma-push",
-    name: "Push to Figma",
-    description: "Screenshot a localhost (or any) URL and push the image onto a Figma canvas frame. Uses figma-console-mcp to place the image as a fill.",
-    file: "~/.claude/skills/figma-push/SKILL.md",
-    triggersAgent: "Ada",
-    category: "tools",
-    group: "utilities",
-    mcp: { required: ["figma-console-mcp"] },
-    promptContent: `---
-description: Screenshot a localhost (or any) URL and push the image onto a Figma canvas frame. Uses figma-console-mcp to place the image as a fill.
-argument-hint: [localhost-url] [figma-url]
----
-
-Push a screenshot of $ARGUMENTS onto a Figma canvas.
-
-## Steps
-
-1. **Parse arguments** from $ARGUMENTS:
-   - First URL = source page to screenshot (e.g. \`http://localhost:3000\`)
-   - Second URL = target Figma file/frame (e.g. \`https://figma.com/design/...?node-id=...\`)
-   - If either is missing, ask the user before proceeding
-
-2. **Parse the Figma URL**:
-   - Extract \`fileKey\` from the URL path
-   - Extract \`nodeId\` from \`node-id\` query param — convert \`-\` to \`:\`
-   - If no \`node-id\`, you will create a new frame on the current page
-
-3. **Screenshot the source URL**:
-   - Use \`mcp__claude_ai_Figma_Console__figma_capture_screenshot\` if available
-   - Otherwise use the \`WebFetch\` tool to load the page and describe what you see, then ask the user to provide a screenshot path
-
-4. **Push to Figma**:
-   - If a target \`nodeId\` was provided: use \`mcp__claude_ai_Figma_Console__figma_set_image_fill\` to set the image as a fill on that frame
-   - If no nodeId: use \`mcp__claude_ai_Figma_Console__figma_create_child\` to create a new frame, then \`figma_set_image_fill\` on it
-   - Set a meaningful name on the frame: the page title or URL hostname + timestamp
-
-5. **Report**:
-   - Figma file: [fileKey]
-   - Frame: [node name] ([nodeId])
-   - Image placed successfully / error details
-
-## Notes
-- Figma Desktop must be open with the target file for write operations via the desktop bridge
-- The frame will be created at the top-left of the current page if no target node is specified
-- For localhost URLs, the Figma Desktop bridge (port 3845) must be running`,
   },
   {
     command: "/figma-inspect",
@@ -1141,7 +1449,7 @@ Type: [FRAME | COMPONENT | INSTANCE | TEXT | ...]
     file: "~/.claude/skills/sync/SKILL.md",
     triggersAgent: "Flux",
     category: "tools",
-    group: "sync-loop",
+    group: "design-system",
     mcp: { required: ["figma-mcp", "figma-console-mcp"] },
     promptContent: `---
 description: Orchestrate the full design↔code sync loop — one command to pull tokens, convert, push Variables, and report drift
@@ -1184,126 +1492,13 @@ Sync complete — 2026-03-28T12:00:00Z
 - Drift check is a fast static scan only — run \`/drift-report\` for a full audit`,
   },
   {
-    command: "/design-to-code",
-    name: "Full Workflow",
-    description: "Full bidirectional Figma-to-deployed-code workflow — parity check, token sync, component generation, code connect linking, build, deploy, and Figma annotation.",
-    file: "~/.claude/skills/design-to-code/SKILL.md",
-    triggersAgent: "Ada",
-    category: "tools",
-    group: "sync-loop",
-    mcp: { required: ["figma-mcp", "figma-console-mcp"] },
-    promptContent: `---
-description: Full bidirectional Figma-to-deployed-code workflow — parity check, token sync, component generation, code connect linking, build, deploy, and Figma annotation.
-disable-model-invocation: true
-argument-hint: [figma-url] [--skip-deploy?] [--skip-figma?]
----
-
-# Full Design-to-Code Workflow
-
-Convert Figma design to deployed code: $ARGUMENTS
-
-## Workflow Steps
-
-### 1. Parity Check (non-blocking)
-
-Spawn \`parity-checker\` agent with the Figma URL.
-
-Show the drift report to the user. This is informational — do not stop the workflow based on findings. User will decide if they want to address drift separately.
-
-Note: skip this step if \`--skip-parity\` is passed.
-
-### 2. Sync Tokens
-
-Use the \`/tokens\` skill workflow:
-- Extract variables from the Figma file via \`mcp__claude_ai_Figma__get_variable_defs\`
-- Compare with existing \`globals.css\`
-- Update CSS custom properties if new or changed values found
-- Report: X tokens added, Y updated, Z unchanged
-
-### 3. Extract Design Context
-
-Use the \`/figma\` skill workflow:
-- Get design context from \`mcp__claude_ai_Figma__get_design_context\`
-- Capture screenshot via \`mcp__claude_ai_Figma__get_screenshot\`
-- Identify component structure and name
-
-### 4. Generate Component
-
-Use the \`/component\` skill workflow:
-- Create hi-fi React component (TypeScript)
-- Follow design system conventions from \`/design-system\`
-- Place in \`src/components/\`
-- Update \`page.tsx\` imports if needed
-
-**HITL gate:** Show the generated component file. Ask "Looks good? Proceed to build? (y/N)". Stop if user says no.
-
-### 5. Link to Figma (Code Connect)
-
-After component is written, spawn \`code-connect\` agent for the new component only:
-- Match the new component file to the Figma node that was just implemented
-- The agent will use the nodeId from the Figma URL as the primary match target
-- Skip full codebase scan — just link this one component
-- Shows HITL gate inside the agent before sending to Figma
-
-### 6. Verify Build
-
-\`\`\`bash
-npm run build
-\`\`\`
-
-Stop and fix if build fails. Do not proceed to deploy with a broken build.
-
-### 7. Commit Changes
-
-\`\`\`bash
-git add src/components/[ComponentName].tsx
-git add src/app/globals.css
-git add .claude/project-context.json
-git commit -m "Add [ComponentName] from Figma design [nodeId]"
-\`\`\`
-
-Skip if \`--no-commit\` is passed.
-
-### 8. Deploy Preview
-
-Unless \`--skip-deploy\` is specified:
-- Run \`npx vercel\` for preview deployment
-- Capture the preview URL
-
-### 9. Post to Figma
-
-Unless \`--skip-figma\` is specified:
-- Spawn \`deploy-feedback\` agent with the Vercel URL and the original Figma node URL
-- Agent will compose and post a comment with the preview URL
-- HITL gate inside the agent before posting
-
-## Options
-
-- \`--skip-deploy\` — Stop after commit, skip deploy and Figma annotation
-- \`--skip-figma\` — Deploy but don't post to Figma
-- \`--skip-parity\` — Skip the initial parity check
-- \`--tokens-only\` — Only sync tokens, skip component generation
-- \`--no-commit\` — Don't auto-commit changes
-
-## Output
-
-Report:
-- Parity: [n] tokens drifted, [n] components unlinked
-- Tokens updated: [n] added/changed
-- Component created: \`src/components/[name].tsx\`
-- Code Connect: linked to Figma node [nodeId]
-- Build: passed/failed
-- Preview URL: https://...
-- Figma comment: posted / skipped`,
-  },
-  {
     command: "/drift-report",
     name: "Drift Report",
     description: "Audit the codebase for design-code drift — hardcoded colors, spacing, and type scales that should reference tokens. Produces a structured report with severity levels.",
     file: "~/.claude/skills/drift-report/SKILL.md",
     triggersAgent: "Scout",
     category: "pipeline",
-    group: "quality",
+    group: "design-system",
     mcp: { required: [], optional: ["figma-mcp", "posthog-mcp"] },
     promptContent: `---
 description: Audit the codebase for design-code drift and generate a parity report
@@ -1331,44 +1526,6 @@ description: Audit the codebase for design-code drift and generate a parity repo
 - With drift: Y
 - Total instances: Z
 | File | Line | Hardcoded | Should Use |`,
-  },
-  {
-    command: "/apply-theme",
-    name: "Apply Theme",
-    description: "Apply a client brand via token overrides only — no component changes required. Generates a theme CSS file and reports coverage.",
-    file: "~/.claude/skills/apply-theme/SKILL.md",
-    triggersAgent: "Prism",
-    category: "tools",
-    group: "output",
-    mcp: { required: ["figma-mcp"] },
-    promptContent: `---
-description: Apply a client brand theme via token overrides — no component changes required
----
-
-# /apply-theme — Apply Client Theme
-
-## Usage
-\`\`\`
-/apply-theme [client-name]
-/apply-theme [client-name] [figma-variables-url]
-\`\`\`
-
-## Steps
-1. Parse client name and optional Figma variables URL from arguments
-2. If Figma URL: call \`mcp__claude_ai_Figma__get_variable_defs\` to extract brand variables
-3. Audit theme readiness: are components using semantic tokens or hardcoded values?
-4. Report "theme readiness score" before generating — Score = (components using CSS vars / total components) × 100. Report as X% theme-ready.
-5. Generate tokens/themes/[client].css with semantic token overrides only
-6. Output: tokens overridden, components affected, visual coverage %, drift risks
-
-## Output format
-[data-theme="client"] {
-  --color-primary: [brand-primary];
-  --color-background: [brand-background];
-  --radius-base: [brand-radius];
-}
-
-## Goal: a full rebrand touching only the tokens layer, zero component changes`,
   },
   {
     command: "/connect",
@@ -1426,7 +1583,7 @@ Summary of all mappings created, plus any components that couldn't be matched au
     file: "~/.claude/skills/check-parity/SKILL.md",
     triggersAgent: "Scout",
     category: "tools",
-    group: "quality",
+    group: "design-system",
     mcp: { required: ["figma-mcp"] },
     promptContent: `---
 description: Detect drift between Figma design tokens/components and the codebase. Shows a full parity report with token diffs, unlinked components, and designer comments.
@@ -1465,7 +1622,7 @@ The parity report from the agent, followed by a short list of recommended next c
     file: "~/.claude/skills/deploy-annotate/SKILL.md",
     triggersAgent: "Ship",
     category: "tools",
-    group: "output",
+    group: "deploy",
     mcp: { required: ["vercel-mcp", "figma-mcp"] },
     promptContent: `---
 description: Post a Vercel deployment URL as a comment on a Figma node. Use after deploying to close the loop between code and design.
@@ -1497,125 +1654,6 @@ Post deploy URL to Figma: $ARGUMENTS
 This skill is also triggered automatically at the end of \`/deploy\` and \`/design-to-code\` when \`.claude/project-context.json\` contains a \`figma.nodeMap\` entry.
 
 Run it manually when you deployed outside of those skills and want to post the URL retroactively.`,
-  },
-  {
-    command: "/sync-docs",
-    name: "Sync Docs",
-    description: "Sync all documentation entries in lib/data/docs.ts from live component, token, and brand data. Run after any agent write or manually to refresh the Component Docs section.",
-    file: "~/.claude/skills/sync-docs/SKILL.md",
-    triggersAgent: "Echo",
-    category: "tools",
-    group: "utilities",
-    mcp: { required: [] },
-    promptContent: `---
-description: Sync all documentation entries in lib/data/docs.ts from live component, token, and brand data
-disable-model-invocation: true
-argument-hint: "[scope] (optional: path to a single component file)"
----
-
-Sync all documentation entries in lib/data/docs.ts.
-
-## Steps
-
-1. Read \`lib/data/components.ts\`, \`lib/data/tokens.ts\`, and \`lib/data/brands.ts\` to get the current design system inventory.
-
-2. For each component or token group, read the relevant source file (e.g. \`src/components/ui/<name>.tsx\`) to extract:
-   - Props interface / TypeScript types
-   - Token usage (CSS variable references)
-   - Export names and variants
-
-3. Diff against existing entries in \`lib/data/docs.ts\`:
-   - **stale**: entry exists but source file was modified >7 days ago vs \`writtenAt\`
-   - **drifted**: entry exists but props or tokens have changed since last write
-   - **missing**: component exists in components.ts but has no docs entry
-   - **current**: entry is up to date
-
-4. Before writing, show the user a summary and request HITL approval.
-
-5. On approval, update \`lib/data/docs.ts\`:
-   - Set \`status\` from the diff result above
-   - Set \`coverageScore\` = (documented props / total props) * 100
-   - Set \`writtenBy: "doc-sync"\`, \`writtenAt: <now ISO>\`, \`runId: <uuid>\`
-
-6. Emit a completion summary: N created, M updated, K unchanged.
-
-## Scope
-
-If \`$ARGUMENTS\` contains a file path, scope the sync to that single component only.`,
-  },
-  {
-    command: "/token-source-audit",
-    name: "Token Source Audit",
-    description: "Detect hardcoded hex values in Figma variable collections and migrate them to oklch() values referencing semantic Tailwind or design system variables.",
-    file: "~/.claude/skills/token-source-audit/SKILL.md",
-    category: "pipeline",
-    group: "quality",
-    triggersAgent: "Flux",
-    mcp: { required: ["figma-console-mcp", "figma-mcp"] },
-    promptContent: `You are executing the **Token Source Audit** workflow.
-
-## Goal
-Find all hardcoded hex/rgb color values in the Figma variable collection and replace them with:
-1. oklch() color values (the project standard)
-2. Aliases to semantic variables in the TailwindCSS or other existing collections where a perceptual match exists
-
-## Context
-- The Figma file may have a "Theme" collection with 235+ variables using raw hex values (e.g. FACC15, 000000, FFFFFF)
-- A "TailwindCSS" collection with 440 variables already exists — prefer aliasing to these
-- The codebase uses oklch() in globals.css as the canonical token format
-- Target collection: $ARGUMENTS (default: "Theme")
-
-## Steps
-
-### 1. Extract current state
-Use figma_get_variables (Console MCP) to fetch all variables in the target collection.
-For each variable, record:
-- Name, type, current value (hex or variable alias)
-- Whether it is already aliased to another variable or is a raw hardcoded value
-
-### 2. Identify hardcoded values
-Filter to variables where the value is a raw hex/rgb color (not a variable reference).
-These are the drift candidates.
-
-### 3. Match to TailwindCSS collection
-For each hardcoded color:
-a. Convert hex → oklch using the standard formula
-b. Search the TailwindCSS collection for a variable whose value is within ΔE < 3 (perceptually identical)
-c. If found: propose aliasing to that TailwindCSS variable
-d. If not found: propose using the oklch() value directly
-
-### 4. Present the diff table
-Show a structured table before making any changes:
-
-| Variable | Current Value | Proposed Change | Type |
-|---|---|---|---|
-| accent-light | #FACC15 | alias → tailwind/yellow-400 (oklch: 0.85 0.19 98) | alias |
-| background-dark | #000000 | oklch(0% 0 0) | oklch |
-
-Label each row:
-- ✅ alias found — will link to TailwindCSS variable
-- 🔄 oklch only — no matching Tailwind variable, will use raw oklch()
-- ⚠️ semantic mismatch — closest Tailwind variable has different semantic meaning, verify manually
-
-### 5. HITL gate — STOP HERE
-Present the full diff to the user. Do NOT apply any changes until explicitly approved.
-Ask: "Apply these N changes? (yes / select specific rows / cancel)"
-
-### 6. Apply approved changes
-For approved rows, use figma_batch_update_variables to:
-- Set aliased variables to reference their matched TailwindCSS counterpart
-- Set oklch-only variables to the calculated oklch() string
-
-### 7. Verify
-Re-fetch the updated variables and confirm all previously hardcoded values are now either aliased or oklch-formatted.
-Report: N aliased, M converted to oklch, K skipped.
-
-## Quality rules
-- Never change the semantic role of a variable (accent stays accent)
-- For Light/Dark mode pairs, handle both modes — don't only update one
-- oklch values must use 4 significant figures: oklch(L% C H)
-- If a variable is already aliased, skip it (it's already correct)
-- Prefer TailwindCSS variable aliases over raw oklch() values when ΔE < 3`,
   },
 ];
 

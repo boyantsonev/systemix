@@ -6,21 +6,17 @@ import { pipelineSkills } from "@/lib/data/pipeline";
 import type { Skill, SkillGroup } from "@/lib/types/skill";
 
 const GROUP_META: Record<SkillGroup, { heading: string; subtitle: string }> = {
-  "sync-loop": { heading: "Sync loop",  subtitle: "Run in sequence to keep Figma and code in sync" },
-  "quality":   { heading: "Quality",    subtitle: "Detect drift, verify correctness, check parity"  },
-  "output":    { heading: "Output",     subtitle: "Generate components, stories, and deploy"        },
-  "utilities": { heading: "Utilities",  subtitle: "Lower-level helpers"                             },
+  "the-loop":     { heading: "The loop",      subtitle: "Hypothesis validation — from idea to measured decision"  },
+  "design-system":{ heading: "Design system", subtitle: "Keep Figma and code in sync bidirectionally"             },
+  "deploy":       { heading: "Deploy",        subtitle: "Stories, builds, and Vercel deployments"                 },
+  "utilities":    { heading: "Utilities",     subtitle: "Lower-level helpers"                                     },
 };
 
-const GROUP_ORDER: SkillGroup[] = ["sync-loop", "quality", "output", "utilities"];
+const GROUP_ORDER: SkillGroup[] = ["the-loop", "design-system", "deploy", "utilities"];
 
-function groupSkills(skills: typeof pipelineSkills): Record<SkillGroup, typeof pipelineSkills> {
-  const groups: Record<SkillGroup, typeof pipelineSkills> = {
-    "sync-loop": [], "quality": [], "output": [], "utilities": [],
-  };
-  for (const skill of skills) groups[skill.group].push(skill);
-  return groups;
-}
+const LOOP_STEPS = ["/hypothesis", "/measure", "/experiment", "/evidence", "/hermes"] as const;
+
+type Tab = "all" | SkillGroup;
 
 function CopyBtn({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -89,8 +85,57 @@ function SkillRow({ skill, index, numbered }: { skill: Skill; index: number; num
   );
 }
 
+function LoopStepBar() {
+  return (
+    <div className="mb-5 flex items-center gap-1.5 flex-wrap">
+      {LOOP_STEPS.map((cmd, i) => (
+        <div key={cmd} className="flex items-center gap-1.5">
+          <code className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded text-[11px] font-mono font-bold">
+            {cmd}
+          </code>
+          {i < LOOP_STEPS.length - 1 && (
+            <span className="text-muted-foreground/40 text-[11px]">→</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SkillSection({ groupKey, skills }: { groupKey: SkillGroup; skills: Skill[] }) {
+  if (skills.length === 0) return null;
+  const meta = GROUP_META[groupKey];
+  const numbered = groupKey === "the-loop";
+
+  return (
+    <section className="mb-10">
+      <h2 className="text-[1.1rem] font-bold tracking-tight mb-1">{meta.heading}</h2>
+      <p className="text-[13px] text-muted-foreground mb-4">{meta.subtitle}</p>
+      {groupKey === "the-loop" && <LoopStepBar />}
+      <div className="rounded-xl border border-border/40 overflow-hidden">
+        {skills.map((skill, i) => (
+          <SkillRow key={skill.command} skill={skill} index={i} numbered={numbered} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function SkillsPage() {
-  const groups = groupSkills(pipelineSkills);
+  const [activeTab, setActiveTab] = useState<Tab>("the-loop");
+
+  const byGroup = GROUP_ORDER.reduce<Record<SkillGroup, Skill[]>>((acc, g) => {
+    acc[g] = pipelineSkills.filter(s => s.group === g);
+    return acc;
+  }, { "the-loop": [], "design-system": [], "deploy": [], "utilities": [] });
+
+  const tabs: { id: Tab; label: string; count: number }[] = [
+    { id: "the-loop",      label: "The loop",      count: byGroup["the-loop"].length      },
+    { id: "design-system", label: "Design system", count: byGroup["design-system"].length },
+    { id: "deploy",        label: "Deploy",         count: byGroup["deploy"].length        },
+    { id: "utilities",     label: "Utilities",      count: byGroup["utilities"].length     },
+    { id: "all",           label: "All",            count: pipelineSkills.length           },
+  ];
 
   return (
     <article>
@@ -102,48 +147,38 @@ export default function SkillsPage() {
         {pipelineSkills.length} Claude Code slash commands. Each is a markdown prompt file installed to{" "}
         <code className="font-mono text-[14px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">~/.claude/skills/</code>.
       </p>
-      <p className="text-[14px] text-muted-foreground leading-relaxed mb-6">
+      <p className="text-[14px] text-muted-foreground leading-relaxed mb-8">
         Install a skill with <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npx systemix add figma</code>, or copy the prompt content below and save it as a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">.md</code> file manually.
       </p>
 
-      <div className="grid sm:grid-cols-2 gap-3 mb-10">
-        <div className="rounded-xl border border-border/40 px-4 py-4 bg-muted/20">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-foreground/60 mb-1.5">Figma MCP</p>
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
-            Figma write operations (token sync, image push) use the{" "}
-            <span className="text-foreground font-medium">Figma Console MCP by TJ Pitre</span>.
-            Read operations use the official Figma REST MCP.
-          </p>
-        </div>
-        <div className="rounded-xl border border-border/40 px-4 py-4 bg-muted/20">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-foreground/60 mb-1.5">Hermes — local LLM author</p>
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
-            <span className="text-foreground font-medium">Hermes</span> runs via Ollama (<code className="font-mono text-[11px] bg-muted/60 px-1 py-0.5 rounded text-foreground">hermes3</code>, local, no API key).
-            It watches for CSS and Figma changes, authors MDX contract files, polls PostHog for experiment results, and writes evidence back into the contract. Skills are the manual trigger; <code className="font-mono text-[11px] bg-muted/60 px-1 py-0.5 rounded text-foreground">npx systemix watch</code> runs it continuously.
-          </p>
-        </div>
+      {/* Tab bar */}
+      <div className="flex items-center gap-1 mb-8 border-b border-border/40 overflow-x-auto">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-1.5 px-3 py-2 text-[12px] font-medium whitespace-nowrap border-b-2 -mb-px transition-colors ${
+              activeTab === tab.id
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground/70"
+            }`}
+          >
+            {tab.label}
+            <span className={`text-[10px] font-mono tabular-nums ${
+              activeTab === tab.id ? "text-foreground/60" : "text-muted-foreground/40"
+            }`}>
+              {tab.count}
+            </span>
+          </button>
+        ))}
       </div>
 
-      <hr className="border-border/40 mb-10" />
-
-      {GROUP_ORDER.map(groupKey => {
-        const meta = GROUP_META[groupKey];
-        const skills = groups[groupKey];
-        if (skills.length === 0) return null;
-        const numbered = groupKey === "sync-loop";
-
-        return (
-          <section key={groupKey} className="mb-10">
-            <h2 className="text-[1.1rem] font-bold tracking-tight mb-1">{meta.heading}</h2>
-            <p className="text-[13px] text-muted-foreground mb-4">{meta.subtitle}</p>
-            <div className="rounded-xl border border-border/40 overflow-hidden">
-              {skills.map((skill, i) => (
-                <SkillRow key={skill.command} skill={skill} index={i} numbered={numbered} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      {activeTab === "all"
+        ? GROUP_ORDER.map(g => (
+            <SkillSection key={g} groupKey={g} skills={byGroup[g]} />
+          ))
+        : <SkillSection groupKey={activeTab as SkillGroup} skills={byGroup[activeTab as SkillGroup]} />
+      }
     </article>
   );
 }

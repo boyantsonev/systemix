@@ -51,16 +51,6 @@ export const SKILL_CHAINS: SkillChain[] = [
     tags: ['component', 'figma'],
   },
   {
-    id: 'brand-theme',
-    name: 'Apply Brand Theme',
-    description: 'Apply client theme overrides and verify parity',
-    steps: [
-      { command: '/apply-theme', label: 'Apply theme' },
-      { command: '/check-parity', label: 'Verify parity', dependsOn: ['/apply-theme'] },
-    ],
-    tags: ['theme', 'brand'],
-  },
-  {
     id: 'deploy-full',
     name: 'Full Deploy',
     description: 'Sync, check parity, deploy, annotate',
@@ -76,23 +66,23 @@ export const SKILL_CHAINS: SkillChain[] = [
 
 // Skill dependency map — what each skill requires before it can run well
 export const SKILL_DEPENDENCIES: Record<SkillCommand, SkillDependency[]> = {
+  '/hypothesis': [],
+  '/measure': [{ command: '/hypothesis', type: 'requires', reason: 'Needs a contract to instrument' }],
+  '/experiment': [{ command: '/measure', type: 'requires', reason: 'Needs instrumentation before setting up A/B' }],
+  '/evidence': [{ command: '/experiment', type: 'requires', reason: 'Needs an experiment running to pull evidence' }],
+  '/hermes': [{ command: '/evidence', type: 'requires', reason: 'Needs evidence in the contract to synthesize' }],
   '/figma': [],
   '/tokens': [{ command: '/figma', type: 'suggests', reason: 'Figma fileKey improves token sync accuracy' }],
   '/component': [{ command: '/figma', type: 'requires', reason: 'Needs a Figma node to generate from' }],
   '/storybook': [{ command: '/component', type: 'suggests', reason: 'Works best after component generation' }],
   '/deploy': [],
   '/sync-to-figma': [{ command: '/tokens', type: 'requires', reason: 'Needs tokens.bridge.json' }],
-  '/figma-push': [],
   '/figma-inspect': [],
   '/sync': [],
-  '/design-to-code': [{ command: '/figma', type: 'requires', reason: 'Needs design context' }],
   '/drift-report': [],
-  '/apply-theme': [],
   '/connect': [{ command: '/component', type: 'suggests', reason: 'Works best with generated components' }],
   '/check-parity': [{ command: '/figma', type: 'suggests', reason: 'Needs Figma context for comparison' }],
   '/deploy-annotate': [{ command: '/deploy', type: 'requires', reason: 'Needs a deploy URL to annotate' }],
-  '/sync-docs': [],
-  '/token-source-audit': [],
 };
 
 // Get chain by ID

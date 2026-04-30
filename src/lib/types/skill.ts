@@ -1,29 +1,33 @@
 // Typed interfaces for Systemix pipeline skills
 
 export type SkillCommand =
+  // The loop — hypothesis validation workflow
+  | '/hypothesis'
+  | '/measure'
+  | '/experiment'
+  | '/evidence'
+  | '/hermes'
+  // Design system — Figma ↔ code
   | '/figma'
   | '/tokens'
   | '/component'
-  | '/storybook'
-  | '/deploy'
-  | '/sync-to-figma'
-  | '/figma-push'
-  | '/figma-inspect'
-  | '/sync'
-  | '/design-to-code'
   | '/drift-report'
-  | '/apply-theme'
-  | '/connect'
   | '/check-parity'
+  | '/sync'
+  // Deploy
+  | '/deploy'
   | '/deploy-annotate'
-  | '/sync-docs'
-  | '/token-source-audit';
+  | '/storybook'
+  // Utilities
+  | '/figma-inspect'
+  | '/sync-to-figma'
+  | '/connect';
 
 export type SkillCategory = 'pipeline' | 'tools';
 
-export type SkillGroup = 'sync-loop' | 'quality' | 'output' | 'utilities';
+export type SkillGroup = 'the-loop' | 'design-system' | 'deploy' | 'utilities';
 
-export type AgentName = 'Ada' | 'Flux' | 'Scout' | 'Prism' | 'Echo' | 'Sage' | 'Ship';
+export type AgentName = 'Ada' | 'Flux' | 'Scout' | 'Prism' | 'Echo' | 'Sage' | 'Ship' | 'Hermes';
 
 export type McpServer =
   | 'figma-console-mcp'
@@ -32,7 +36,8 @@ export type McpServer =
   | 'storybook-mcp'
   | 'vercel-mcp'
   | 'figma-desktop-mcp'
-  | 'posthog-mcp';
+  | 'posthog-mcp'
+  | 'ollama';
 
 export interface SkillMcpRequirements {
   required: McpServer[];
@@ -40,13 +45,13 @@ export interface SkillMcpRequirements {
 }
 
 export interface SkillIOSpec {
-  inputs?: string[];    // what this skill reads/consumes
-  outputs?: string[];   // what this skill produces
+  inputs?: string[];
+  outputs?: string[];
 }
 
 export interface SkillVersion {
-  version: string;      // semver e.g. "1.0.0"
-  lastUpdated: string;  // ISO date
+  version: string;
+  lastUpdated: string;
   changelog?: string;
 }
 
@@ -54,7 +59,7 @@ export interface Skill {
   command: SkillCommand;
   name: string;
   description: string;
-  file: string;         // path to SKILL.md on disk
+  file: string;
   triggersAgent: AgentName;
   category: SkillCategory;
   group: SkillGroup;
@@ -65,7 +70,6 @@ export interface Skill {
   tags?: string[];
 }
 
-// Type guard
 export function isSkill(value: unknown): value is Skill {
   return (
     typeof value === 'object' &&
@@ -76,17 +80,14 @@ export function isSkill(value: unknown): value is Skill {
   );
 }
 
-// Helper: get skill by command
 export function getSkillByCommand(skills: Skill[], command: SkillCommand): Skill | undefined {
   return skills.find(s => s.command === command);
 }
 
-// Helper: get skills by agent
 export function getSkillsByAgent(skills: Skill[], agent: AgentName): Skill[] {
   return skills.filter(s => s.triggersAgent === agent);
 }
 
-// Helper: get skills by category
 export function getSkillsByCategory(skills: Skill[], category: SkillCategory): Skill[] {
   return skills.filter(s => s.category === category);
 }
