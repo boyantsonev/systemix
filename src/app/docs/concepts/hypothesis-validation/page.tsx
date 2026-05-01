@@ -171,6 +171,32 @@ rationale: |
         </div>
       </section>
 
+      <section className="mb-10">
+        <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">The skills that run this loop</h2>
+        <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
+          Install the hypothesis-validation workflow to get four Claude Code slash commands — one per phase of the loop.
+        </p>
+        <pre className="text-[12px] font-mono bg-muted/30 border border-border/40 rounded-xl px-4 py-3 mb-4 text-foreground/70">
+{`npx systemix workflow add hypothesis-validation`}
+        </pre>
+        <div className="space-y-2 rounded-xl border border-border/40 overflow-hidden divide-y divide-border/30">
+          {[
+            { cmd: "/init-experiment", desc: "Create a hypothesis contract — define the ICP, variants, and success criteria before touching code." },
+            { cmd: "/growth-audit",    desc: "Cross-reference running experiments with PostHog evidence. Score signal strength. Surface what's decision-ready." },
+            { cmd: "/write-variants",  desc: "Generate ICP-calibrated copy variants. Optionally apply the variant to the source file." },
+            { cmd: "/close-experiment",desc: "Write the result, decision, and confidence back to the contract. Push a synthesis card to the HITL queue." },
+          ].map(({ cmd, desc }) => (
+            <div key={cmd} className="flex items-start gap-3 px-4 py-3 bg-background">
+              <code className="font-mono text-[12px] text-foreground/70 shrink-0 pt-0.5">{cmd}</code>
+              <span className="text-[12px] text-muted-foreground leading-relaxed">{desc}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-[12px] font-mono text-muted-foreground/40 mt-3">
+          → <a href="/docs/skills" className="hover:text-muted-foreground transition-colors">Full skills library</a>
+        </p>
+      </section>
+
       <section className="mb-6">
         <h2 className="text-[1.1rem] font-bold tracking-tight mb-3">See also</h2>
         <div className="flex flex-col gap-1.5 text-[13px] font-mono">

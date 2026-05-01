@@ -142,7 +142,7 @@ function HitlCard({
       <div className="flex gap-2 px-3 pb-3">
         <Button
           size="sm"
-          className="flex-1 h-7 text-xs gap-1 bg-emerald-700 hover:bg-emerald-600 text-white border-0"
+          className="flex-1 text-xs gap-1"
           onClick={() => onDecision(task.id, "approve")}
         >
           <CheckCircle2 size={11} />
@@ -150,8 +150,8 @@ function HitlCard({
         </Button>
         <Button
           size="sm"
-          variant="outline"
-          className="flex-1 h-7 text-xs gap-1 text-red-400 border-red-500/30 hover:bg-red-950/30 hover:text-red-300"
+          variant="destructive"
+          className="flex-1 text-xs gap-1"
           onClick={() => onDecision(task.id, "reject")}
         >
           <XCircle size={11} />

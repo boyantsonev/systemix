@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { mockProjects, mockActivity, type Project, type ActivityEvent, type ActivityEventType } from "@/lib/data/mock-projects";
 
 function scoreColor(score: number): string {
@@ -128,9 +131,71 @@ function ActivityRow({ e }: { e: ActivityEvent }) {
   );
 }
 
+type QueueCard = { id: string; type: string; status: string; hypothesis?: string; component?: string; token?: string; context?: string; confidence?: number; confidenceLevel?: number; recommendation?: string };
+
+function PendingDecisionsBar() {
+  const [cards, setCards] = useState<QueueCard[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/queue")
+      .then(r => r.json())
+      .then(d => { setCards((d.cards ?? []).filter((c: QueueCard) => c.status === "pending")); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const act = async (id: string, action: string) => {
+    await fetch("/api/queue", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action }) });
+    setCards(prev => prev.filter(c => c.id !== id));
+  };
+
+  if (loading || cards.length === 0) return null;
+
+  const synthCards = cards.filter(c => c.type === "hypothesis-validation" || c.type === "synthesis");
+  const driftCards = cards.filter(c => c.type === "drift-resolution" || c.type === "new-token");
+
+  return (
+    <div className="border-b border-violet-500/20 bg-violet-500/5 px-4 md:px-5 py-3">
+      <div className="flex items-center gap-2 mb-2.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0 animate-pulse" />
+        <span className="text-[11px] font-black uppercase tracking-widest text-violet-400">
+          {cards.length} decision{cards.length !== 1 ? "s" : ""} pending — Hermes is waiting
+        </span>
+        <Link href="/queue" className="ml-auto text-[11px] font-mono text-violet-400/60 hover:text-violet-400 transition-colors">
+          View all →
+        </Link>
+      </div>
+      <div className="space-y-2">
+        {[...synthCards, ...driftCards].slice(0, 3).map(card => {
+          const label = card.type === "hypothesis-validation" || card.type === "synthesis" ? "Synthesis" : "Drift";
+          const subject = card.hypothesis ?? card.component ?? card.token ?? "—";
+          const conf = card.confidenceLevel ?? card.confidence;
+          return (
+            <div key={card.id} className="flex items-center gap-3 rounded-lg border border-violet-500/20 bg-background/60 px-3 py-2">
+              <span className="text-[10px] font-mono text-violet-400/70 shrink-0 w-14">{label}</span>
+              <p className="text-[12px] text-foreground/80 flex-1 truncate">{subject}</p>
+              {conf !== undefined && (
+                <span className="text-[10px] font-mono text-muted-foreground/50 shrink-0">{Math.round(conf * 100)}%</span>
+              )}
+              <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => act(card.id, "approved")} className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">✓</button>
+                <button onClick={() => act(card.id, "rejected")} className="text-[10px] font-mono px-2 py-0.5 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">✕</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Live HITL decisions (real data) */}
+      <PendingDecisionsBar />
+
       {/* Mock data notice */}
       <div className="border-b border-amber-500/20 bg-amber-500/5 px-4 md:px-5 py-2.5 flex items-center gap-3">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-500/60 shrink-0" />

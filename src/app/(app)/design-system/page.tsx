@@ -143,12 +143,20 @@ export default function DesignSystemOverview() {
               in Claude Code or Cursor to populate this view.
             </p>
           </div>
-          <Link
-            href="/contract"
-            className="shrink-0 text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground border border-border/30 px-2.5 py-1.5 rounded hover:border-border/60 transition-colors whitespace-nowrap"
-          >
-            Contract evidence →
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/design-system/tokens"
+              className="shrink-0 text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground border border-border/30 px-2.5 py-1.5 rounded hover:border-border/60 transition-colors whitespace-nowrap"
+            >
+              Tokens →
+            </Link>
+            <Link
+              href="/design-system/components"
+              className="shrink-0 text-[11px] font-mono text-muted-foreground/40 hover:text-muted-foreground border border-border/30 px-2.5 py-1.5 rounded hover:border-border/60 transition-colors whitespace-nowrap"
+            >
+              Components →
+            </Link>
+          </div>
         </div>
       </div>
 

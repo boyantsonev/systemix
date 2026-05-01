@@ -132,11 +132,16 @@ async function addTokenGuard() {
 // ── Workflow aliases ──────────────────────────────────────────────────────────
 
 const WORKFLOW_ALIASES = {
-  'figma':        'figma-to-code',
-  'figma-to-code':'figma-to-code',
-  'tokens':       'figma-to-code',
-  'token-guard':  'token-guard',
-  'guard':        'token-guard',
+  'figma':                  'figma-to-code',
+  'figma-to-code':          'figma-to-code',
+  'tokens':                 'figma-to-code',
+  'token-guard':            'token-guard',
+  'guard':                  'token-guard',
+  'design-system':          'design-system',
+  'ds':                     'design-system',
+  'hypothesis-validation':  'hypothesis-validation',
+  'hypothesis':             'hypothesis-validation',
+  'experiments':            'hypothesis-validation',
 };
 
 // ── Workflow install ──────────────────────────────────────────────────────────
@@ -162,7 +167,7 @@ async function add(workflowName) {
       console.log(`  ${p.name.padEnd(24)} ${p.description}${aliasSuffix}`);
     });
     console.log(`  ${"token-guard".padEnd(24)} MCP proxy auto-register + token cache layer  (alias: guard)`);
-    console.log(`\nUsage: npx systemix add <workflow>\n`);
+    console.log(`\nUsage: npx systemix workflow add <workflow>\n`);
     return;
   }
 

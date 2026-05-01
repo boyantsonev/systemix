@@ -6,7 +6,7 @@ import { pipelineSkills } from "@/lib/data/pipeline";
 import type { Skill, SkillGroup } from "@/lib/types/skill";
 
 const GROUP_META: Record<SkillGroup, { heading: string; subtitle: string }> = {
-  "the-loop":     { heading: "The loop",      subtitle: "Hypothesis validation — from idea to measured decision"  },
+  "the-loop":     { heading: "The loop",      subtitle: "Hypothesis validation — from idea to measured decision. Install workflow: npx systemix workflow add hypothesis-validation"  },
   "design-system":{ heading: "Design system", subtitle: "Keep Figma and code in sync bidirectionally"             },
   "deploy":       { heading: "Deploy",        subtitle: "Stories, builds, and Vercel deployments"                 },
   "utilities":    { heading: "Utilities",     subtitle: "Lower-level helpers"                                     },
@@ -147,9 +147,28 @@ export default function SkillsPage() {
         {pipelineSkills.length} Claude Code slash commands. Each is a markdown prompt file installed to{" "}
         <code className="font-mono text-[14px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">~/.claude/skills/</code>.
       </p>
-      <p className="text-[14px] text-muted-foreground leading-relaxed mb-8">
-        Install a skill with <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npx systemix add figma</code>, or copy the prompt content below and save it as a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">.md</code> file manually.
+      <p className="text-[14px] text-muted-foreground leading-relaxed mb-4">
+        Install a full workflow (recommended) with{" "}
+        <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npx systemix workflow add hypothesis-validation</code>{" "}
+        or{" "}
+        <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">npx systemix workflow add design-system</code>.
+        Or copy any prompt below and save it as a <code className="font-mono text-[13px] bg-muted/60 px-1.5 py-0.5 rounded text-foreground">.md</code> file manually.
       </p>
+      <div className="rounded-xl border border-border/40 bg-muted/10 px-4 py-3 mb-8 flex items-start gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-1.5">Available workflows</p>
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-2 text-[12px]">
+              <code className="font-mono text-foreground/70 shrink-0">hypothesis-validation</code>
+              <span className="text-muted-foreground/60">— /init-experiment · /growth-audit · /write-variants · /close-experiment</span>
+            </div>
+            <div className="flex items-baseline gap-2 text-[12px]">
+              <code className="font-mono text-foreground/70 shrink-0">design-system</code>
+              <span className="text-muted-foreground/60">— /figma · /tokens · /sync-to-figma · /drift-report · /check-parity · /contract-query</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Tab bar */}
       <div className="flex items-center gap-1 mb-8 border-b border-border/40 overflow-x-auto">

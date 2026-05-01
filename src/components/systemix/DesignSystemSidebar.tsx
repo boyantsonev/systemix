@@ -8,12 +8,16 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export type TokenNav = { slug: string; name: string; status: string; collection: string };
 export type ComponentNav = { slug: string; name: string; parity: string; hasStorybook: boolean };
+export type HypothesisNav = { slug: string; id: string; status: string };
 
 function StatusDot({ status }: { status: string }) {
   const cls: Record<string, string> = {
     clean:              "bg-green-500",
     drifted:            "bg-yellow-500",
     "missing-in-figma": "bg-blue-500",
+    running:            "bg-blue-400",
+    complete:           "bg-green-400",
+    archived:           "bg-muted-foreground/30",
   };
   return (
     <span className={`shrink-0 w-1.5 h-1.5 rounded-full ${cls[status] ?? "bg-muted-foreground/30"}`} />
@@ -23,10 +27,12 @@ function StatusDot({ status }: { status: string }) {
 export function DesignSystemSidebar({
   tokens,
   components,
+  hypotheses = [],
   openCount = 0,
 }: {
   tokens: TokenNav[];
   components: ComponentNav[];
+  hypotheses?: HypothesisNav[];
   openCount?: number;
 }) {
   const pathname = usePathname();
@@ -128,7 +134,46 @@ export function DesignSystemSidebar({
           </div>
         )}
 
-        {tokens.length === 0 && components.length === 0 && (
+        {/* Hypotheses */}
+        {hypotheses.length > 0 && (
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 px-2 mb-1.5">
+              Hypotheses
+            </p>
+            <div className="space-y-0.5">
+              {hypotheses.map((h) => {
+                const href = `/design-system/hypotheses/${h.slug}`;
+                const active = pathname === href;
+                return (
+                  <Link
+                    key={h.slug}
+                    href={href}
+                    className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors ${
+                      active
+                        ? "bg-muted text-foreground font-medium"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    }`}
+                  >
+                    <StatusDot status={h.status} />
+                    <span className="truncate flex-1 text-[12px]">{h.id}</span>
+                  </Link>
+                );
+              })}
+              <Link
+                href="/design-system/hypotheses"
+                className={`flex items-center px-2 py-1.5 rounded-md text-[12px] transition-colors ${
+                  pathname === "/design-system/hypotheses"
+                    ? "bg-muted text-foreground font-medium"
+                    : "text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                All hypotheses →
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {tokens.length === 0 && components.length === 0 && hypotheses.length === 0 && (
           <p className="px-2 text-[12px] text-muted-foreground/40">
             No contracts yet
           </p>
@@ -137,7 +182,7 @@ export function DesignSystemSidebar({
 
       <div className="h-12 border-t border-border/50 flex items-center justify-between px-5">
         <span className="text-[11px] text-muted-foreground/40 font-mono">
-          {tokens.length}t · {components.length}c{openCount > 0 ? ` · ${openCount} open` : ""}
+          {tokens.length}t · {components.length}c · {hypotheses.length}h{openCount > 0 ? ` · ${openCount} open` : ""}
         </span>
         <ThemeToggle />
       </div>
@@ -150,9 +195,11 @@ export function DesignSystemSidebar({
 export function DesignSystemMobileHeader({
   tokens,
   components,
+  hypotheses = [],
 }: {
   tokens: TokenNav[];
   components: ComponentNav[];
+  hypotheses?: HypothesisNav[];
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -218,6 +265,24 @@ export function DesignSystemMobileHeader({
                       className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors ${active ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}>
                       <StatusDot status={c.parity} />
                       <span className="truncate flex-1">{c.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {hypotheses.length > 0 && (
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 px-2 mb-1.5">Hypotheses</p>
+              <div className="space-y-0.5">
+                {hypotheses.map((h) => {
+                  const href = `/design-system/hypotheses/${h.slug}`;
+                  const active = pathname === href;
+                  return (
+                    <Link key={h.slug} href={href} onClick={() => setOpen(false)}
+                      className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors ${active ? "bg-muted text-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}>
+                      <StatusDot status={h.status} />
+                      <span className="truncate flex-1 text-[12px]">{h.id}</span>
                     </Link>
                   );
                 })}

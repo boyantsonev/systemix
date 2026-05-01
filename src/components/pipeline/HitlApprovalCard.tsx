@@ -281,7 +281,7 @@ export function HitlApprovalCard({ step, node, onDecision }: Props) {
       <div className="flex gap-2 px-3 pb-3">
         <Button
           size="sm"
-          className="flex-1 h-7 px-3 text-[11px] font-medium rounded-md bg-foreground text-background hover:bg-foreground/90 border-0"
+          className="flex-1 text-[11px] gap-1"
           onClick={() => onDecision("approve")}
         >
           <CheckCircle2 size={11} />
@@ -289,8 +289,8 @@ export function HitlApprovalCard({ step, node, onDecision }: Props) {
         </Button>
         <Button
           size="sm"
-          variant="outline"
-          className="flex-1 h-7 px-3 text-[11px] font-medium rounded-md border border-border/60 hover:bg-muted/60"
+          variant="destructive"
+          className="flex-1 text-[11px] gap-1"
           onClick={() => onDecision("reject")}
         >
           <XCircle size={11} />

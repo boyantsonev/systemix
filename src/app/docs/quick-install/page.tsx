@@ -69,7 +69,7 @@ export default function QuickInstallPage() {
 
         <div className="space-y-0">
           <Step n="1" title="Clone and install">
-            <CodeBlock>git clone https://github.com/boyantsonev/systemix-poc && cd systemix-poc && npm install</CodeBlock>
+            <CodeBlock>git clone https://github.com/boyantsonev/systemix && cd systemix && npm install</CodeBlock>
             <p className="text-[13px] text-muted-foreground leading-relaxed">
               The repo is a Next.js app with npm workspaces. One install sets up the web app, the CLI package, and the MCP server.
             </p>
@@ -123,10 +123,42 @@ runs, this token carries missing-in-figma status.`}</OutputBlock>
         </div>
       </section>
 
+      <section className="mb-12">
+        <h2 className="text-[1.15rem] font-bold tracking-tight mb-6">Steps (continued)</h2>
+        <div className="space-y-0">
+          <Step n="5" title="Install a workflow">
+            <CodeBlock>npx systemix workflow add hypothesis-validation</CodeBlock>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
+              Installs 4 Claude Code slash commands to{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">~/.claude/skills/</code>:{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/init-experiment</code>,{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/growth-audit</code>,{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/write-variants</code>, and{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/close-experiment</code>.
+            </p>
+            <CodeBlock>npx systemix workflow add design-system</CodeBlock>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              Installs 6 Figma↔code sync commands: <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/figma</code>,{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/tokens</code>,{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/sync-to-figma</code>,{" "}
+              <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/drift-report</code>, and more.
+            </p>
+          </Step>
+
+          <Step n="6" title="Register the MCP server">
+            <CodeBlock>npx systemix-mcp --project-root .</CodeBlock>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">
+              Add this as an MCP server in your Claude Code or Cursor config. It exposes 21 tools — the AI agent can query contracts, read PostHog evidence, and write hypothesis results without touching files directly.
+            </p>
+          </Step>
+        </div>
+      </section>
+
       <section>
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-4">What&apos;s next</h2>
         <div className="space-y-2 mb-8">
           {[
+            { href: "/docs/concepts/hypothesis-validation", label: "Hypothesis Validation — the full loop, step by step" },
             { href: "/docs/concepts/evidence-layer",  label: "How production results are written back to the contract" },
             { href: "/docs/concepts/hermes",          label: "Hermes — the local LLM that authors contracts" },
             { href: "/docs/concepts/contract",        label: "MDX contract format — frontmatter + prose" },

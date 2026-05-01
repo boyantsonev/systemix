@@ -5,6 +5,7 @@ import Link from "next/link";
 import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { TokenResolveControl } from "@/components/contract/TokenResolveControl";
+import { ContractAutoReload } from "@/components/contract/ContractAutoReload";
 
 const COMPONENT_DIR = join(process.cwd(), "contract", "components");
 
@@ -19,6 +20,9 @@ type Fm = {
   "last-updated"?:       string;
   "last-resolver"?:      string | null;
   "usage-count-30d"?:    number | null;
+  "drift-instances"?:    number | null;
+  "drift-severity"?:     string | null;
+  "drift-audit"?:        string | null;
 };
 
 export async function generateStaticParams() {
@@ -68,6 +72,7 @@ export default async function ComponentDocPage({ params }: { params: Promise<{ s
 
   return (
     <article>
+      <ContractAutoReload slug={slug} />
       {/* Breadcrumb */}
       <p className="text-[13px] font-mono text-muted-foreground mb-3">
         <Link href="/design-system" className="hover:text-foreground transition-colors">
@@ -191,6 +196,23 @@ export default async function ComponentDocPage({ params }: { params: Promise<{ s
           <div className="flex gap-3 py-2">
             <span className="text-[11px] font-mono text-muted-foreground/60 w-36 shrink-0">storybook</span>
             <span className="text-[12px] font-mono text-foreground break-all">{storybookHref}</span>
+          </div>
+        )}
+        {fm["drift-instances"] != null && (
+          <div className="flex gap-3 py-2">
+            <span className="text-[11px] font-mono text-muted-foreground/60 w-36 shrink-0">drift-instances</span>
+            <span className="text-[12px] font-mono text-yellow-400">
+              {fm["drift-instances"]}
+              {fm["drift-severity"] && (
+                <span className="ml-2 text-muted-foreground/50">· {fm["drift-severity"]}</span>
+              )}
+            </span>
+          </div>
+        )}
+        {fm["drift-audit"] && (
+          <div className="flex gap-3 py-2">
+            <span className="text-[11px] font-mono text-muted-foreground/60 w-36 shrink-0">drift-audit</span>
+            <span className="text-[12px] font-mono text-muted-foreground/70">{String(fm["drift-audit"]).slice(0, 10)}</span>
           </div>
         )}
         {fm["usage-count-30d"] != null && (

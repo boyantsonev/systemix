@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +8,42 @@ import { parse as parseColor, formatHex, differenceCiede2000 } from "culori";
 import { TokenResolveControl } from "@/components/contract/TokenResolveControl";
 
 const TOKEN_DIR = join(process.cwd(), "contract", "tokens");
+const COMP_DIR  = join(process.cwd(), "contract", "components");
+
+/** Scan all component contracts → find which ones reference a given CSS variable. */
+function findComponentsUsingToken(tokenSlug: string): { name: string; slug: string; parity: string }[] {
+  const cssVar = `--${tokenSlug}`;
+  const results: { name: string; slug: string; parity: string }[] = [];
+  try {
+    for (const entry of readdirSync(COMP_DIR)) {
+      if (!entry.endsWith(".mdx")) continue;
+      const { data: fm } = matter(readFileSync(join(COMP_DIR, entry), "utf8"));
+      if (!fm.component) continue;
+      const componentSlug = entry.replace(".mdx", "");
+      let found = false;
+
+      // 1. Check component source file for var(--token) references
+      if (fm.path) {
+        const srcPath = join(process.cwd(), fm.path as string);
+        if (existsSync(srcPath)) {
+          const src = readFileSync(srcPath, "utf8");
+          if (src.includes(cssVar)) found = true;
+        }
+      }
+
+      // 2. Fallback: check the MDX prose for mentions of the token name
+      if (!found) {
+        const raw = readFileSync(join(COMP_DIR, entry), "utf8");
+        if (raw.includes(cssVar)) found = true;
+      }
+
+      if (found) {
+        results.push({ name: fm.component as string, slug: componentSlug, parity: (fm.parity as string) ?? "unknown" });
+      }
+    }
+  } catch {}
+  return results;
+}
 
 type Fm = {
   token?:              string;
@@ -88,6 +124,8 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
   const de          = isColorTok && hasFigma ? computeDeltaE(fm.value!, fm["figma-value"]!) : null;
   const codeHex     = isColorTok ? toHex(fm.value!) : null;
   const hasContent  = content.trim().length > 0;
+
+  const usedBy = findComponentsUsingToken(slug);
 
   return (
     <article>
@@ -231,12 +269,26 @@ export default async function TokenDocPage({ params }: { params: Promise<{ slug:
         )}
       </div>
 
-      {/* Used by — placeholder */}
+      {/* Used by — reverse index */}
       <div className="rounded-xl border border-border/40 px-4 py-4">
-        <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-1">Used by</p>
-        <p className="text-[13px] text-muted-foreground/40">
-          Component reverse index coming in a future update.
-        </p>
+        <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-3">Used by</p>
+        {usedBy.length === 0 ? (
+          <p className="text-[13px] text-muted-foreground/40">No components reference this token directly.</p>
+        ) : (
+          <div className="space-y-1">
+            {usedBy.map(({ name, slug: cSlug, parity }) => (
+              <Link
+                key={cSlug}
+                href={`/design-system/components/${cSlug}`}
+                className="flex items-center gap-3 px-2 py-1.5 -mx-2 rounded-md hover:bg-muted/30 transition-colors group"
+              >
+                <span className={`shrink-0 w-1.5 h-1.5 rounded-full ${parity === "clean" ? "bg-green-500" : parity === "drifted" ? "bg-yellow-500" : "bg-muted-foreground/30"}`} />
+                <span className="text-[13px] font-medium text-foreground group-hover:text-foreground/80">{name}</span>
+                <span className="text-[10px] font-mono text-muted-foreground/40 ml-auto">{parity}</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );

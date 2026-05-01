@@ -134,7 +134,24 @@ sync runs, this token carries missing-in-figma status.`}</pre>
           </Note>
         </Step>
 
-        <Step n="5" title="Resolve drift">
+        <Step n="5" title="Start the evidence loop">
+          <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
+            Set your PostHog credentials, then start the watch process. It polls PostHog every 60 seconds and writes component evidence back into the MDX contracts automatically.
+          </p>
+          <div className="bg-muted/20 border border-border/40 rounded-xl px-4 py-4 font-mono text-[12px] text-foreground/80 leading-relaxed space-y-1.5 mb-4">
+            <div><span className="text-muted-foreground/50">export </span>POSTHOG_API_KEY=<span className="text-muted-foreground/60">phx_your_key</span></div>
+            <div><span className="text-muted-foreground/50">export </span>POSTHOG_PROJECT_ID=<span className="text-muted-foreground/60">12345</span></div>
+          </div>
+          <Cmd>npx systemix watch</Cmd>
+          <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
+            The watch process does three things: watches <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">globals.css</code> for token changes, polls Figma for variable drift (when configured), and polls PostHog for <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">component_render</code> events — writing totals, variant breakdowns, and top pages back into each component&apos;s MDX frontmatter.
+          </p>
+          <Note>
+            PostHog is optional. Without <code className="font-mono text-[11px]">POSTHOG_API_KEY</code> the watch still runs — evidence fields stay null until you add credentials. Instrument your components with <code className="font-mono text-[11px]">posthog.capture(&apos;component_render&apos;, {"{"}component_name, variant, pathname{"}"})</code> to start collecting.
+          </Note>
+        </Step>
+
+        <Step n="6" title="Resolve token drift">
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-4">
             Click any drifted token in <code className="font-mono text-[12px] bg-muted/60 px-1 py-0.5 rounded text-foreground">/design-system</code> to go to its detail page. It shows side-by-side colour swatches, the ΔE perceptual distance, and an inline resolve control.
           </p>
@@ -154,7 +171,7 @@ sync runs, this token carries missing-in-figma status.`}</pre>
           </p>
         </Step>
 
-        <Step n="6" title="Raise your score to ≥ 80">
+        <Step n="7" title="Raise your score to ≥ 80">
           <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
             Each resolved conflict removes the unresolved penalty from the quality score. Keep resolving until you hit 80 — at that point the contract layer is reliable enough for agent consumption.
           </p>
@@ -177,9 +194,10 @@ sync runs, this token carries missing-in-figma status.`}</pre>
         <h2 className="text-[1.15rem] font-bold tracking-tight mb-4">Next steps</h2>
         <div className="space-y-2">
           {[
-            { href: "/docs/concepts/contract",      label: "MDX Contracts — understand the file format" },
-            { href: "/docs/concepts/quality-score", label: "Quality Score — what moves the number" },
-            { href: "/docs/concepts/drift",         label: "Drift & Reconciliation — ΔE and HITL deep dive" },
+            { href: "/docs/concepts/hypothesis-validation", label: "Hypothesis Validation — run your first experiment" },
+            { href: "/docs/concepts/contract",              label: "MDX Contracts — understand the file format" },
+            { href: "/docs/concepts/quality-score",         label: "Quality Score — what moves the number" },
+            { href: "/docs/concepts/drift",                 label: "Drift & Reconciliation — ΔE and HITL deep dive" },
           ].map(({ href, label }) => (
             <Link
               key={href}

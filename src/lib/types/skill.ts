@@ -1,12 +1,17 @@
 // Typed interfaces for Systemix pipeline skills
 
 export type SkillCommand =
-  // The loop — hypothesis validation workflow
+  // The loop — hypothesis validation workflow (step-level)
   | '/hypothesis'
   | '/measure'
   | '/experiment'
   | '/evidence'
   | '/hermes'
+  // The loop — workflow orchestration
+  | '/init-experiment'
+  | '/growth-audit'
+  | '/write-variants'
+  | '/close-experiment'
   // Design system — Figma ↔ code
   | '/figma'
   | '/tokens'
@@ -37,7 +42,8 @@ export type McpServer =
   | 'vercel-mcp'
   | 'figma-desktop-mcp'
   | 'posthog-mcp'
-  | 'ollama';
+  | 'ollama'
+  | 'systemix-mcp';
 
 export interface SkillMcpRequirements {
   required: McpServer[];

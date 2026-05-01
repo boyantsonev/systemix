@@ -101,17 +101,93 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ cards, pendingCount, isDemo: false });
 }
 
+type InstrumentationCard = {
+  id: string;
+  type: string;
+  status: string;
+  filePath?: string;
+  posthogEventKey?: string;
+  component?: string;
+  resolvedAt?: string;
+  resolution?: unknown;
+};
+
+function applyInstrumentation(card: InstrumentationCard): { ok: boolean; error?: string } {
+  if (!card.filePath) return { ok: false, error: "No filePath on card" };
+  const absPath = path.join(process.cwd(), card.filePath);
+  if (!fs.existsSync(absPath)) return { ok: false, error: `File not found: ${card.filePath}` };
+
+  let src = fs.readFileSync(absPath, "utf8");
+
+  // Skip if already instrumented
+  if (src.includes("component_render") || src.includes("posthog.capture")) {
+    return { ok: true };
+  }
+
+  const eventKey = card.posthogEventKey ?? card.component ?? "unknown";
+
+  // Add "use client" if not present
+  if (!src.startsWith('"use client"') && !src.startsWith("'use client'")) {
+    src = `"use client"\n\n${src}`;
+  }
+
+  // Add usePostHog import after existing imports
+  const lastImportIdx = src.lastIndexOf("\nimport ");
+  const insertAfter = lastImportIdx !== -1
+    ? src.indexOf("\n", lastImportIdx + 1)
+    : src.indexOf("\n");
+  if (insertAfter === -1) return { ok: false, error: "Could not locate import block" };
+
+  const phImport = `import { useEffect } from 'react'\nimport { usePostHog } from 'posthog-js/react'`;
+  // Only add if not already imported
+  if (!src.includes("posthog-js/react")) {
+    src = src.slice(0, insertAfter + 1) + phImport + "\n" + src.slice(insertAfter + 1);
+  }
+
+  // Insert the hook call after the opening brace of the default exported function
+  // Look for `function <Name>(...) {` or `export function <Name>(...) {`
+  const fnMatch = src.match(/\bfunction\s+\w+\s*\([^)]*\)[^{]*\{/);
+  if (!fnMatch || fnMatch.index === undefined) return { ok: false, error: "Could not locate component function body" };
+
+  const insertAt = fnMatch.index + fnMatch[0].length;
+  const hookCode = [
+    ``,
+    `  const posthog = usePostHog()`,
+    `  useEffect(() => {`,
+    `    posthog?.capture('component_render', {`,
+    `      component_name: '${eventKey}',`,
+    `      pathname: typeof window !== 'undefined' ? window.location.pathname : null,`,
+    `    })`,
+    `  }, [])`,
+  ].join("\n");
+
+  src = src.slice(0, insertAt) + hookCode + src.slice(insertAt);
+
+  const tmp = absPath + ".tmp";
+  fs.writeFileSync(tmp, src, "utf8");
+  fs.renameSync(tmp, absPath);
+  return { ok: true };
+}
+
 export async function PATCH(req: NextRequest) {
   const { id, action, note } = await req.json();
   if (!id || !action) {
     return NextResponse.json({ error: "id and action required" }, { status: 400 });
   }
   const queue = readQueue() ?? { cards: [] };
-  const card = (queue.cards as Array<{ id: string; status: string; resolvedAt?: string; resolution?: unknown }>)
-    .find(c => c.id === id);
+  const card = (queue.cards as InstrumentationCard[]).find(c => c.id === id);
   if (!card) {
     return NextResponse.json({ error: "Card not found" }, { status: 404 });
   }
+
+  // For instrumentation approvals, write the code before updating the card
+  if (action === "approved" && card.type === "instrumentation-approval") {
+    const result = applyInstrumentation(card);
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error ?? "Instrumentation failed" }, { status: 500 });
+    }
+  }
+
   card.status = action;
   card.resolvedAt = new Date().toISOString();
   card.resolution = { action, note: note ?? null, resolvedBy: "dashboard" };

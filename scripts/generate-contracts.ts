@@ -22,6 +22,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import matter from "gray-matter";
+import { parse as parseColor, formatHex, differenceCiede2000 } from "culori";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = dirname(__filename);
@@ -37,6 +38,23 @@ const NO_HERMES   = process.argv.includes("--no-hermes");
 
 function slugify(cssVar: string): string {
   return cssVar.replace(/^--/, "").replace(/\//g, "-");
+}
+
+/**
+ * Compare two color strings (any format — OKLCH, hex, etc.) perceptually.
+ * Returns "clean" if ΔE < 2 (imperceptible), "drifted" if ≥ 2, or null if either
+ * value can't be parsed as a color.
+ */
+function tokenColorStatus(codeValue: string, figmaValue: string): "clean" | "drifted" | null {
+  try {
+    const ca = parseColor(codeValue);
+    const cb = parseColor(figmaValue);
+    if (!ca || !cb) return null;
+    const de = differenceCiede2000()(ca, cb);
+    return de < 2 ? "clean" : "drifted";
+  } catch {
+    return null;
+  }
 }
 
 async function callHermes(prompt: string): Promise<string | null> {
@@ -166,13 +184,20 @@ async function generateTokenContracts(): Promise<void> {
       const { data: fm } = matter(readFileSync(filePath, "utf8"));
       const status = fm.status as string ?? "unknown";
 
-      // For now, only update `last-updated` if value changed
+      // Update value + recompute status if value changed
       if (fm.value !== value) {
+        const figmaHex = (fm["figma-value"] as string | null | undefined) ?? null;
+        let newStatus: string = fm.status as string ?? "missing-in-figma";
+        if (figmaHex) {
+          const colorStatus = tokenColorStatus(value, figmaHex);
+          newStatus = colorStatus ?? (value === figmaHex ? "clean" : "drifted");
+        }
         updateFrontmatter(filePath, {
           value,
+          status: newStatus,
           "last-updated": new Date().toISOString().slice(0, 10),
         });
-        console.log(`  ~ updated value: ${slug}`);
+        console.log(`  ~ updated value: ${slug} → status: ${newStatus}`);
         updated++;
       } else {
         skipped++;
@@ -180,11 +205,16 @@ async function generateTokenContracts(): Promise<void> {
       continue;
     }
 
-    // New file — determine status
-    // Without a Figma comparison run, default to "missing-in-figma" since we
-    // only have CSS values in the bridge (no Figma value to compare against)
-    const figmaHex   = token.figma?.hex ?? null;
-    const status     = "missing-in-figma";
+    // New file — determine status using perceptual color comparison when both values exist.
+    const figmaHex = token.figma?.hex ?? null;
+    let status: string;
+    if (!figmaHex) {
+      status = "missing-in-figma";
+    } else {
+      const colorStatus = tokenColorStatus(value, figmaHex);
+      // If values can't be parsed as colors (e.g. spacing), fall back to string equality.
+      status = colorStatus ?? (value === figmaHex ? "clean" : "drifted");
+    }
 
     const fm: Record<string, unknown> = {
       token:          name,

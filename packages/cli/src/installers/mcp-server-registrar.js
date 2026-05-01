@@ -25,13 +25,18 @@ const SERVER_NAME = "systemix-mcp";
 
 function getServerConfig() {
   const projectRoot = process.cwd();
+  // Resolve the MCP server binary relative to this file so it works when
+  // installed globally via npm/npx, not just from the monorepo root.
+  let mcpServerPath;
+  try {
+    mcpServerPath = require.resolve("systemix-mcp-server/dist/index.js");
+  } catch {
+    // Monorepo dev fallback — __dirname is packages/cli/src/installers/
+    mcpServerPath = path.resolve(__dirname, "../../../mcp-server/dist/index.js");
+  }
   return {
     command: "node",
-    args: [
-      path.join(projectRoot, "packages/mcp-server/dist/index.js"),
-      "--project-root",
-      projectRoot,
-    ],
+    args: [mcpServerPath, "--project-root", projectRoot],
   };
 }
 

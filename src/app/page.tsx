@@ -5,8 +5,8 @@ import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { NavCTAs, InstallCommand, SectionTrack } from "@/components/systemix/LandingEvents";
 
 export const metadata: Metadata = {
-  title: "Systemix — You shipped. Did it work?",
-  description: "The contract that holds what you shipped, what the signals said, and what you decided next. Hermes reads PostHog, Vercel, Figma, and social — you decide what ships next. Open source.",
+  title: "Systemix — Every component is a guess until production proves it.",
+  description: "The evidence layer for design systems. Production results, attributed to the variant, written into your component contracts. Open source. MCP-native.",
 };
 
 // ── Nav ──────────────────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ function LandingFooter() {
         <div className="flex items-center gap-2">
           <SLogo size={14} className="text-muted-foreground/40" />
           <span className="text-[12px] text-muted-foreground/40 font-mono">
-            The contract for what you ship.
+            The Evidence Layer for design systems.
           </span>
         </div>
         <div className="flex items-center gap-4 text-[12px] text-muted-foreground/40 font-mono">
@@ -83,20 +83,20 @@ function Hero() {
     <section className="pt-24 pb-20">
       <div className="max-w-3xl mx-auto text-center">
         <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-6">
-          The contract for what you ship, measure, and learn
+          The Evidence Layer for design systems
         </p>
         <h1 className="text-[2.75rem] sm:text-[3.5rem] font-black tracking-tight leading-[1.1] mb-6">
-          You shipped.<br />
-          <span className="text-muted-foreground">Did it work?</span>
+          Every component is a guess<br />
+          <span className="text-muted-foreground">until production proves it.</span>
         </h1>
         <p className="text-[17px] text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
-          A landing page, a component, a feature flag — every experiment leaves signals scattered across PostHog, Vercel, Figma, social. Systemix is the contract that pulls them together. Hermes reads everything. You decide what ships next.
+          Your A/B test measured a variant nobody designed. Your agent shipped a token Figma deprecated last quarter. Systemix is the layer where every component carries its production evidence — so the next design decision is informed by what actually worked, not by what got documented.
         </p>
 
         <div className="flex flex-col items-center gap-4">
           <InstallCommand />
           <p className="text-[12px] font-mono text-muted-foreground/40">
-            Open source · Works with Claude Code · Cursor · Codex · Gemini CLI
+            When an agent asks &ldquo;what is --color-primary?&rdquo; — the contract answers with the value, the rationale, and the experiment that proved it.
           </p>
         </div>
       </div>
@@ -141,7 +141,10 @@ function LoopDiagram() {
             const ay = cy + r * Math.sin(aRad);
             const bx = cx + r * Math.cos(bRad);
             const by = cy + r * Math.sin(bRad);
-            const midAngle = ((node.angle + next.angle) / 2 * Math.PI) / 180;
+            // When next.angle wraps past 360°, add 360 before averaging to keep
+            // the control point on the correct (short) arc side.
+            const nextDeg = next.angle < node.angle ? next.angle + 360 : next.angle;
+            const midAngle = ((node.angle + nextDeg) / 2 * Math.PI) / 180;
             const mx = cx + (r + 18) * Math.cos(midAngle);
             const my = cy + (r + 18) * Math.sin(midAngle);
             return (
@@ -470,19 +473,14 @@ function MagicGlue() {
 function UseCases() {
   const cases = [
     {
-      audience: "Builders shipping prototypes",
-      headline: "Know which experiment moved the metric.",
-      body: "Ship a landing variant in the morning. Hermes reads the PostHog signals, the Twitter referrer engagement, and the Vercel deploy. By evening you have a decision card: promote, run longer, or kill. The contract holds the rationale for the next iteration.",
+      audience: "Product teams shipping with Cursor or Claude Code",
+      headline: "Stop guessing what your agent will pick.",
+      body: "Your agent reads the contract before it ships. Every token, every component carries the value, the rationale, and the production result that justified it. No more rediscovering the same dead-end variant six months apart.",
     },
     {
-      audience: "Design system teams",
-      headline: "Stop re-litigating tokens that production already settled.",
-      body: "Every component carries the value, the rationale, and the production result that justified it. Your agent reads the contract before it ships. The variant that won in March doesn't get re-proposed by an agent in October.",
-    },
-    {
-      audience: "PostHog / Statsig teams",
+      audience: "Teams already running PostHog or Statsig",
       headline: "Close the loop your analytics never closed.",
-      body: "PostHog tells you variant B won. Systemix writes that result into the experiment's contract — attributed, dated, with confidence. Your next test starts from known ground.",
+      body: "PostHog tells you variant B won. Systemix writes that result into the component's contract — attributed to the variant, dated, with confidence. Your next experiment starts from known ground, not a fresh guess.",
     },
   ];
 
@@ -490,13 +488,13 @@ function UseCases() {
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <p className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-widest mb-4">
-          Three teams. Same contract.
+          The evidence layer · Two ways teams use it
         </p>
         <h2 className="text-[1.75rem] font-black tracking-tight mb-12">
-          Same loop. Different problem solved.
+          Same contract. Different problem solved.
         </h2>
 
-        <div className="grid sm:grid-cols-3 gap-3">
+        <div className="grid sm:grid-cols-2 gap-3">
           {cases.map(({ audience, headline, body }) => (
             <div key={audience} className="border border-border/40 rounded-xl px-5 py-5 bg-background">
               <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-3">
@@ -593,19 +591,19 @@ function QualityGate() {
 
 function BottomCTA() {
   const steps = [
-    { n: "1", label: "Run Hermes locally",      cmd: "ollama pull hermes3", comment: "any Ollama model works · no API key · no cloud" },
-    { n: "2", label: "Initialize Systemix",     cmd: "npx systemix init",   comment: "creates contracts/, connects to PostHog, sets up the Vercel hook" },
-    { n: "3", label: "Start the loop",          cmd: "npx systemix watch",  comment: "Hermes pulls signals, queues HITL decisions" },
+    { n: "1", label: "Run Hermes locally",        cmd: "ollama pull hermes3",          comment: "local LLM — no API key needed" },
+    { n: "2", label: "Wire up your evidence source", cmd: "npx systemix connect posthog", comment: "Statsig and Mixpanel adapters in beta" },
+    { n: "3", label: "Read the loop",             cmd: "npx systemix evidence pull",   comment: "pulls 30-day results into every contract — ~40s per component" },
   ];
 
   return (
     <section className="py-24 border-t border-border/40">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-[1.75rem] font-black tracking-tight mb-4">
-          Run it locally in three commands.
+          Run it locally.
         </h2>
         <p className="text-[15px] text-muted-foreground leading-relaxed mb-10 max-w-xl">
-          No database. No cloud account. No new API. Hermes runs on Ollama, the contract lives in your repo, and the signals come from where they already are. Works for any experiment you ship — not just design systems.
+          Hermes runs on Ollama — no API key, no cloud, no design data leaving your machine. PostHog stays where it already is. The contract lives in your repo. Systemix is the layer that ties them together.
         </p>
 
         <div className="space-y-px rounded-xl overflow-hidden border border-border/40 mb-8">
@@ -621,14 +619,25 @@ function BottomCTA() {
           ))}
         </div>
 
-        <div className="rounded-xl border border-border/40 bg-muted/5 px-5 py-4 mb-8">
-          <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">MCP server</p>
-          <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">
-            Add Systemix as an MCP server in Claude Code or Cursor. Every agent query gets the contract, the signals, and the score — not a guess.
-          </p>
-          <code className="text-[12px] font-mono text-foreground/60 bg-muted/40 px-2 py-1 rounded">
-            npx systemix mcp
-          </code>
+        <div className="rounded-xl border border-border/40 bg-muted/5 px-5 py-4 mb-8 space-y-3">
+          <div>
+            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">Install a workflow</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">
+              Every component gets a DESIGN.md-shaped contract: tokens, components, rationale, and a Production Evidence section Hermes writes from your PostHog events. You approve. The score rises. The next agent reads forward.
+            </p>
+            <code className="text-[12px] font-mono text-foreground/60 bg-muted/40 px-2 py-1 rounded">
+              npx systemix workflow add hypothesis-validation
+            </code>
+          </div>
+          <div>
+            <p className="text-[11px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-2">MCP server</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">
+              Add Systemix as an MCP server in Claude Code or Cursor. Every agent query gets the contract, the signals, and the score — not a guess.
+            </p>
+            <code className="text-[12px] font-mono text-foreground/60 bg-muted/40 px-2 py-1 rounded">
+              npx systemix-mcp --project-root .
+            </code>
+          </div>
         </div>
 
         <div className="flex items-center gap-6">

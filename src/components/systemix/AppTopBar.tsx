@@ -8,9 +8,9 @@ import { SLogo } from "./SLogo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const APP_NAV = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Queue",     href: "/queue"     },
-  { label: "Contract",  href: "/contract"  },
+  { label: "Dashboard",     href: "/dashboard"     },
+  { label: "Queue",         href: "/queue"         },
+  { label: "Design System", href: "/design-system" },
 ];
 
 function PendingBadge() {
@@ -38,7 +38,6 @@ const SECONDARY_NAV = [
 ];
 
 function isActive(pathname: string, href: string) {
-  if (href === "/design-system") return pathname.startsWith("/design-system") && !pathname.startsWith("/design-system/decisions");
   return pathname === href || pathname.startsWith(href + "/");
 }
 

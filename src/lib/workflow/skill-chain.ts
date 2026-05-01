@@ -83,6 +83,10 @@ export const SKILL_DEPENDENCIES: Record<SkillCommand, SkillDependency[]> = {
   '/connect': [{ command: '/component', type: 'suggests', reason: 'Works best with generated components' }],
   '/check-parity': [{ command: '/figma', type: 'suggests', reason: 'Needs Figma context for comparison' }],
   '/deploy-annotate': [{ command: '/deploy', type: 'requires', reason: 'Needs a deploy URL to annotate' }],
+  '/init-experiment': [],
+  '/growth-audit': [{ command: '/init-experiment', type: 'suggests', reason: 'Works best when experiments have been initialized' }],
+  '/write-variants': [{ command: '/init-experiment', type: 'requires', reason: 'Needs an experiment contract to write variants for' }],
+  '/close-experiment': [{ command: '/growth-audit', type: 'suggests', reason: 'Evidence should be audited before closing' }],
 };
 
 // Get chain by ID

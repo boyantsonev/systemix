@@ -18,55 +18,45 @@ const HELP = `
   systemix — agentic design system ops for Claude Code
 
   Usage:
-    npx systemix init               Interactive setup wizard (run once per project)
-    npx systemix add <workflow>      Install a workflow to ~/.claude/skills/
-    npx systemix add                List available workflows
-    npx systemix update             Check for and apply SKILL.md updates
-    npx systemix list               Show installed skills and workflows
-    npx systemix doctor             Health check for all dependencies
-    npx systemix sync [options]     Sync design tokens and components
-    npx systemix schedule [sub]     Schedule workflow runs to off-peak windows
-    npx systemix token-profile [dir] Scan for token inefficiency patterns
-    npx systemix tokens              Convert globals.css → .systemix/tokens.bridge.json
-    npx systemix watch               Continuous Hermes run — watch CSS + poll Figma
-    npx systemix token-guard [sub]   Manage TokenGuard (status|reset|remove)
+    npx systemix init                    Interactive setup wizard (run once per project)
+    npx systemix workflow add <name>     Install a workflow to ~/.claude/skills/
+    npx systemix workflow list           List available workflows
+    npx systemix add <name>              Alias for: workflow add
+    npx systemix update                  Check for and apply SKILL.md updates
+    npx systemix list                    Show installed skills and workflows
+    npx systemix doctor                  Health check for all dependencies
+    npx systemix sync [options]          Sync design tokens and components
+    npx systemix schedule [sub]          Schedule workflow runs to off-peak windows
+    npx systemix token-profile [dir]     Scan for token inefficiency patterns
+    npx systemix tokens                  Convert globals.css → .systemix/tokens.bridge.json
+    npx systemix watch                   Continuous Hermes run — watch CSS + poll Figma
+    npx systemix token-guard [sub]       Manage TokenGuard (status|reset|remove)
+
+  Workflows (install with: npx systemix workflow add <name>):
+    design-system                        Product A — Figma↔code token sync (6 skills)
+    hypothesis-validation                Product B — ship → measure → loop (4 skills)
+    figma-to-code  (alias: figma)        Full 18-skill pipeline
+    token-guard    (alias: guard)        MCP proxy auto-register + token cache layer
 
   Sync options:
-    --dry-run                       Estimate token cost without executing
-    --node <name>                   Target a single component by name
-    --page <name>                   Target a specific Figma page
-    --only tokens|components|styles Narrow the sync scope
-    --incremental                   Only sync nodes changed since last run
-    --budget <n>                    Abort if estimated token cost exceeds N
-    --file <key>                    Figma file key (overrides project-context.json)
-    --schedule <when>               Defer run to off-peak window (e.g. "auto", "weekly Mon 06:00")
-
-  Schedule subcommands:
-    npx systemix schedule list      List all scheduled systemix runs
-    npx systemix schedule clear     Remove all systemix cron entries
-    npx systemix schedule run       Schedule a sync run (--when, --command)
-
-  Watch options:
-    --dry-run                       Log proposed writes without executing
-    --interval <n>                  Figma poll interval in seconds (default: 60)
-
-  Workflows:
-    figma-to-code  (alias: figma)   /figma → /tokens → /component → /storybook → /deploy
-    token-guard    (alias: guard)   MCP proxy auto-register + token cache layer
+    --dry-run                            Estimate token cost without executing
+    --node <name>                        Target a single component by name
+    --page <name>                        Target a specific Figma page
+    --only tokens|components|styles      Narrow the sync scope
+    --incremental                        Only sync nodes changed since last run
+    --budget <n>                         Abort if estimated token cost exceeds N
+    --file <key>                         Figma file key (overrides project-context.json)
+    --schedule <when>                    Defer run to off-peak window
 
   Examples:
+    npx systemix workflow add design-system
+    npx systemix workflow add hypothesis-validation
     npx systemix init
-    npx systemix add figma
-    npx systemix list
-    npx systemix doctor
     npx systemix sync --dry-run
     npx systemix sync --incremental --budget 20000
-    npx systemix sync --node button-primary --page Components
-    npx systemix sync --schedule "weekly Mon 06:00" --incremental
-    npx systemix schedule run --when "tonight 22:00"
-    npx systemix token-profile ./src
+    npx systemix watch
 
-  Learn more: https://systemix-alpha.vercel.app
+  Learn more: https://getsystemix.vercel.app
 `;
 
 async function main() {
@@ -76,6 +66,17 @@ async function main() {
       break;
     case "add":
       await add(args[0]);
+      break;
+    case "workflow":
+      if (args[0] === "add") {
+        await add(args[1]);
+      } else if (!args[0] || args[0] === "list") {
+        await add(undefined);
+      } else {
+        console.error(`\n  Unknown workflow subcommand: ${args[0]}\n`);
+        console.log("  Usage: npx systemix workflow add <name>\n");
+        process.exit(1);
+      }
       break;
     case "list":
     case "ls":
