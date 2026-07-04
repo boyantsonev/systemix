@@ -36,32 +36,32 @@ export function InstallCommand() {
   );
 }
 
-// ── Book-a-call CTA (the live experiment's conversion event) ──────────────────
-// Fires `book_call_clicked` — the posthog-event of landing-live-loop-2026-06 —
-// tagged with the hero variant so the loop runner can split counts per arm.
+// ── Tracked conversion link ───────────────────────────────────────────────────
+// A plain anchor that fires a PostHog event on click. Used for the book-a-call /
+// sprint CTAs so the `book_a_call` metric the landing experiment measures is real.
 
-export function BookCallLink({
+export function TrackedLink({
   href,
-  source,
+  event,
+  location,
   className,
   children,
 }: {
   href: string;
-  source: "nav" | "services" | "about";
+  event: string;
+  location: string;
   className?: string;
   children: React.ReactNode;
 }) {
   const ph = usePostHog();
+  // Tag conversions with the hero variant so the loop runner can split counts
+  // per arm once a multivariate `landing-hero` flag goes live ("control" until then).
   const variant = useVariant("landing-hero");
   return (
     <a
       href={href}
       className={className}
-      onClick={() => {
-        ph.capture("book_call_clicked", { source, variant });
-        // The engagement funnel (evidence engagement pull) reads nav_cta_click.
-        if (source === "nav") ph.capture("nav_cta_click");
-      }}
+      onClick={() => ph?.capture(event, { location, variant })}
     >
       {children}
     </a>

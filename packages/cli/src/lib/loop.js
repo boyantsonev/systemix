@@ -204,7 +204,13 @@ async function runLoop(root, id, opts = {}) {
     }
 
     const evidence = data["evidence-posthog"];
-    const fresh = evidence && typeof evidence === "object" && evidence.fetched_at === today;
+    // Fresh means fresh IN THE RUNNER'S SHAPE (per-variant counts). The other
+    // evidence writer — `systemix evidence experiment pull` — snapshots a
+    // visitors/rate funnel with no `variants`; treating that as fresh would
+    // park the runner on waiting forever. Shape mismatch → re-pull ours.
+    const fresh =
+      evidence && typeof evidence === "object" && evidence.fetched_at === today &&
+      evidence.variants && typeof evidence.variants === "object";
 
     if (!fresh) {
       // ONE action this iteration: pull evidence, write it back, re-enter.

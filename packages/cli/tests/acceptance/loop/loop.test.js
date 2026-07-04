@@ -128,6 +128,28 @@ describe("systemix loop — the Ralph runner", () => {
     expect(r.stop).toBe("already-complete");
   });
 
+  it("re-pulls when the fresh evidence is the OTHER writer's shape (evidence experiment pull)", async () => {
+    // `systemix evidence experiment pull` writes a visitors/rate snapshot with no
+    // `variants` block. The runner must not treat that as fresh-for-evaluation —
+    // it re-pulls its per-variant shape instead of parking on waiting forever.
+    exp.setMeasurement(root, "x", { event: "book_call_clicked" });
+    const { file, data, content } = exp.getExperiment(root, "x");
+    data["evidence-posthog"] = {
+      fetched_at: "2026-07-04", // fresh today, but the funnel shape
+      source: "live",
+      window_days: 30,
+      visitors: 500,
+      event_count: 12,
+      event_persons: 10,
+      rate: 0.02,
+    };
+    fs.writeFileSync(file, exp.stringifyMdx(content, data), "utf8");
+
+    const r = await runLoop(root, "x", { now: NOW, fetchEvidence: fetcher({ control: 100, variant_b: 130 }) });
+    expect(r.iterations[0].action).toBe("pull+write"); // re-pulled, didn't trust the foreign shape
+    expect(r.stop).toBe("decision-ready");
+  });
+
   it("evaluateEvidence handles a zero-control baseline conservatively (not ready)", () => {
     const v = evaluateEvidence({ variants: { control: 0, variant_b: 50 } });
     expect(v.ready).toBe(false);
