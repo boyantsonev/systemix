@@ -55,6 +55,19 @@ Reviews all running experiments. Surfaces ones with enough evidence to close, on
 
 Each skill is a separate agent invocation with a clean context window — not one long session. The experiment file is the handoff: the next skill reads it cold, does one thing, and writes back. State accumulates in files, not in a session that fills up and loses the thread. That's deliberate — one focused, context-clean run is more reliable than one sprawling one. See [Why files & loops](/docs/concepts/why-files).
 
+## The runner
+
+`systemix loop [<id>]` is the same idea, automated — a Ralph pass. Each iteration re-reads the experiment file fresh, does exactly one thing (pull PostHog evidence → write it into the frontmatter → evaluate against your `hermes.thresholds`), and stops on an explicit state:
+
+| Stop | Meaning |
+|---|---|
+| `decision-ready` | A **close-proposal card** is queued — a human closes, never the runner |
+| `blocked:not-measured` | No `posthog-event` yet — run `/measure` |
+| `blocked:not-wired` | No PostHog creds — run `/connect-signal` |
+| `waiting:insufficient-evidence` | Signal below the dial — loop again after more traffic |
+
+With no `<id>` it sweeps every running experiment — that's what the daily cron calls. The runner advances experiments **to** the decision; the decision itself is always yours (`/close-experiment`, at every autonomy tier).
+
 ## LEARNINGS.md
 
 The compounding memory. Every closed experiment appends one entry with the decision, the confidence, and the transferable insight. Future experiments — and other agents reading via MCP — start from this ledger.

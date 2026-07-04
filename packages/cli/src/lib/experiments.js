@@ -45,7 +45,11 @@ function getExperiment(root, id) {
   const file = layout.abs(root).experimentFile(id);
   if (!fs.existsSync(file)) throw new Error(`experiment not found: ${layout.rel.experimentFile(id)}`);
   const parsed = matter(fs.readFileSync(file, "utf8"));
-  return { file, data: parsed.data || {}, content: parsed.content || "" };
+  // Defensive clone: gray-matter caches parses by content string, so the returned
+  // `data` object is SHARED across identical inputs — callers here mutate data
+  // before writing back (setMeasurement / closeExperiment / the loop runner),
+  // which would poison the cache for any other file with the same bytes.
+  return { file, data: JSON.parse(JSON.stringify(parsed.data || {})), content: parsed.content || "" };
 }
 
 /** Create experiments/<id>.mdx (status: running). Throws if it already exists. */

@@ -40,6 +40,7 @@ Public-release groundwork (Phase 0) in progress:
 
 ## The loop (skills)
 Core: `/init-experiment` → `/write-variants` → `/measure` → `/close-experiment` (captures the decision into the contract Memory) · `/growth-audit` + `/hermes` (synthesize evidence; propose skill/guardrail improvements as HITL) · `/drift-report` (code-first drift). The Figma skills (`/figma`, `/tokens`, `/sync-to-figma`, …) are the **optional** design-engineer adapter.
+Runner: `systemix loop [<id>]` (CLI, daily cron `systemix-loop.yml`) Ralph-drives running experiments to **decision-ready** — evidence pull → evaluate vs thresholds → close-proposal HITL card. It never closes; humans close.
 
 ## MCP Servers
 - **GitHub** (`mcp__github__*`), **Vercel**, **PostHog** — active.

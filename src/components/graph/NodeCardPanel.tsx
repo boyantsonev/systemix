@@ -70,7 +70,7 @@ const NODE_DESC: Record<string, string> = {
   "infra:learnings":
     "The compounding memory ledger. Every closed experiment appends one cited learning; recall seeds the next experiment from it — all three doors read it.",
   "tool:cli":
-    "The systemix CLI — one of three doors onto the loop. Creates experiments and reads the memory ledger (learnings --recent / --for).",
+    "The systemix CLI — one of three doors onto the loop. Creates experiments, reads the memory ledger (learnings --recent / --for), and runs the Ralph runner (systemix loop) that advances experiments to decision-ready.",
   "tool:mcp": "The systemix MCP — experiment_* tools so any agent can drive the loop. One of the three doors.",
 };
 

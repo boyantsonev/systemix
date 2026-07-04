@@ -32,4 +32,4 @@ The curation story has further to run. Three increments, deferred until the loop
 
 - **Compaction.** When the ledger passes ~30–50 entries, roll expired learnings (past their `review-by`) into a "Patterns" summary above `## Memory`, preserving provenance — so recall stays cheap as the ledger grows.
 - **Context events.** Emit a record of *what context entered each run* (which learnings a skill pulled in), making the loop's inputs inspectable, not just its outcomes.
-- **Self-advancing autonomy.** The dial already gates writes by tier; the open question is how far the loop should advance on its own before a human looks. Self-modification stays HITL regardless.
+- ~~**Self-advancing autonomy.**~~ Now real, with the line drawn deliberately: `systemix loop` (the runner, cron-able) advances running experiments to **decision-ready** — fresh evidence, evaluated against the dial, a close-proposal card queued. Closing stays human at every tier: the runner proposes, you decide.
