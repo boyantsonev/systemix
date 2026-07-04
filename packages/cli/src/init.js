@@ -143,8 +143,7 @@ function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier
   L.push("  social:");
   L.push(`    enabled: ${signals.social.enabled}`);
   L.push("hermes:");
-  L.push("  model: hermes3");
-  L.push("  endpoint: http://localhost:11434");
+  L.push("  engine: claude-code   # engine = Claude Code (ADR-019); no local model");
   L.push(`  autonomy: ${autonomy}`);
   L.push("  thresholds:");
   L.push("    high: 0.85");

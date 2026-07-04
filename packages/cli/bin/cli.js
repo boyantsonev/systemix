@@ -40,7 +40,7 @@ const HELP = `
     npx systemix watch                   Continuous Hermes run — watch CSS + poll Figma
     npx systemix social-signal           Log social post metrics into PostHog + hypothesis contract
     npx systemix token-guard [sub]       Manage TokenGuard (status|reset|remove)
-    npx systemix evidence [pull|close]   Pull PostHog data + Hermes synthesis → queue
+    npx systemix evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
     npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
 
   Workflows (install with: npx systemix workflow add <name>):

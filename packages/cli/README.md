@@ -1,8 +1,16 @@
 # systemix
 
-Agentic design-system + hypothesis-validation ops for Claude Code — installed **per repo** as a self-contained instance.
+The validation loop for teams shipping with agents — installed **per repo** as a
+self-contained instance.
 
-`npx systemix init` scaffolds an instance into your repo: skills land in **`.claude/skills/`** (project-scoped, committed, CI-reproducible), and your topology is written to **`systemix.config.yaml`**.
+You ship a variant, measure it, decide, and the decision gets written back as
+durable memory. Systemix is that loop: **ship → measure → learn → decide**, with
+every experiment a plain MDX file in your repo and every closed decision a cited
+line in `experiments/LEARNINGS.md`.
+
+`npx systemix init` scaffolds an instance into your repo: the loop (`experiments/`)
+plus the loop skills in **`.claude/skills/`** (project-scoped, committed,
+CI-reproducible), and your topology in **`systemix.config.yaml`**.
 
 ## Quick start
 
@@ -11,40 +19,76 @@ Agentic design-system + hypothesis-validation ops for Claude Code — installed 
 npx systemix init
 ```
 
-The wizard asks four questions (your instance **topology**):
+The wizard sets up your instance:
 
-| # | Question | Writes to `systemix.config.yaml` |
-|---|----------|----------------------------------|
-| 1 | **Surfaces** — what are you validating? (design-system / hypothesis-validation / both) | `surfaces`, installed skills |
-| 2 | **Signals** — what can Hermes read? (Figma, PostHog, Vercel, …) | `signals`, credentials → `~/.systemix/config.json` |
-| 3 | **Autonomy** — how much does Hermes decide alone? (conservative / balanced / progressive) | `hermes.autonomy` + thresholds |
-| 4 | **Self-improvement** — should Hermes audit its own accuracy? (off / audit / tuning / auto) | `self_improvement.mode` |
+| # | Question | Result |
+|---|----------|--------|
+| 1 | **Design substrate** — scaffold a `design/` folder, point at an existing design system, or skip | optional `design/` + `design.source` in config |
+| 2 | **Signal** — wire PostHog now, or skip (experiments still run without it) | `signals.posthog` in config |
+| 3 | **First experiment** — ICP · JTBD · hypothesis · the AI workflow that tests it · the metric | `experiments/<id>.mdx` |
 
-Then commit `.claude/skills/` + `systemix.config.yaml` so the instance is reproducible in CI.
+The **loop installs always**; the design system is an optional, pluggable substrate.
+After init you have:
+
+```
+experiments/
+  <id>.mdx          ← your first experiment
+  LEARNINGS.md      ← compounding memory; a cited line lands on every close
+  goals/            ← the KPIs experiments roll up to
+.claude/skills/     ← the loop skills, installed project-scoped
+systemix.config.yaml
+```
+
+Commit `experiments/`, `.claude/skills/`, and `systemix.config.yaml` so the instance
+is reproducible in CI.
+
+## Three doors over the same files
+
+The loop is plain MDX you own; drive it however fits your stack — all three read and
+write the same `experiments/` files:
+
+- **Claude Code skills** — `/init-experiment` → `/write-variants` → `/measure` →
+  `/close-experiment` (human-in-the-loop).
+- **CLI** — `systemix experiment new|list|measure|close|learnings|audit` (scriptable in CI).
+- **MCP** — `experiment_*` tools, so any agent or AI client can call the loop.
 
 ## Commands
 
 ```bash
-npx systemix init [--reconfigure]   # setup wizard (--reconfigure overwrites the config)
-npx systemix config show            # print the active instance topology
-npx systemix workflow add <name>    # add a workflow (design-system | hypothesis-validation | figma-to-code | token-guard)
-npx systemix list                   # installed skills + available workflows
-npx systemix doctor                 # health check (skills, MCP server, Ollama, Figma token)
-npx systemix watch                  # run Hermes continuously (polls signals, fills the HITL queue)
-npx systemix sync [--dry-run]       # design-token sync (TokenGuard budget-aware)
+npx systemix init [--reconfigure]    # setup wizard (--reconfigure overwrites config)
+npx systemix experiment <sub>        # drive the loop: new | list | measure | close | learnings | audit
+npx systemix evidence check          # verify PostHog is wired + collecting
+npx systemix config show             # print the active instance topology
+npx systemix list                    # installed skills + available workflows
+npx systemix doctor                  # health check (skills, MCP server, signals)
+npx systemix sync [--dry-run]        # design-token sync (optional design substrate)
+npx systemix tokens                  # convert globals.css → tokens bridge cache
+npx systemix update                  # check + apply npm / skill-pack updates
 ```
 
-## How it runs (no hosted dependency)
+## How it runs
 
-- **Local-first.** Contracts are MDX files in your repo (`contract/**`); the HITL queue, sync log, and run history live under `.systemix/`. No database required to run the loops.
-- **Hermes** is a local LLM via [Ollama](https://ollama.com) (`localhost:11434`) — air-gapped, no API key.
-- **Agents** boot at **Trust Tier 0** (Ghost Mode) — nothing executes autonomously without your `systemix.config.yaml`.
-- The **MCP server** exposes your contracts to Claude Code / Cursor so coding agents read what's been tested before they ship.
+- **Engine = Claude Code.** Synthesis, decisions, and the write-back run in Claude
+  Code — no API key juggling, no local model required. (An air-gapped local-model
+  mode is a deferred roadmap option, not a dependency.)
+- **Local-first, no platform.** Experiments are MDX in your repo (`experiments/**`);
+  the HITL queue and run state live under `.systemix/`. No database to run the loop.
+- **Ghost by default.** Instances start at **ghost** autonomy — the engine proposes
+  every write as a decision card; nothing lands without a human approve.
+- **MCP server** exposes the loop (and any design substrate) to Claude Code / Cursor,
+  so coding agents read what's been tested before they ship.
+
+## Connect a signal (optional but recommended)
+
+Experiments author and run with no data source — they just can't *measure* until a
+signal is wired. Today the adapter is **PostHog**; run `/connect-signal` after init
+to wire the capture key + reverse proxy, verify with `systemix evidence check`, then
+flip `signals.posthog.enabled` on. The `signals.<source>` block is the pluggable seam
+for future sources.
 
 ## Requirements
 
 - Node.js ≥ 18
 - Claude Code (or any MCP-compatible client)
-- Ollama + a model (e.g. `ollama pull hermes3`) for autonomous Hermes runs
 
 Learn more: https://getsystemix.vercel.app

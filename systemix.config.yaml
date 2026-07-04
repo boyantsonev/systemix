@@ -20,8 +20,7 @@ signals:
   social:
     enabled: false
 hermes:
-  model: hermes3
-  endpoint: http://localhost:11434
+  engine: claude-code   # engine = Claude Code (ADR-019); no local model
   autonomy: ghost
   thresholds:
     high: 0.85

@@ -269,16 +269,8 @@ async function handleTokenChanges(projectRoot, changes, dryRun) {
         fs.writeFileSync(mdxPath, patched, "utf8");
         writeRunLog(projectRoot, { ...logEntry, action: "autonomous-write" });
         writeEvent(projectRoot, { type: "contract-updated", slug: change.tokenName, contractType: "token" });
-        // Fire Hermes prose authoring in background — non-blocking, non-fatal
-        const { data: fmData } = parseFrontmatterFlat(patched);
-        authorTokenProseWithHermes(
-          projectRoot,
-          String(fmData.token ?? change.tokenName),
-          change.newValue,
-          fmData["figma-value"] ? String(fmData["figma-value"]) : null,
-          String(fmData.status ?? "unknown"),
-          String(fmData.collection ?? ""),
-        ).catch(() => {});
+        // Prose authoring (the rationale) is a Claude job now — run `/hermes` or the
+        // design-system skills. No local model here (ADR-019: engine = Claude Code).
       } else {
         console.log(`  [css-diff] [dry-run] Would write ${change.tokenName} = ${change.newValue}`);
       }
@@ -299,65 +291,6 @@ async function handleTokenChanges(projectRoot, changes, dryRun) {
       }
     }
   }));
-}
-
-// ── Hermes prose authoring for token contracts ────────────────────────────────
-
-function parseFrontmatterFlat(raw) {
-  const data = {};
-  const m = raw.match(/^---[\r\n]+([\s\S]*?)[\r\n]+---/);
-  if (!m) return { data };
-  for (const line of m[1].split(/\r?\n/)) {
-    const colon = line.indexOf(":");
-    if (colon === -1) continue;
-    const key = line.slice(0, colon).trim();
-    const val = line.slice(colon + 1).trim().replace(/^['"]|['"]$/g, "");
-    data[key] = val === "null" ? null : val === "true" ? true : val === "false" ? false : val;
-  }
-  return { data };
-}
-
-async function authorTokenProseWithHermes(projectRoot, token, value, figmaValue, status, collection) {
-  const mdxPath = path.join(projectRoot, "contract", "tokens", `${token}.mdx`);
-  if (!fs.existsSync(mdxPath)) return;
-
-  const prompt = `You are Hermes, a design system synthesis agent. Write a 2-4 sentence rationale for the following design token. Explain its current value, status, and why it matters. Do not repeat the token name mechanically. Plain prose only — no markdown, no frontmatter, no bullet points.
-
-Token: ${token}
-Value (code): ${value}
-Figma value: ${figmaValue ?? "not in Figma"}
-Status: ${status}
-Collection: ${collection}
-Date: ${new Date().toISOString().slice(0, 10)}`;
-
-  let prose;
-  try {
-    const res = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "hermes3", prompt, stream: false }),
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!res.ok) return;
-    const json = await res.json();
-    prose = json.response?.trim();
-  } catch {
-    return; // Ollama unavailable — non-fatal
-  }
-
-  if (!prose || prose.length < 10) return;
-
-  // Replace prose body (everything after the closing ---), preserving frontmatter
-  const current = fs.readFileSync(mdxPath, "utf8");
-  const fmEnd = current.indexOf("\n---\n", 3);
-  if (fmEnd === -1) return;
-  const frontmatter = current.slice(0, fmEnd + 5); // up to and including closing ---\n
-  const updated = frontmatter + "\n" + prose + "\n";
-
-  const tmp = mdxPath + ".tmp";
-  fs.writeFileSync(tmp, updated, "utf8");
-  fs.renameSync(tmp, mdxPath);
-  console.log(`  [hermes] Authored prose for ${token}`);
 }
 
 // ── Token + contract regeneration ────────────────────────────────────────────
@@ -416,124 +349,6 @@ async function pollFigma(projectRoot, dryRun) {
   // contract/tokens/*.mdx, and either writes MDX (high confidence) or
   // pushes to queue.json (low confidence).
   console.log("  [figma] Diff complete — no changes detected.");
-}
-
-// ── Hermes synthesis ──────────────────────────────────────────────────────────
-
-function buildSynthesisPrompt(componentName, contractText, evidence) {
-  const topVariant = evidence.topVariant ?? "none tracked";
-  const variantLines = Object.entries(evidence.variants ?? {})
-    .map(([v, d]) => `  ${v}: ${d.renders} renders, ${d.uniqueUsers} unique users`)
-    .join("\n");
-  const pageLines = (evidence.topPages ?? [])
-    .slice(0, 3)
-    .map(({ page, renders }) => `  ${page}: ${renders} renders`)
-    .join("\n");
-
-  return `You are Hermes, a design system synthesis agent. Read the component contract and production evidence below. Generate a structured decision card in YAML format only — no prose, no markdown fences, just the YAML block.
-
-Component: ${componentName}
-Total renders (30d): ${evidence.totalRenders}
-Top variant: ${topVariant}
-Variant breakdown:
-${variantLines || "  (no variant data)"}
-Top pages:
-${pageLines || "  (no page data)"}
-
-Contract:
-${contractText.slice(0, 1500)}
-
-Generate EXACTLY this YAML structure (no other text):
-hypothesis: <one sentence — what the evidence reveals about how this component is used>
-recommendation: <one of: promote | iterate | investigate | no-action>
-confidence: <decimal 0.0 to 1.0>
-rationale: <2-3 sentences grounded in the evidence and contract history>
-next_action: <one concrete thing to test or change next>`;
-}
-
-function parseSynthesisCard(raw) {
-  // Extract fields from a loose YAML response
-  const get = (key) => {
-    const m = raw.match(new RegExp(`^${key}:\\s*(.+)$`, "m"));
-    return m ? m[1].trim().replace(/^["']|["']$/g, "") : null;
-  };
-  const hypothesis    = get("hypothesis");
-  const recommendation = get("recommendation");
-  const confidenceRaw = get("confidence");
-  const rationale     = get("rationale");
-  const nextAction    = get("next_action");
-
-  if (!hypothesis || !recommendation) return null;
-
-  const confidence = parseFloat(confidenceRaw ?? "0") || 0;
-  const validRec = ["promote", "iterate", "investigate", "no-action"];
-  return {
-    hypothesis,
-    recommendation: validRec.includes(recommendation) ? recommendation : "investigate",
-    confidence,
-    rationale: rationale ?? "",
-    nextAction: nextAction ?? "",
-  };
-}
-
-async function synthesizeWithHermes(projectRoot, componentName, evidence) {
-  if (!evidence || evidence.totalRenders < 100) return; // not enough signal
-
-  const mdxPath = path.join(projectRoot, "contract", "components", `${componentName}.mdx`);
-  if (!fs.existsSync(mdxPath)) return;
-  const contractText = fs.readFileSync(mdxPath, "utf8");
-
-  // Skip if we already synthesized this evidence (same totalRenders)
-  const synthStampPath = path.join(projectRoot, ".systemix", "synthesis-stamps.json");
-  let stamps = {};
-  try { stamps = JSON.parse(fs.readFileSync(synthStampPath, "utf8")); } catch {}
-  if (stamps[componentName] === evidence.totalRenders) return;
-
-  console.log(`  [hermes] Synthesizing ${componentName} (${evidence.totalRenders} renders)...`);
-
-  const prompt = buildSynthesisPrompt(componentName, contractText, evidence);
-  let raw;
-  try {
-    const res = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "hermes3", prompt, stream: false }),
-      signal: AbortSignal.timeout(30_000),
-    });
-    if (!res.ok) { console.warn(`  [hermes] Ollama error: ${res.status}`); return; }
-    const json = await res.json();
-    raw = json.response?.trim();
-  } catch (err) {
-    console.log(`  [hermes] Ollama unavailable — skipping synthesis for ${componentName}.`);
-    return;
-  }
-
-  if (!raw) return;
-  const card = parseSynthesisCard(raw);
-  if (!card) {
-    console.warn(`  [hermes] Could not parse synthesis response for ${componentName}.`);
-    return;
-  }
-
-  pushToQueue(projectRoot, {
-    type: "hypothesis-validation",
-    component: componentName,
-    hypothesis: card.hypothesis,
-    proposal: card.nextAction,
-    context: card.rationale,
-    confidence: card.confidence,
-    confidenceLevel: card.confidence,
-    recommendation: card.recommendation,
-    totalRenders: evidence.totalRenders,
-    topVariant: evidence.topVariant,
-  });
-
-  // Stamp so we don't re-synthesize the same data next cycle
-  stamps[componentName] = evidence.totalRenders;
-  const dir = path.dirname(synthStampPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(synthStampPath, JSON.stringify(stamps, null, 2));
-  console.log(`  [hermes] ${componentName} → ${card.recommendation} (confidence: ${card.confidence})`);
 }
 
 // ── PostHog evidence refresh ──────────────────────────────────────────────────
@@ -707,8 +522,8 @@ async function pollPostHog(projectRoot, dryRun) {
       topVariant,
     });
 
-    // Trigger Hermes synthesis now that evidence is fresh
-    await synthesizeWithHermes(projectRoot, componentName, evidence);
+    // Evidence is fresh in the contract; synthesis is a Claude job now (`/hermes`
+    // or `systemix evidence experiment pull`) — no local model in the daemon (ADR-019).
 
     updatedCount++;
   }

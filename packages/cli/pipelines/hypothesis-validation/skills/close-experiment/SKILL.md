@@ -24,12 +24,16 @@ Read `experiments/<id>.mdx` (the `<id>` from `$ARGUMENTS`). Show the
 assumption/hypothesis, the variants, and the current evidence in its frontmatter.
 
 ### Step 2 — Read the evidence
-Using the experiment's `posthog-event` / `metric` (wired by `/measure`), fetch the
-latest data via the PostHog MCP. Compute:
-- Total samples; per-variant counts and % share
-- Leading variant and lift over control (%)
-- Confidence: ≥20% lift AND ≥100 samples → `high` (0.85); 5–20% → `medium` (0.6);
-  below 5% → `low` (0.3)
+Using the experiment's `posthog-event` / `metric` (wired by `/measure`), get the latest
+data. Preferred (deterministic, no MCP needed): run
+`npx systemix evidence experiment pull --experiment <id>` — it queries PostHog with the
+server key, writes the `evidence-posthog` block into the contract, and queues a card.
+If the PostHog MCP is connected you may read it directly instead. Then compute:
+- Total samples (visitors); the event rate (conversions / visitors)
+- Per-variant counts + lift over control **only if** the experiment is actually A/B-split
+  in code (a single-variant funnel has no control — read it as a rate, honestly)
+- Confidence is data-strength by sample size: ≥1000 → `high` (0.8); ≥100 → `medium`
+  (0.5); >0 → `low` (0.2); 0 → none
 
 ### Step 3 — Determine the decision
 | Evidence | Decision |

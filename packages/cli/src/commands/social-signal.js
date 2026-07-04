@@ -22,7 +22,7 @@ const os       = require("os");
 const https    = require("https");
 const readline = require("readline");
 
-const HYPOTHESIS_DIR  = path.join(process.cwd(), "contract", "hypotheses");
+const HYPOTHESIS_DIR  = path.join(process.cwd(), "experiments");
 const USER_CONFIG     = path.join(os.homedir(), ".systemix", "config.json");
 const POSTHOG_HOST    = (process.env.POSTHOG_HOST ?? "https://app.posthog.com").replace(/\/$/, "");
 const PLATFORMS       = ["linkedin", "x", "reddit", "threads", "other"];
@@ -224,7 +224,7 @@ async function socialSignal(args) {
     .map(([k, v]) => `${k}: ${v.toLocaleString()}`)
     .join("  ·  ");
 
-  console.log(`  ✓  Updated contract/hypotheses/${hypothesisId}.mdx`);
+  console.log(`  ✓  Updated experiments/${hypothesisId}.mdx`);
   if (metricSummary) console.log(`     ${metricSummary}`);
 
   console.log(`\n  Run /growth-audit to include this signal in the evidence brief.\n`);

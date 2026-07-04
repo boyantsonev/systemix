@@ -21,10 +21,10 @@ const nextConfig: NextConfig = {
       { source: "/design-system/decisions",            destination: "/contract/decisions",              permanent: false },
       { source: "/design-system/tokens",               destination: "/contract",                        permanent: false },
       { source: "/design-system/components",           destination: "/contract",                        permanent: false },
-      { source: "/design-system/hypotheses",           destination: "/contract",                        permanent: false },
+      { source: "/design-system/hypotheses",           destination: "/experiments",                     permanent: false },
       { source: "/design-system/tokens/:slug",         destination: "/contract/tokens/:slug",           permanent: false },
       { source: "/design-system/components/:slug",     destination: "/contract/components/:slug",       permanent: false },
-      { source: "/design-system/hypotheses/:slug",     destination: "/contract/hypotheses/:slug",       permanent: false },
+      { source: "/design-system/hypotheses/:slug",     destination: "/experiments/:slug",               permanent: false },
       { source: "/docs/concepts/memory-layer",         destination: "/docs/concepts/evidence-layer",    permanent: true  },
     ];
   },

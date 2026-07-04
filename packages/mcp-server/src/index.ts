@@ -11,7 +11,7 @@
  *   events   — emit_event, list_events
  *   hitl     — push_hitl_task, resolve_hitl_task, list_hitl_tasks
  *   workflow — list_workflows, get_workflow
- *   contract — contract_get_token, contract_list_drifted, contract_get_component, contract_get_quality_score, contract_get_evidence, contract_write_evidence, contract_get_hypothesis, contract_list_hypotheses, contract_write_hypothesis_result
+ *   contract — contract_get_token, contract_list_drifted, contract_get_component, contract_get_quality_score, contract_get_evidence, contract_write_evidence
  *   experiment — experiment_list, experiment_get, experiment_new, experiment_measure, experiment_close, experiment_learnings (the v6 loop over experiments/)
  *
  * Usage:
@@ -83,12 +83,6 @@ import {
   contractGetEvidenceHandler,
   contractWriteEvidenceDefinition,
   contractWriteEvidenceHandler,
-  contractGetHypothesisDefinition,
-  contractGetHypothesisHandler,
-  contractListHypothesesDefinition,
-  contractListHypothesesHandler,
-  contractWriteHypothesisResultDefinition,
-  contractWriteHypothesisResultHandler,
 } from "./tools/contract.js";
 
 import {
@@ -148,9 +142,6 @@ const tools = [
   contractGetQualityScoreDefinition,
   contractGetEvidenceDefinition,
   contractWriteEvidenceDefinition,
-  contractGetHypothesisDefinition,
-  contractListHypothesesDefinition,
-  contractWriteHypothesisResultDefinition,
   experimentListDefinition,
   experimentGetDefinition,
   experimentNewDefinition,
@@ -180,9 +171,6 @@ const handlers = new Map<string, (args: Record<string, unknown>) => Promise<Tool
   [contractGetQualityScoreDefinition.name, (_a) => contractGetQualityScoreHandler({}, PROJECT_ROOT)],
   [contractGetEvidenceDefinition.name, (a) => contractGetEvidenceHandler(a as Parameters<typeof contractGetEvidenceHandler>[0], PROJECT_ROOT)],
   [contractWriteEvidenceDefinition.name, (a) => contractWriteEvidenceHandler(a as unknown as Parameters<typeof contractWriteEvidenceHandler>[0], PROJECT_ROOT)],
-  [contractGetHypothesisDefinition.name, (a) => contractGetHypothesisHandler(a as Parameters<typeof contractGetHypothesisHandler>[0], PROJECT_ROOT)],
-  [contractListHypothesesDefinition.name, (a) => contractListHypothesesHandler(a as Parameters<typeof contractListHypothesesHandler>[0], PROJECT_ROOT)],
-  [contractWriteHypothesisResultDefinition.name, (a) => contractWriteHypothesisResultHandler(a as unknown as Parameters<typeof contractWriteHypothesisResultHandler>[0], PROJECT_ROOT)],
   [experimentListDefinition.name, (a) => experimentListHandler(a as Parameters<typeof experimentListHandler>[0], PROJECT_ROOT)],
   [experimentGetDefinition.name, (a) => experimentGetHandler(a as Parameters<typeof experimentGetHandler>[0], PROJECT_ROOT)],
   [experimentNewDefinition.name, (a) => experimentNewHandler(a as Parameters<typeof experimentNewHandler>[0], PROJECT_ROOT)],

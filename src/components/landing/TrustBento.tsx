@@ -3,6 +3,11 @@ import { SiGithub, SiClaude } from "@icons-pack/react-simple-icons";
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { trust } from "@/lib/landing/content";
 import { SectionGrid } from "./SectionGrid";
+import { MediaSlot } from "./MediaSlot";
+
+/** "loop-demo.gif" → "loop demo" — a readable placeholder label. */
+const mediaLabel = (file?: string) =>
+  file ? file.replace(/\.(gif|mp4|png|webm)$/i, "").replace(/-/g, " ") : "media";
 
 const ICONS: Record<string, React.ElementType> = {
   oss: SiGithub,
@@ -30,8 +35,13 @@ export function TrustBento() {
           className={t.span === 2 ? "col-span-3 lg:col-span-2" : "col-span-3 lg:col-span-1"}
           background={
             t.media ? (
-              <div className="absolute inset-0 [mask-image:linear-gradient(to_top,transparent_42%,black_82%)]">
-                <SectionGrid {...GRID_CONFIGS[t.key]} />
+              <div className="absolute inset-0">
+                <div className="absolute inset-0 [mask-image:linear-gradient(to_top,transparent_42%,black_82%)]">
+                  <SectionGrid {...GRID_CONFIGS[t.key]} />
+                </div>
+                <div className="relative p-5">
+                  <MediaSlot label={mediaLabel(t.media)} className="h-24 w-full" />
+                </div>
               </div>
             ) : (
               <div className="absolute inset-0" />

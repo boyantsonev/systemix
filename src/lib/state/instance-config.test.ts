@@ -32,8 +32,7 @@ signals:
   vercel:
     enabled: true
 hermes:
-  model: hermes3
-  endpoint: http://localhost:11434
+  engine: claude-code
   autonomy: balanced
   thresholds:
     high: 0.85

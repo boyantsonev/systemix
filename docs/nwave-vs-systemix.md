@@ -9,6 +9,10 @@ sources:
 
 # nWave vs Systemix
 
+> ⚠️ **Historical (pre-v6, 2026-06-13).** Mentions of Ollama-tier profiles are superseded by
+> ADR-019 (engine = Claude Code; local-model mode deferred). Kept as competitive history —
+> see `decisions/ADR.md` for current truth.
+
 > The thing you intuited is the headline: **nWave's product *is* its GitHub repo.** A thin marketing
 > SPA, deep in-repo docs, an MIT CLI, and **stars/forks as the traction signal**. It is dogfood and
 > magnet at once. That model is directly transferable to Systemix — and validates the pivot.

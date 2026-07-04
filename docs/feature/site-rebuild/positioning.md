@@ -1,5 +1,9 @@
 # Positioning — Message Architecture
 
+> ⚠️ **Historical (site-rebuild wave).** Pre-dates v6 — the "Hermes on Ollama / no cloud"
+> positioning is superseded by ADR-019 (engine = Claude Code). Kept as decision history;
+> current truth lives in `decisions/ADR.md` and `content/docs/`.
+
 **Derives from:** [`product-model.md`](./product-model.md). Read that first.
 
 This doc fixes *what the site says and in what order*. It governs `landing-ia.md`

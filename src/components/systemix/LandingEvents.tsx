@@ -36,6 +36,35 @@ export function InstallCommand() {
   );
 }
 
+// ── Tracked conversion link ───────────────────────────────────────────────────
+// A plain anchor that fires a PostHog event on click. Used for the book-a-call /
+// sprint CTAs so the `book_a_call` metric the landing experiment measures is real.
+
+export function TrackedLink({
+  href,
+  event,
+  location,
+  className,
+  children,
+}: {
+  href: string;
+  event: string;
+  location: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ph = usePostHog();
+  return (
+    <a
+      href={href}
+      className={className}
+      onClick={() => ph?.capture(event, { location })}
+    >
+      {children}
+    </a>
+  );
+}
+
 // ── Section view tracker (Intersection Observer) ──────────────────────────────
 
 export function SectionTrack({ name, experimentId, children, className }: {
