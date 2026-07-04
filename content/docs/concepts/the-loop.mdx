@@ -57,7 +57,7 @@ Each skill is a separate agent invocation with a clean context window — not on
 
 ## The runner
 
-`systemix loop [<id>]` is the same idea, automated — a Ralph pass. Each iteration re-reads the experiment file fresh, does exactly one thing (pull PostHog evidence → write it into the frontmatter → evaluate against your `hermes.thresholds`), and stops on an explicit state:
+`systemix loop [<id>]` is the same idea, automated — a Ralph pass. Each iteration re-reads the experiment file fresh, does exactly one thing (pull PostHog evidence → write it into the frontmatter → evaluate against your `hermes.thresholds`), and stops on an explicit state. Evaluation is variant-lift when an A/B split is live, or the current window vs the prior one when the experiment is single-arm:
 
 | Stop | Meaning |
 |---|---|

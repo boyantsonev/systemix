@@ -133,6 +133,31 @@ describe("systemix loop — the Ralph runner", () => {
     expect(v.ready).toBe(false);
   });
 
+  it("single-arm: evaluates against the PRIOR window when there is no A/B split", async () => {
+    exp.setMeasurement(root, "x", { event: "book_call_clicked" });
+    // all events uncategorised → one 'control' bucket; prior 30d had 100, current has 150
+    const r = await runLoop(root, "x", {
+      now: NOW,
+      fetchEvidence: async () => ({ wired: true, variants: { control: 150 }, prev_total: 100, source: "test" }),
+    });
+    expect(r.stop).toBe("decision-ready");
+    expect(readMdx(root, "x").data["evidence-posthog"].prev_total).toBe(100); // baseline persisted
+    const card = readQueue(root).cards[0];
+    expect(card).toMatchObject({ recommendedDecision: "promote", confidence: 0.85 });
+    expect(card.summary).toContain("the prior 30d"); // vs prior window, not control
+  });
+
+  it("single-arm with no prior baseline stays waiting (fresh instrumentation)", async () => {
+    exp.setMeasurement(root, "x", { event: "book_call_clicked" });
+    const r = await runLoop(root, "x", {
+      now: NOW,
+      fetchEvidence: async () => ({ wired: true, variants: {}, prev_total: 0, source: "test" }),
+    });
+    expect(r.stop).toBe("waiting:insufficient-evidence");
+    expect(r.note).toContain("no prior-window baseline");
+    expect(readQueue(root).cards).toHaveLength(0);
+  });
+
   it("CLI door: `loop` (no id) sweeps all running experiments", async () => {
     exp.createExperiment(root, "y", { now: NOW });
     exp.setMeasurement(root, "x", { event: "book_call_clicked" });

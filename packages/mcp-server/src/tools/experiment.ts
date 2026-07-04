@@ -46,7 +46,12 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
     if (rawVal === "true") { data[key] = true; continue; }
     if (rawVal === "false") { data[key] = false; continue; }
     if (rawVal === "null" || rawVal === "~" || rawVal === "") { data[key] = null; continue; }
-    if ((rawVal.startsWith('"') && rawVal.endsWith('"')) || (rawVal.startsWith("'") && rawVal.endsWith("'"))) {
+    if (rawVal.startsWith("'") && rawVal.endsWith("'")) {
+      // YAML single-quoted style escapes apostrophes by doubling them.
+      data[key] = rawVal.slice(1, -1).replace(/''/g, "'");
+      continue;
+    }
+    if (rawVal.startsWith('"') && rawVal.endsWith('"')) {
       data[key] = rawVal.slice(1, -1);
       continue;
     }

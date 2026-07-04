@@ -15,6 +15,30 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 const isoDay = (d) => d.toISOString().slice(0, 10);
 
+/**
+ * Deep-copy parsed frontmatter into fresh plain objects, converting YAML
+ * timestamps back to YYYY-MM-DD strings (js-yaml parses bare dates as Date;
+ * re-dumping a Date would silently turn `created: 2026-06-18` into a full ISO
+ * timestamp). Doubles as the defensive clone against gray-matter's parse cache.
+ */
+function normalize(v) {
+  if (v instanceof Date) return isoDay(v);
+  if (Array.isArray(v)) return v.map(normalize);
+  if (v && typeof v === "object") {
+    const o = {};
+    for (const k of Object.keys(v)) o[k] = normalize(v[k]);
+    return o;
+  }
+  return v;
+}
+
+/**
+ * Serialize an experiment back to MDX. `lineWidth: -1` keeps every scalar on
+ * ONE line (no `>-` folded blocks) — the MCP door's flat frontmatter parser
+ * and grep-ability both depend on single-line values.
+ */
+const stringifyMdx = (content, data) => matter.stringify(content, data, { lineWidth: -1 });
+
 /** List experiment ids (top-level experiments/*.mdx, excluding the _example). */
 function listExperiments(root, { status } = {}) {
   const dir = layout.abs(root).experiments;
@@ -45,11 +69,11 @@ function getExperiment(root, id) {
   const file = layout.abs(root).experimentFile(id);
   if (!fs.existsSync(file)) throw new Error(`experiment not found: ${layout.rel.experimentFile(id)}`);
   const parsed = matter(fs.readFileSync(file, "utf8"));
-  // Defensive clone: gray-matter caches parses by content string, so the returned
-  // `data` object is SHARED across identical inputs — callers here mutate data
-  // before writing back (setMeasurement / closeExperiment / the loop runner),
-  // which would poison the cache for any other file with the same bytes.
-  return { file, data: JSON.parse(JSON.stringify(parsed.data || {})), content: parsed.content || "" };
+  // Defensive clone (via normalize): gray-matter caches parses by content string,
+  // so the returned `data` object is SHARED across identical inputs — callers here
+  // mutate data before writing back (setMeasurement / closeExperiment / the loop
+  // runner), which would poison the cache for any other file with the same bytes.
+  return { file, data: normalize(parsed.data || {}), content: parsed.content || "" };
 }
 
 /** Create experiments/<id>.mdx (status: running). Throws if it already exists. */
@@ -86,7 +110,7 @@ function createExperiment(root, id, fields = {}) {
     "review-by": null,
   };
   const body = `\n# ${id}\n\n${fields.rationale ?? "Why this hypothesis — the ICP + job-to-be-done, the given (prompt/context), the AI workflow you are testing, the conclusion (win-state), and the metric that proves it."}\n`;
-  fs.writeFileSync(file, matter.stringify(body, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(body, data), "utf8");
   return file;
 }
 
@@ -95,7 +119,7 @@ function setMeasurement(root, id, { event, metric } = {}) {
   const { file, data, content } = getExperiment(root, id);
   if (event) data["posthog-event"] = event;
   if (metric) data.metric = metric;
-  fs.writeFileSync(file, matter.stringify(content, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(content, data), "utf8");
   return { file, "posthog-event": data["posthog-event"], metric: data.metric };
 }
 
@@ -114,7 +138,7 @@ function closeExperiment(root, id, { result, decision, confidence, learning, now
   if (decision != null) data.decision = decision;
   if (confidence != null) data.confidence = confidence;
   data["review-by"] = reviewBy;
-  fs.writeFileSync(file, matter.stringify(content, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(content, data), "utf8");
 
   const title = learning || result || id;
   // When a distinct learning title is given, the result becomes the evidence sentence
@@ -268,4 +292,5 @@ module.exports = {
   // internals exported for reuse/tests
   appendLearning,
   pushQueueCard,
+  stringifyMdx,
 };

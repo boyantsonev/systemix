@@ -22,7 +22,6 @@
 //   max-iterations                  safety cap hit
 
 const fs = require("fs");
-const matter = require("gray-matter");
 const layout = require("./layout");
 const exp = require("./experiments");
 
@@ -40,21 +39,37 @@ async function fetchPosthogEvidence({ event, days }) {
   if (!apiKey || !projectId) return { wired: false };
 
   const safeEvent = String(event).replace(/'/g, "\\'");
-  const query =
-    `SELECT coalesce(nullIf(toString(properties.variant), ''), 'control') AS variant, count() AS n ` +
-    `FROM events WHERE event = '${safeEvent}' AND timestamp >= now() - toIntervalDay(${Number(days)}) ` +
-    `GROUP BY variant`;
-  try {
+  const n = Number(days);
+  const hogql = async (query) => {
     const resp = await fetch(`${host}/api/projects/${projectId}/query`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({ query: { kind: "HogQLQuery", query } }),
     });
-    if (!resp.ok) return { wired: true, error: `PostHog query ${resp.status}` };
-    const rows = (await resp.json()).results ?? [];
+    if (!resp.ok) throw new Error(`PostHog query ${resp.status}`);
+    return (await resp.json()).results ?? [];
+  };
+
+  try {
+    const rows = await hogql(
+      `SELECT coalesce(nullIf(toString(properties.variant), ''), 'control') AS variant, count() AS n ` +
+        `FROM events WHERE event = '${safeEvent}' AND timestamp >= now() - toIntervalDay(${n}) ` +
+        `GROUP BY variant`,
+    );
     const variants = {};
-    for (const [variant, n] of rows) variants[String(variant)] = Number(n) || 0;
-    return { wired: true, variants, source: "live" };
+    for (const [variant, count] of rows) variants[String(variant)] = Number(count) || 0;
+
+    // Single-arm (no A/B split live): the baseline is the PRIOR window — the
+    // experiment's conclusion is "the rate lifts", not "variant beats control".
+    let prev_total;
+    if (Object.keys(variants).length <= 1) {
+      const prev = await hogql(
+        `SELECT count() AS n FROM events WHERE event = '${safeEvent}' ` +
+          `AND timestamp >= now() - toIntervalDay(${2 * n}) AND timestamp < now() - toIntervalDay(${n})`,
+      );
+      prev_total = Number(prev[0]?.[0]) || 0;
+    }
+    return { wired: true, variants, ...(prev_total != null ? { prev_total } : {}), source: "live" };
   } catch (err) {
     return { wired: true, error: err.message };
   }
@@ -68,16 +83,33 @@ async function fetchPosthogEvidence({ event, days }) {
 function evaluateEvidence(evidence, thresholds = DEFAULT_THRESHOLDS) {
   const variants = evidence?.variants ?? {};
   const names = Object.keys(variants);
-  if (!names.length) return { ready: false, reason: "no variant counts" };
+  const total = names.reduce((s, n) => s + (Number(variants[n]) || 0), 0);
 
-  const control = Number(variants.control ?? 0);
-  const others = names.filter((n) => n !== "control");
-  const best = others.length
-    ? others.reduce((a, b) => (Number(variants[b]) > Number(variants[a]) ? b : a))
-    : null;
-  const samples = names.reduce((s, n) => s + (Number(variants[n]) || 0), 0);
-  const liftPct =
-    best != null && control > 0 ? ((Number(variants[best]) - control) / control) * 100 : null;
+  let best;
+  let samples;
+  let liftPct;
+  let baseline;
+
+  if (names.length <= 1) {
+    // Single-arm: no live A/B split — measure the rate against the PRIOR window.
+    const prev = Number(evidence?.prev_total);
+    if (!Number.isFinite(prev) || prev <= 0) {
+      return { ready: false, samples: total, confidence: 0.3, reason: "no prior-window baseline yet (single-arm experiment)" };
+    }
+    baseline = "prior-window";
+    best = names[0] ?? "current";
+    samples = total + prev;
+    liftPct = ((total - prev) / prev) * 100;
+  } else {
+    baseline = "control";
+    const control = Number(variants.control ?? 0);
+    const others = names.filter((n) => n !== "control");
+    best = others.length
+      ? others.reduce((a, b) => (Number(variants[b]) > Number(variants[a]) ? b : a))
+      : null;
+    samples = total;
+    liftPct = best != null && control > 0 ? ((Number(variants[best]) - control) / control) * 100 : null;
+  }
 
   if (liftPct == null) {
     return { ready: false, samples, liftPct, confidence: 0.3, reason: "lift not computable (no control baseline or no variant)" };
@@ -95,6 +127,7 @@ function evaluateEvidence(evidence, thresholds = DEFAULT_THRESHOLDS) {
     samples,
     liftPct: Math.round(liftPct * 10) / 10,
     best,
+    baseline,
     reason: ready ? undefined : `confidence ${confidence} below the ${thresholds.medium} gate (lift ${Math.round(liftPct * 10) / 10}%, n=${samples})`,
   };
 }
@@ -121,7 +154,8 @@ function pushCloseProposal(root, { id, verdict, days, now }) {
     recommendedDecision: verdict.decision,
     confidence: verdict.confidence,
     summary:
-      `${verdict.best ?? "variant"} vs control: lift ${verdict.liftPct}% over ${days}d (n=${verdict.samples}). ` +
+      `${verdict.best ?? "variant"} vs ${verdict.baseline === "prior-window" ? `the prior ${days}d` : "control"}: ` +
+      `lift ${verdict.liftPct}% over ${days}d (n=${verdict.samples}). ` +
       `Recommended: ${verdict.decision}. Close it with /close-experiment ${id} — the runner never closes.`,
     proposedBy: "loop-runner",
     status: "pending",
@@ -189,8 +223,9 @@ async function runLoop(root, id, opts = {}) {
         source: pulled.source ?? "live",
         samples: Object.values(pulled.variants ?? {}).reduce((s, n) => s + (Number(n) || 0), 0),
         variants: pulled.variants ?? {},
+        ...(pulled.prev_total != null ? { prev_total: pulled.prev_total } : {}),
       };
-      fs.writeFileSync(file, matter.stringify(content, data), "utf8");
+      fs.writeFileSync(file, exp.stringifyMdx(content, data), "utf8");
       iterations.push({ i, stage: "evidence", action: "pull+write" });
       log(`  [${i}] evidence pulled (${data["evidence-posthog"].samples} events / ${days}d) → ${layout.rel.experimentFile(id)}`);
       continue;

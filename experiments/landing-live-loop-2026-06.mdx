@@ -3,42 +3,42 @@ type: experiment
 id: landing-live-loop-2026-06
 section: landing
 icp: pre-pmf-founder
-jtbd: "know whether an idea is worth a sprint before building it"
+jtbd: know whether an idea is worth a sprint before building it
 goal: consultancy-leads
-hypothesis: "Seeing Systemix's own loop running live — real experiments rendered as their AI workflows — converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch or a hands-on trial."
-given: "a pre-PMF founder lands on Systemix with a half-formed idea and an agent-heavy stack"
-conclusion: "founders who see the live, dogfooded loop book a call at a meaningfully higher rate than those who only get the feature pitch"
+hypothesis: 'Seeing Systemix''s own loop running live — real experiments rendered as their AI workflows — converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch or a hands-on trial.'
+given: a pre-PMF founder lands on Systemix with a half-formed idea and an agent-heavy stack
+conclusion: 'founders who see the live, dogfooded loop book a call at a meaningfully higher rate than those who only get the feature pitch'
 status: running
 metric: book-a-call-rate
 variants:
-  control: "a feature-list pitch of what Systemix does"
-  variant_b: "the live, dogfooded loop — the /experiments surface showing real experiments as their AI workflows"
+  control: a feature-list pitch of what Systemix does
+  variant_b: 'the live, dogfooded loop — the /experiments surface showing real experiments as their AI workflows'
 workflow:
   steps:
     - id: idea
       kind: input
-      label: "a raw idea"
+      label: a raw idea
       note: given
     - id: frame
       kind: agent
-      label: "frame the hypothesis"
+      label: frame the hypothesis
       note: ICP · JTBD · metric
       agent: hermes
     - id: build
       kind: tool
-      label: "build the variant"
+      label: build the variant
       note: prototype
     - id: measure
       kind: tool
-      label: "measure"
+      label: measure
       note: PostHog event
     - id: decide
       kind: human
-      label: "decide"
+      label: decide
       note: HITL card
     - id: learn
       kind: agent
-      label: "write the learning"
+      label: write the learning
       note: LEARNINGS.md
       agent: hermes
   edges:
@@ -52,13 +52,13 @@ workflow:
       to: decide
     - from: decide
       to: learn
-posthog-event: book_a_call
+posthog-event: book_call_clicked
 result: null
 decision: null
 confidence: null
 evidence-posthog: null
 evidence-social: null
-created: 2026-06-18
+created: '2026-06-18'
 review-by: null
 ---
 

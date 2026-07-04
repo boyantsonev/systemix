@@ -132,6 +132,34 @@ describe("experiments/ loop — file-first ops", () => {
     expect(exp.listExperiments(root)).toEqual([]);
   });
 
+  it("getExperiment returns an independent object per call (gray-matter cache safety)", () => {
+    // gray-matter caches parses by content string; without the defensive clone,
+    // mutating one read poisons every later parse of identical bytes — across
+    // files, sweeps, and test runs (the bug the loop runner's tests exposed).
+    exp.createExperiment(root, "cache-pin", { now: NOW });
+    const first = exp.getExperiment(root, "cache-pin");
+    first.data.status = "mutated";
+    first.data.variants.control = "mutated";
+    const second = exp.getExperiment(root, "cache-pin");
+    expect(second.data.status).toBe("running");
+    expect(second.data.variants.control).not.toBe("mutated"); // deep clone, not shallow
+  });
+
+  it("round-trip writes stay flat-parser friendly: single-line scalars, dates stay YYYY-MM-DD", () => {
+    // The MCP door parses frontmatter line-by-line — a js-yaml `>-` folded block
+    // would read as the literal string ">-". And bare dates parse as JS Dates,
+    // which would re-dump as full ISO timestamps. stringifyMdx + normalize pin both.
+    const longHypothesis =
+      "Seeing Systemix's own loop running live — real experiments rendered as their AI workflows — " +
+      "converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch.";
+    exp.createExperiment(root, "rt", { hypothesis: longHypothesis, now: NOW });
+    exp.setMeasurement(root, "rt", { event: "book_call_clicked" }); // full read→write round-trip
+    const raw = fs.readFileSync(path.join(root, "experiments", "rt.mdx"), "utf8");
+    expect(raw).not.toMatch(/: [>|]/); // no folded/literal block scalars anywhere
+    expect(readMdx(root, "rt").data.hypothesis).toBe(longHypothesis); // value intact
+    expect(readMdx(root, "rt").data.created).toBe("2026-06-18"); // a day string, not a Date/timestamp
+  });
+
   it("CLI door: `experiment new` writes the same file", async () => {
     await experiment(["new", "cli-made", "--hypothesis", "from the CLI"], { projectRoot: root });
     const fm = readMdx(root, "cli-made").data;
