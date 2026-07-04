@@ -1,6 +1,6 @@
 # Systemix — Project Summary
 
-**Live:** https://systemix-alpha.vercel.app
+**Live:** https://getsystemix.vercel.app
 **Stack:** Next.js 16, Tailwind CSS v4 (oklch), shadcn/ui new-york, TypeScript
 **Updated:** 2026-04-06
 

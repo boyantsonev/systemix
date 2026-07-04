@@ -22,7 +22,7 @@ export const PRIMARY_NAV: NavItem[] = [
 
 export const SECONDARY_NAV: NavItem[] = [
   { label: "Docs", href: "/docs", icon: BookOpen },
-  { label: "GitHub", href: "https://github.com/boyantsonev/systemix", icon: Github, external: true },
+  { label: "GitHub", href: "https://github.com/boyantsonev/systemix-poc", icon: Github, external: true },
 ];
 
 /** Active when the path equals the href or is nested beneath it. */

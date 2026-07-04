@@ -4,7 +4,7 @@
 On every new session or after `/clear`: read `~/.claude/projects/-Users-boyan-projects-systemix-poc/memory/MEMORY.md` and the linked memory files, then confirm: "Memory loaded. Systemix context ready."
 
 ## What This Is
-Systemix is **the evidence / self-training layer for a design system**. A builder sets up a context-based design system, builds prototypes, measures them (PostHog), validates assumptions — and the reasons + decisions are written back into the living design system, on a schedule, in Claude Code. The loop is the product; **this repo runs on its own contract (it is the demo of itself)**. Live: https://systemix-alpha.vercel.app
+Systemix is **the evidence / self-training layer for a design system**. A builder sets up a context-based design system, builds prototypes, measures them (PostHog), validates assumptions — and the reasons + decisions are written back into the living design system, on a schedule, in Claude Code. The loop is the product; **this repo runs on its own contract (it is the demo of itself)**. Live: https://getsystemix.vercel.app
 
 **Direction: out of alpha → public release.** The approved architecture is the **v5 plan** at `~/.claude/plans/help-me-plan-and-golden-seahorse.md` (and memory `project_public_release`). Read those before non-trivial work.
 
@@ -50,6 +50,12 @@ Core: `/init-experiment` → `/write-variants` → `/measure` → `/close-experi
 - App: `npm run dev` (**localhost:3001**)
 - CLI tests: `npm --prefix packages/cli test` (Jest) · app tests: `npm test` (Vitest)
 - Deploy: `vercel --prod --yes` · Token regen: `npm run tokens`
+
+## Names & environments (canonical — don't reintroduce drift)
+- **GitHub repo:** `boyantsonev/systemix-poc` · **Vercel project:** `systemix` (team `pivotool`)
+- **Production** = `main` → **`getsystemix.vercel.app`** (the ONE canonical URL; link this everywhere)
+- **Staging** = automatic per-branch/PR Vercel previews (`systemix-git-‹branch›-pivotool.vercel.app`) — no dedicated staging domain
+- The other `*.vercel.app` domains (`systemix-blond`, `systemix-pivotool`, per-deploy hashes) are Vercel auto-noise — never reference them
 
 ## Deferred (out of v1, see the plan's "OUT of scope")
 TokenGuard / mcp-proxy, the `github-action` package, the `figma-plugin`, and the Next.js control-plane app (→ Team tier).
