@@ -30,7 +30,7 @@
     "runsDir": ".systemix/runs"
   },
   "deploy": {
-    "previewUrl": "https://systemix-alpha.vercel.app",
+    "previewUrl": "https://getsystemix.vercel.app",
     "devUrl": "http://localhost:3001"
   }
 }
