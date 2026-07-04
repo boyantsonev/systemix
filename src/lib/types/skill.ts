@@ -47,7 +47,6 @@ export type McpServer =
   | 'vercel-mcp'
   | 'figma-desktop-mcp'
   | 'posthog-mcp'
-  | 'ollama'
   | 'systemix-mcp';
 
 export interface SkillMcpRequirements {

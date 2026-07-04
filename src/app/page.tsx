@@ -3,9 +3,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
-import { InstallCommand, SectionTrack } from "@/components/systemix/LandingEvents";
+import { InstallCommand, SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
+import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
 import { ThreeDoorsBento } from "@/components/landing/ThreeDoorsBento";
 import { TrustBento } from "@/components/landing/TrustBento";
 import {
@@ -24,9 +25,9 @@ import {
 } from "@/lib/landing/content";
 
 export const metadata: Metadata = {
-  title: "Systemix — your design decisions, finally written down",
+  title: "Systemix — your shipping decisions, finally written down",
   description:
-    "Systemix closes the gap between shipping a variant and learning from it. Free CLI kit, or let Boyan wire the loop in a one-week sprint. Paste your URL — we clone your brand in session one.",
+    "For the founder shipping daily with agents: Systemix is the loop that records why you kept or killed each idea. Free CLI kit, or let Boyan wire the loop in a one-week sprint. Paste your URL — we clone your brand in session one.",
 };
 
 // ── Shared section primitives ─────────────────────────────────────────────────
@@ -96,9 +97,9 @@ function LandingNav() {
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           <Button variant="outline" size="sm" asChild>
-            <a href={nav.cta.href}>
+            <TrackedLink href={nav.cta.href} event="book_a_call" location="nav">
               {nav.cta.label}
-            </a>
+            </TrackedLink>
           </Button>
         </div>
       </div>
@@ -162,22 +163,35 @@ function BrandCloneHook() {
           <SectionHeading>{brandClone.heading}</SectionHeading>
           <Lead>{brandClone.body}</Lead>
         </div>
-        <div className="rounded-xl border border-border/40 bg-card p-8">
-          <p className="mb-5 text-[13px] font-medium text-foreground">
-            Your site URL
+        <div className="rounded-xl border border-border/40 bg-card p-6 sm:p-7">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
+            src/app/globals.css
           </p>
-          <div className="flex flex-col gap-3">
-            <div className="rounded border border-border/60 bg-background px-4 py-3 font-mono text-[13px] text-muted-foreground/60">
-              https://your-site.com
-            </div>
-            <a
-              href={brandClone.cta.href}
-              className="rounded-full bg-foreground px-5 py-3 text-center text-[13px] font-medium text-background transition-opacity hover:opacity-90"
-            >
-              {brandClone.cta.label}
-            </a>
-          </div>
-          <p className="mt-4 font-mono text-[11px] text-muted-foreground/40">{brandClone.note}</p>
+          <pre className="overflow-x-auto rounded-lg border border-border/50 bg-background p-4 font-mono text-[12px] leading-relaxed">
+            <code>
+              <span className="text-muted-foreground/50">  :root {`{`}</span>{"\n"}
+              <span className="text-red-500/80">-   --primary: oklch(0.21 0.012 70);</span>{"\n"}
+              <span className="text-emerald-600 dark:text-emerald-400">+   --primary: oklch(0.55 0.21 27);</span>{"\n"}
+              <span className="text-red-500/80">-   --radius: 0.5rem;</span>{"\n"}
+              <span className="text-emerald-600 dark:text-emerald-400">+   --radius: 0.875rem;</span>{"\n"}
+              <span className="text-red-500/80">-   --background: oklch(97% 0.005 90);</span>{"\n"}
+              <span className="text-emerald-600 dark:text-emerald-400">+   --background: oklch(98.5% 0.01 240);</span>{"\n"}
+              <span className="text-muted-foreground/50">  {`}`}</span>
+            </code>
+          </pre>
+          <p className="mt-4 text-[12px] leading-relaxed text-muted-foreground">
+            Your colors, type scale, and radius — scraped from your live site, mapped to design
+            tokens. A reviewable diff, not a redesign.
+          </p>
+          <TrackedLink
+            href={brandClone.cta.href}
+            event="brand_clone_request"
+            location="brand-clone"
+            className="mt-5 block rounded-full bg-foreground px-5 py-3 text-center text-[13px] font-medium text-background transition-opacity hover:opacity-90"
+          >
+            {brandClone.cta.label}
+          </TrackedLink>
+          <p className="mt-4 text-[11px] text-muted-foreground/50">{brandClone.note}</p>
         </div>
       </div>
     </Section>
@@ -212,6 +226,8 @@ function TheLoop() {
           </span>
         ))}
       </div>
+
+      <LiveLoopProof className="mx-auto mt-12 max-w-3xl px-6" />
     </section>
   );
 }
@@ -258,15 +274,27 @@ function About() {
       <div className="max-w-xl">
         <p className="text-[14px] leading-relaxed text-muted-foreground/70">{about.body}</p>
         <div className="mt-5 flex items-center gap-5">
-          {about.links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-[13px] text-muted-foreground/60 underline underline-offset-4 transition-colors hover:text-foreground"
-            >
-              {l.label}
-            </a>
-          ))}
+          {about.links.map((l) =>
+            l.href.startsWith("mailto:") ? (
+              <TrackedLink
+                key={l.href}
+                href={l.href}
+                event="book_a_call"
+                location="about"
+                className="text-[13px] text-muted-foreground/60 underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                {l.label}
+              </TrackedLink>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-[13px] text-muted-foreground/60 underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                {l.label}
+              </a>
+            ),
+          )}
         </div>
       </div>
     </Section>
@@ -327,17 +355,33 @@ function Services() {
             </p>
             <p className="mb-3 text-[14px] font-bold text-foreground">{t.name}</p>
             <p className="flex-1 text-[13px] leading-relaxed text-muted-foreground">{t.body}</p>
-            <a
-              href={t.cta.href}
-              className={cn(
-                "mt-5 inline-block rounded-full px-4 py-2 text-[12px] font-medium transition-opacity hover:opacity-80",
-                t.highlight
-                  ? "bg-foreground text-background"
-                  : "border border-border/60 text-foreground hover:border-foreground"
-              )}
-            >
-              {t.cta.label} →
-            </a>
+            {t.cta.href.startsWith("mailto:") ? (
+              <TrackedLink
+                href={t.cta.href}
+                event="book_a_call"
+                location={`services-${t.name}`}
+                className={cn(
+                  "mt-5 inline-block rounded-full px-4 py-2 text-[12px] font-medium transition-opacity hover:opacity-80",
+                  t.highlight
+                    ? "bg-foreground text-background"
+                    : "border border-border/60 text-foreground hover:border-foreground"
+                )}
+              >
+                {t.cta.label} →
+              </TrackedLink>
+            ) : (
+              <a
+                href={t.cta.href}
+                className={cn(
+                  "mt-5 inline-block rounded-full px-4 py-2 text-[12px] font-medium transition-opacity hover:opacity-80",
+                  t.highlight
+                    ? "bg-foreground text-background"
+                    : "border border-border/60 text-foreground hover:border-foreground"
+                )}
+              >
+                {t.cta.label} →
+              </a>
+            )}
           </div>
         ))}
       </div>
@@ -377,7 +421,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
       <main>
-        <SectionTrack name="hero" experimentId="landing-velocity-gap-2026-06">
+        <SectionTrack name="hero" experimentId="landing-live-loop-2026-06">
           <LandingHero />
         </SectionTrack>
         <SectionTrack name="problem">

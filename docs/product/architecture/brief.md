@@ -7,6 +7,10 @@ feature: hermes-skill-update
 
 # Product Architecture Brief
 
+> ⚠️ **Historical (DESIGN wave, 2026-05-07).** Pre-dates v6 — `contract/hypotheses/` is now
+> `experiments/`, and the engine is Claude Code (ADR-019). Kept as decision history; current
+> truth lives in `decisions/ADR.md`.
+
 ## System Architecture
 
 *Section reserved for Titan (infrastructure architect). Not yet populated.*

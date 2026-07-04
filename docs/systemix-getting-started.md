@@ -7,6 +7,10 @@ note: "A friendly walkthrough. Where something is planned, not yet built, it's m
 
 # Systemix in plain language
 
+> ⚠️ **Historical (pre-v6, 2026-06-13).** Superseded by ADR-019 (engine = Claude Code; the
+> Ollama/local-model path is deferred, not required) and the `hypothesis`→`experiment` rename.
+> Kept as decision history — for current truth see `decisions/ADR.md` and `content/docs/`.
+
 **What it is, in one sentence:** Systemix is a small team of AI helpers that set up your design
 system, then keep checking whether your design and copy choices actually *work* — and they always
 **ask you before changing anything**.

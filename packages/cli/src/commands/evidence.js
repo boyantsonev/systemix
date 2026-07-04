@@ -12,10 +12,8 @@ const skillUpdate = require("./skill-update");
 const fs = require("fs");
 const path = require("path");
 
-const OLLAMA_URL = process.env.OLLAMA_URL ?? "http://localhost:11434/api/chat";
-const MODEL = process.env.HERMES_MODEL ?? "hermes3";
 const QUEUE_PATH = path.join(process.cwd(), ".systemix", "queue.json");
-const HYPOTHESES_DIR = path.join(process.cwd(), "contract", "hypotheses");
+const EXPERIMENTS_DIR = path.join(process.cwd(), "experiments");
 
 // ── Inline frontmatter parser ─────────────────────────────────────────────────
 
@@ -52,44 +50,6 @@ function parseFrontmatter(raw) {
     data[key] = isNaN(num) ? rawVal : num;
   }
   return { data, content: match[2].trim() };
-}
-
-// ── PostHog query for hypothesis signals ──────────────────────────────────────
-
-async function queryPostHogHypothesis(hypothesisId, days = 30) {
-  const apiKey    = process.env.POSTHOG_API_KEY;
-  const projectId = process.env.POSTHOG_PROJECT_ID;
-  const host      = process.env.POSTHOG_HOST ?? "https://app.posthog.com";
-
-  const base = {
-    hypothesis_id: hypothesisId,
-    period_days: days,
-    fetched_at: new Date().toISOString().slice(0, 10),
-  };
-
-  if (!apiKey || !projectId) {
-    return { ...base, social_signal_events: 0, source: "no-credentials" };
-  }
-
-  try {
-    const body = {
-      events: [{ id: "hypothesis_social_signal", type: "events" }],
-      properties: [{ key: "hypothesis_id", value: hypothesisId, operator: "exact", type: "event" }],
-      date_from: `-${days}d`,
-      insight: "TRENDS",
-      interval: "day",
-    };
-    const res = await fetch(`${host}/api/projects/${projectId}/insights/trend/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify(body),
-    });
-    const json = res.ok ? await res.json() : { result: [] };
-    const total = (json.result ?? []).reduce((s, r) => s + (r.count ?? 0), 0);
-    return { ...base, social_signal_events: total, source: "live" };
-  } catch (err) {
-    return { ...base, social_signal_events: 0, error: err.message, source: "error" };
-  }
 }
 
 // ── PostHog query for landing engagement funnel ───────────────────────────────
@@ -241,59 +201,6 @@ function writeEngagementSnapshot(recordId, ev, synthesis) {
   return filePath;
 }
 
-// ── Hermes synthesis ──────────────────────────────────────────────────────────
-
-async function callHermesSynthesize(hypothesisData, posthogData) {
-  const SYSTEM = `You are Hermes, the evidence synthesizer for Systemix.
-
-Given a hypothesis contract and available PostHog data, synthesize a brief HITL decision card.
-
-Output ONLY a JSON object with exactly these fields — no markdown fences, no explanation:
-{
-  "summary": "<1-2 sentences describing what the data shows>",
-  "recommendation": "promote | iterate | kill",
-  "confidence": <float 0.0-1.0>,
-  "rationale": "<1 sentence explaining the recommendation>"
-}
-
-Rules:
-- If PostHog data shows no credentials or zero signals, set confidence below 0.35 and recommend "iterate"
-- If evidence is thin, say so explicitly in summary
-- Do not invent numbers not present in input data
-- Output ONLY the JSON`;
-
-  const userPrompt = `Hypothesis contract:\n${JSON.stringify(hypothesisData, null, 2)}\n\nPostHog data:\n${JSON.stringify(posthogData, null, 2)}\n\nSynthesize now:`;
-
-  try {
-    const res = await fetch(OLLAMA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL,
-        stream: false,
-        options: { temperature: 0.1, num_predict: 512 },
-        messages: [
-          { role: "system", content: SYSTEM },
-          { role: "user",   content: userPrompt },
-        ],
-      }),
-    });
-    if (!res.ok) throw new Error(`Ollama ${res.status}`);
-    const json = await res.json();
-    const raw = (json.message?.content ?? "{}").trim();
-    // Strip possible markdown fences
-    const cleaned = raw.replace(/^```json?\n?/, "").replace(/\n?```$/, "");
-    return JSON.parse(cleaned);
-  } catch (err) {
-    return {
-      summary: `Hermes unavailable (${err.message}). Review PostHog data manually before deciding.`,
-      recommendation: "iterate",
-      confidence: 0,
-      rationale: "No Hermes synthesis — Ollama not running or model not available.",
-    };
-  }
-}
-
 // ── Queue management ──────────────────────────────────────────────────────────
 
 function readQueue() {
@@ -313,7 +220,7 @@ function writeQueue(queue) {
 // ── Write decision back to MDX (shared by both CLI close and queue approval) ──
 
 function writeDecisionToContract(hypothesisId, decision, evidence) {
-  const filePath = path.join(HYPOTHESES_DIR, `${hypothesisId}.mdx`);
+  const filePath = path.join(EXPERIMENTS_DIR, `${hypothesisId}.mdx`);
   if (!fs.existsSync(filePath)) throw new Error(`Contract not found: ${filePath}`);
 
   const raw = fs.readFileSync(filePath, "utf8");
@@ -355,86 +262,214 @@ function writeDecisionToContract(hypothesisId, decision, evidence) {
   return filePath;
 }
 
-// ── pull subcommand ───────────────────────────────────────────────────────────
+// ── experiment evidence (the loop's evidence half) ────────────────────────────
+// Deterministic — no LLM, so it runs in CI. Mirrors the engagement path but
+// targets experiments/ and the `experiment-validation` card the dashboard +
+// queue write-back already understand.
 
-async function pull(args) {
-  const allFlag      = args.includes("--all");
-  const hypoIdx      = args.indexOf("--hypothesis");
-  const specificId   = hypoIdx !== -1 ? args[hypoIdx + 1] : null;
+const EVENT_RE = /^[a-zA-Z0-9_$]+$/; // PostHog event-name whitelist (guards the HogQL interp)
 
-  if (!fs.existsSync(HYPOTHESES_DIR)) {
-    console.log("\n  No contract/hypotheses/ directory. Run: npx systemix init\n");
+async function queryPostHogExperiment(event, days = 30) {
+  const apiKey    = process.env.POSTHOG_API_KEY;
+  const projectId = process.env.POSTHOG_PROJECT_ID;
+  const host      = (process.env.POSTHOG_HOST ?? "https://eu.posthog.com").replace(/\/$/, "");
+
+  const base = {
+    event,
+    period_days: days,
+    fetched_at: new Date().toISOString().slice(0, 10),
+    visitors: 0,
+    event_count: 0,
+    event_persons: 0,
+    rate: null,
+  };
+
+  if (!apiKey || !projectId) return { ...base, source: "no-credentials" };
+  if (!EVENT_RE.test(event))  return { ...base, source: "invalid-event" };
+
+  async function hogql(query) {
+    const resp = await fetch(`${host}/api/projects/${projectId}/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ query: { kind: "HogQLQuery", query } }),
+    });
+    if (!resp.ok) throw new Error(`PostHog query ${resp.status}`);
+    return (await resp.json()).results ?? [];
+  }
+
+  try {
+    const rows = await hogql(`
+      SELECT
+        count(DISTINCT if(event = '$pageview', person_id, NULL)) AS visitors,
+        countIf(event = '${event}')                              AS event_count,
+        count(DISTINCT if(event = '${event}', person_id, NULL))  AS event_persons
+      FROM events
+      WHERE timestamp >= now() - toIntervalDay(${Number(days)})
+        AND event IN ('$pageview','${event}')
+    `);
+    const [visitors = 0, event_count = 0, event_persons = 0] = rows[0] ?? [];
+    return {
+      ...base,
+      visitors, event_count, event_persons,
+      rate: visitors > 0 ? event_persons / visitors : null,
+      source: "live",
+    };
+  } catch (err) {
+    return { ...base, error: err.message, source: "error" };
+  }
+}
+
+// Honest, deterministic synthesis — confidence is data-strength (sample size),
+// NOT statistical significance. No LLM.
+function synthesizeExperiment(ev, meta = {}) {
+  const pct = (n) => `${Math.round((n ?? 0) * 1000) / 10}%`;
+  if (ev.source === "no-credentials") {
+    return { summary: "No PostHog credentials set — nothing to read. Add POSTHOG_API_KEY + POSTHOG_PROJECT_ID.", recommendation: "configure-posthog", confidence: 0 };
+  }
+  if (ev.source === "invalid-event") {
+    return { summary: `Event \`${ev.event}\` is not a valid PostHog event name — fix \`posthog-event\` in the contract.`, recommendation: "fix-event", confidence: 0 };
+  }
+  if (ev.source === "error") {
+    return { summary: `PostHog query failed: ${ev.error}. Check host/project id.`, recommendation: "retry", confidence: 0 };
+  }
+  const v = ev.visitors;
+  const confidence = v >= 1000 ? 0.8 : v >= 100 ? 0.5 : v > 0 ? 0.2 : 0;
+  const metric = meta.metric ?? "conversion";
+  const summary =
+    `Over ${ev.period_days}d: ${v} visitor${v === 1 ? "" : "s"}, ` +
+    `${ev.event_persons} fired \`${ev.event}\` (${ev.rate == null ? "n/a" : pct(ev.rate)} on ${metric}).`;
+  const recommendation =
+    v === 0 ? "no-traffic-yet — keep running"
+    : v < 100 ? "keep-collecting (sample below 100 visitors)"
+    : ev.event_persons === 0 ? "no conversions yet — the hook isn't converting; consider iterate or kill"
+    : "signal forming — run to ~1k visitors before deciding";
+  return { summary, recommendation, confidence };
+}
+
+// Write the funnel into the experiment's `evidence-posthog` frontmatter block.
+// Byte-compatible with the app close-writer's ^evidence-posthog:...$ regex
+// (src/lib/contract/experiment-mdx.ts) so a later close collapses it cleanly.
+function writeExperimentSnapshot(id, ev) {
+  const filePath = path.join(EXPERIMENTS_DIR, `${id}.mdx`);
+  if (!fs.existsSync(filePath)) throw new Error(`Experiment not found: ${filePath}`);
+  const raw = fs.readFileSync(filePath, "utf8");
+  const match = raw.match(/^---[\r\n]+([\s\S]*?)[\r\n]+---[\r\n]*([\s\S]*)$/);
+  if (!match) throw new Error("Could not parse experiment frontmatter");
+
+  let fm = match[1];
+  const body = match[2];
+  const block = [
+    "evidence-posthog:",
+    `  fetched_at: "${ev.fetched_at}"`,
+    `  source: "${ev.source}"`,
+    `  window_days: ${ev.period_days}`,
+    `  visitors: ${ev.visitors}`,
+    `  event: "${ev.event}"`,
+    `  event_count: ${ev.event_count}`,
+    `  event_persons: ${ev.event_persons}`,
+    `  rate: ${ev.rate == null ? "null" : Math.round(ev.rate * 10000) / 10000}`,
+  ].join("\n");
+
+  if (/^evidence-posthog:.*(?:\n {2}.*)*$/m.test(fm)) {
+    fm = fm.replace(/^evidence-posthog:.*(?:\n {2}.*)*$/m, block);
+  } else {
+    fm = `${fm.trimEnd()}\n${block}`;
+  }
+  const updated = `---\n${fm}\n---\n\n${body.trim()}\n`;
+  const tmp = filePath + ".tmp";
+  fs.writeFileSync(tmp, updated, "utf8");
+  fs.renameSync(tmp, filePath);
+  return filePath;
+}
+
+async function experimentPull(args) {
+  const daysIdx    = args.indexOf("--days");
+  const days       = daysIdx !== -1 ? (Number(args[daysIdx + 1]) || 30) : 30;
+  const idIdx      = args.indexOf("--experiment");
+  const specificId = idIdx !== -1 ? args[idIdx + 1] : null;
+  const allFlag    = args.includes("--all");
+
+  if (!fs.existsSync(EXPERIMENTS_DIR)) {
+    console.log("\n  No experiments/ directory. Run: npx systemix init\n");
     return;
   }
 
-  const files = fs.readdirSync(HYPOTHESES_DIR).filter(f => f.endsWith(".mdx"));
-  let targets = specificId ? files.filter(f => f.startsWith(specificId)) : files;
-
-  if (specificId && targets.length === 0) {
-    console.log(`\n  No hypothesis matching: ${specificId}\n`);
-    return;
-  }
-
-  const candidates = targets
+  const files = fs.readdirSync(EXPERIMENTS_DIR).filter(f => f.endsWith(".mdx") && !f.startsWith("_"));
+  const candidates = files
     .map(file => {
-      const raw = fs.readFileSync(path.join(HYPOTHESES_DIR, file), "utf8");
-      const { data } = parseFrontmatter(raw);
-      return { file, data };
+      const { data } = parseFrontmatter(fs.readFileSync(path.join(EXPERIMENTS_DIR, file), "utf8"));
+      return { file, id: data.id ?? file.replace(/\.mdx$/, ""), data };
     })
-    .filter(({ data }) => allFlag || data.status === "running");
+    .filter(({ id, data }) =>
+      specificId
+        ? id === specificId || id.startsWith(specificId)
+        : (allFlag || data.status === "running") && data["posthog-event"],
+    );
 
   if (candidates.length === 0) {
-    console.log("\n  No running hypotheses. Start one with /init-experiment\n");
+    console.log("\n  No running experiments with a wired posthog-event. Wire one with /measure (or /connect-signal first).\n");
     return;
   }
 
-  console.log(`\n  systemix evidence pull — ${candidates.length} hypothesis${candidates.length !== 1 ? "es" : ""}\n`);
+  console.log(`\n  systemix evidence experiment pull — ${candidates.length} experiment${candidates.length !== 1 ? "s" : ""} (${days}d)\n`);
 
-  for (const { file, data } of candidates) {
-    const id = data.id ?? file.replace(".mdx", "");
-    process.stdout.write(`  ── ${id}\n`);
-
+  for (const { id, data } of candidates) {
+    const event = String(data["posthog-event"]);
+    process.stdout.write(`  ── ${id} · ${event}\n`);
     process.stdout.write("     querying PostHog... ");
-    const posthogData = await queryPostHogHypothesis(id);
-    console.log(`${posthogData.source}`);
+    const ev = await queryPostHogExperiment(event, days);
+    console.log(ev.source);
 
-    process.stdout.write("     calling Hermes...   ");
-    const synthesis = await callHermesSynthesize(data, posthogData);
-    console.log(`${synthesis.recommendation} (${Math.round((synthesis.confidence ?? 0) * 100)}% confidence)`);
+    const synth = synthesizeExperiment(ev, { metric: data.metric });
+
+    // Only write the snapshot on live data; otherwise still queue an honest card
+    // so the operator sees WHY there's no evidence (no creds / bad event / error).
+    if (ev.source === "live") {
+      writeExperimentSnapshot(id, ev);
+      console.log(`     ✓ snapshot → experiments/${id}.mdx`);
+    }
 
     const card = {
-      id:             `evidence-${id}-${Date.now()}`,
-      type:           "hypothesis-validation",
-      hypothesisId:   id,
-      contractPath:   path.join("contract", "hypotheses", file),
-      project:        data.section ?? "systemix",
-      hypothesis:     typeof data.hypothesis === "string" ? data.hypothesis : id,
-      metric:         "conversion",
-      baselineRate:   null,
-      variantRate:    null,
-      confidenceLevel: synthesis.confidence ?? 0,
-      sessions:       null,
-      context:        synthesis.summary,
-      proposal:       `${synthesis.recommendation}: ${synthesis.rationale}`,
-      _posthogData:   posthogData,
-      requestedAt:    new Date().toISOString(),
-      status:         "pending",
+      id:              `evidence-${id}-${Date.now()}`,
+      type:            "experiment-validation",
+      project:         "systemix",
+      experimentId:    id,
+      hypothesis:      typeof data.hypothesis === "string" ? data.hypothesis : id,
+      metric:          data.metric ?? "conversion",
+      baselineRate:    ev.rate,
+      variantRate:     null,
+      sessions:        ev.visitors,
+      confidenceLevel: synth.confidence,
+      context:         synth.summary,
+      proposal:        synth.recommendation,
+      _posthogData:    ev,
+      requestedAt:     new Date().toISOString(),
+      status:          "pending",
     };
 
-    // Deduplicate: replace existing pending card for same hypothesis
     const queue = readQueue();
     queue.cards = (queue.cards ?? []).filter(
-      c => !(c.type === "hypothesis-validation" && c.hypothesisId === id && c.status === "pending"),
+      c => !(c.type === "experiment-validation" && c.experimentId === id && c.status === "pending"),
     );
     queue.cards.push(card);
     writeQueue(queue);
-
-    console.log("     ✓ card written to .systemix/queue.json\n");
+    console.log("     ✓ card → .systemix/queue.json\n");
   }
 
-  const dashUrl = "http://localhost:3001/design-system";
-  console.log(`  Review in dashboard: ${dashUrl}`);
-  console.log(`  Or close from CLI:   npx systemix evidence close <id> --decision promote\n`);
+  console.log("  Review + decide on Home (/config), or:  npx systemix evidence close <id> --decision promote\n");
+}
+
+// `evidence pull` is the deterministic experiment path. (It was an Ollama-based
+// hypothesis synth — retired per ADR-019: engine = Claude Code, no local model.)
+async function pull(args) {
+  return experimentPull(args);
+}
+
+// `evidence experiment <sub>` — the loop's evidence half.
+async function experiment(args) {
+  const sub = args[0];
+  if (sub === "pull" || sub === undefined) return experimentPull(args.slice(1));
+  console.log(`\n  Unknown: evidence experiment ${sub}\n  Usage: systemix evidence experiment pull [--days N] [--experiment <id>] [--all]\n`);
 }
 
 // ── close subcommand ──────────────────────────────────────────────────────────
@@ -442,7 +477,7 @@ async function pull(args) {
 async function close(args) {
   const id = args[0];
   if (!id) {
-    console.log("\n  Usage: npx systemix evidence close <hypothesis-id> --decision promote|iterate|kill\n");
+    console.log("\n  Usage: npx systemix evidence close <experiment-id> --decision promote|iterate|kill\n");
     return;
   }
   const decisionIdx = args.indexOf("--decision");
@@ -455,7 +490,7 @@ async function close(args) {
   // Pick up any pending synthesis from the queue
   const queue = readQueue();
   const card  = (queue.cards ?? []).find(
-    c => c.type === "hypothesis-validation" && c.hypothesisId === id && c.status === "pending",
+    c => c.type === "experiment-validation" && c.experimentId === id && c.status === "pending",
   );
 
   const evidence = card
@@ -643,6 +678,7 @@ async function evidence(args) {
 
   switch (sub) {
     case "pull":       return pull(rest);
+    case "experiment": return experiment(rest);
     case "close":      return close(rest);
     case "engagement": return engagement(rest);
     case "check":      return check();
@@ -651,18 +687,18 @@ async function evidence(args) {
   systemix evidence — evidence loop commands
 
   Commands:
-    evidence pull                        Pull PostHog data + Hermes synthesis for all running hypotheses
-    evidence pull --hypothesis <id>      Target a specific hypothesis
-    evidence pull --all                  Include completed hypotheses
+    evidence experiment pull [--days N]  Pull PostHog evidence for running experiments → HITL card
+    evidence experiment pull --experiment <id>   Target one experiment
+    evidence pull                        Alias of: evidence experiment pull
     evidence close <id> --decision <d>   Close: promote | iterate | kill
     evidence engagement pull [--days N]  Sync landing funnel → engagement record + HITL card
     evidence engagement close [--flag]   Acknowledge (or --flag for experiment) the latest snapshot
     evidence check                       Verify PostHog creds + whether events are arriving
 
   Examples:
-    npx systemix evidence pull
+    npx systemix evidence experiment pull --days 30
     npx systemix evidence engagement pull --days 30
-    npx systemix evidence engagement close --note "conversion healthy"
+    npx systemix evidence close landing-live-loop-2026-06 --decision promote
 `);
   }
 }
@@ -674,4 +710,8 @@ module.exports = {
   synthesizeEngagement,
   writeEngagementSnapshot,
   appendEngagementAck,
+  queryPostHogExperiment,
+  synthesizeExperiment,
+  writeExperimentSnapshot,
+  experimentPull,
 };

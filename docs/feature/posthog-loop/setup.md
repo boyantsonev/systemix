@@ -9,19 +9,21 @@
 ```
 Landing (prod) ──fires events──▶ PostHog EU project
         │                              │
-        │                     ┌────────┴─────────┐  (scheduled: GitHub Action)
+        │                     ┌────────┴─────────┐  (scheduled: GitHub Action, daily)
         │                     ▼                  
-        │            systemix evidence pull (engagement)
-        │              · HogQL over $pageview / section_viewed / install_command_copied
-        │              · → structured evidence written to a contract
-        │              · → honest synthesis (real numbers; Ollama optional locally)
+        │            systemix evidence engagement pull   (landing funnel)
+        │            systemix evidence experiment pull    (running experiments)
+        │              · HogQL over $pageview / section_viewed / install_command_copied / book_a_call
+        │              · → structured evidence written to the contract / experiment
+        │              · → honest deterministic synthesis (real numbers, no LLM)
         │              · → HITL card pushed to .systemix/queue.json
         ▼                     │
-   /config · /queue ◀─────────┘   human reviews → approve/reject → write-back to contract
+   /config ◀──────────────────┘   human reviews → approve/reject → write-back + LEARNINGS.md
 ```
-Capture (①) and the query/evidence/write-back (③–⑦) become **real**; synthesis (⑤) is an
-honest deterministic summary of the real numbers in the automated path (so it runs in CI with
-no LLM host), with local Ollama as an opt-in upgrade.
+Capture and the query/evidence/write-back become **real**. Synthesis is an honest deterministic
+summary of the real numbers (sample-size confidence), so it runs in CI with **no LLM host** —
+engine = Claude Code (ADR-019), no Ollama dependency. Claude adds richer reasoning on top when
+you run `/hermes`, but the automated path never needs a model.
 
 ---
 
@@ -55,7 +57,8 @@ POSTHOG_API_KEY      = phx_…
 POSTHOG_PROJECT_ID   = <numeric id>
 POSTHOG_HOST         = https://eu.posthog.com
 ```
-(Optional: copy the same three into a local `.env.local` if you want to run `systemix evidence pull` by hand.)
+(Optional: copy the same three into a local `.env.local` to run `systemix evidence experiment pull`
+or `systemix evidence check` by hand.)
 
 Also enable **Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to
 create and approve pull requests"** — the scheduled sync (`.github/workflows/systemix-evidence.yml`)
@@ -72,10 +75,11 @@ a HITL card landing in `/queue`.
 2. **Engagement query** — a landing-engagement read (HogQL over `$pageview`, `section_viewed`,
    `install_command_copied`) producing conversion metrics, written as structured evidence.
    Promotes `spikes/spike-3-posthog/posthog-query.js`. Fixture-backed tests.
-3. **Honest synthesis** — summarize the real numbers deterministically in the automated path
-   (replaces the hash-stub in `/api/hermes/run` for this flow); real Ollama opt-in when run locally.
-4. **Automation** — `.github/workflows/systemix-evidence.yml`: scheduled + manual; runs the pull
-   with the GH secrets, writes evidence + pushes a HITL card (as a PR for review).
+3. **Honest synthesis** — summarize the real numbers deterministically (sample-size confidence),
+   no LLM host. `/hermes` (Claude) can enrich the card's reasoning on demand; the cron never needs it.
+4. **Automation** — `.github/workflows/systemix-evidence.yml`: scheduled (daily) + manual; runs
+   both `evidence engagement pull` and `evidence experiment pull` with the GH secrets, writes
+   evidence + pushes HITL card(s) as a PR for review.
 5. **A/B hook (future-proofing)** — a small `useVariant(flag)` helper that reads a PostHog
    feature flag and tags events with `variant`, so a future A/B test just needs a flag in PostHog —
    no code change to start measuring lift.
@@ -84,15 +88,23 @@ a HITL card landing in `/queue`.
 ## Event catalog (already firing from the landing once capture is on)
 | Event | Props | Source |
 |---|---|---|
-| `$pageview` | `$current_url` | PostHogProvider |
-| `install_command_copied` | *(none yet — Claude will add `location`/`variant`)* | `InstallCommand` |
+| `$pageview` | `$current_url` | `PostHogProvider` |
+| `install_command_copied` | `location, variant` | `InstallCommand` |
 | `section_viewed` | `section` | `SectionTrack` |
-| `hypothesis_social_signal` | `hypothesis_id, section, signal_type` | `SectionTrack` (when `hypothesisId` set) |
-| `hero_cta_click` / `nav_cta_click` | `cta` | `HeroCTAs` / `NavCTAs` |
+| `experiment_social_signal` | `experiment_id, section, signal_type` | `SectionTrack` (when `experimentId` set) |
+| `hero_cta_click` | `cta` | `LandingHero` |
+| **`book_a_call`** | `location` | `TrackedLink` (nav / services / about) — **the metric for `landing-live-loop-2026-06`** |
+| `brand_clone_request` | `location` | `TrackedLink` (brand-clone CTA) |
 
-## Known gaps this setup addresses
-- `install_command_copied` carries no attribution → Claude adds `location`/`variant` props.
-- No variant assignment (variant_b hard-coded) → the A/B hook makes future flag-based tests trivial.
-- Existing query paths read `hypothesis_social_signal` (section views) / `component_render`, not
-  landing conversion → the new engagement query reads the real funnel.
-- Nothing scheduled → the GitHub Action runs the loop automatically.
+The **experiment** pull reads `book_a_call` persons / `$pageview` visitors as the rate; the
+**engagement** pull reads the funnel above. Both write to `.systemix/queue.json` for review on
+`/config`.
+
+## Verify once your keys are in
+```
+systemix evidence check                 # keys present + connectivity + $pageviews in 24h
+systemix evidence experiment pull       # queues an experiment-validation card from real data
+```
+Then approve the card on Home (`/config`) — it writes `result`/`decision`/`confidence` back to
+`experiments/landing-live-loop-2026-06.mdx` and appends the first cited line to
+`experiments/LEARNINGS.md`.

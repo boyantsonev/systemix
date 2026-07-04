@@ -34,8 +34,7 @@ function configShow() {
 
   console.log("  Hermes");
   if (cfg.hermes) {
-    row("model", cfg.hermes.model);
-    row("endpoint", cfg.hermes.endpoint);
+    row("engine", cfg.hermes.engine ?? "claude-code");
     row("autonomy", cfg.hermes.autonomy);
     if (cfg.hermes.thresholds) {
       row("thresholds", `high ${cfg.hermes.thresholds.high} · medium ${cfg.hermes.thresholds.medium}`);

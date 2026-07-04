@@ -28,8 +28,7 @@ export interface InstanceConfig {
   surfaces: string[];
   signals: Record<string, InstanceSignal>;
   hermes: {
-    model: string;
-    endpoint: string;
+    engine: string; // "claude-code" — the config seam (ADR-019); no local model
     autonomy: string;
     thresholds: { high: number; medium: number };
   };
@@ -257,8 +256,7 @@ export function serializeInstanceConfig(cfg: InstanceConfig): string {
     }
   }
   lines.push("hermes:");
-  lines.push(`  model: ${cfg.hermes.model}`);
-  lines.push(`  endpoint: ${cfg.hermes.endpoint}`);
+  lines.push(`  engine: ${cfg.hermes.engine}`);
   lines.push(`  autonomy: ${cfg.hermes.autonomy}`);
   lines.push("  thresholds:");
   lines.push(`    high: ${cfg.hermes.thresholds.high}`);
