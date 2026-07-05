@@ -54,11 +54,14 @@ export function TrackedLink({
   children: React.ReactNode;
 }) {
   const ph = usePostHog();
+  // Tag conversions with the hero variant so the loop runner can split counts
+  // per arm once a multivariate `landing-hero` flag goes live ("control" until then).
+  const variant = useVariant("landing-hero");
   return (
     <a
       href={href}
       className={className}
-      onClick={() => ph?.capture(event, { location })}
+      onClick={() => ph?.capture(event, { location, variant })}
     >
       {children}
     </a>

@@ -15,6 +15,7 @@ const { socialSignal } = require("../src/commands/social-signal");
 const { evidence } = require("../src/commands/evidence");
 const { config } = require("../src/commands/config");
 const { experiment } = require("../src/commands/experiment");
+const { loop } = require("../src/commands/loop");
 
 const [, , command, ...args] = process.argv;
 
@@ -42,6 +43,7 @@ const HELP = `
     npx systemix token-guard [sub]       Manage TokenGuard (status|reset|remove)
     npx systemix evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
     npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
+    npx systemix loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
 
   Workflows (install with: npx systemix workflow add <name>):
     design-system                        Product A — Figma↔code token sync (6 skills)
@@ -132,6 +134,9 @@ async function main() {
       break;
     case "experiment":
       await experiment(args);
+      break;
+    case "loop":
+      await loop(args);
       break;
     case "help":
     case "--help":

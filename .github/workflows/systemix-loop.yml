@@ -1,0 +1,60 @@
+name: Systemix Loop Runner
+
+# The scheduled Ralph pass: sweep every running experiment — pull fresh PostHog
+# evidence, evaluate against the instance thresholds, and queue close-proposal
+# cards for a human. The runner NEVER closes an experiment (HITL at close).
+# Requires repo secrets: POSTHOG_API_KEY, POSTHOG_PROJECT_ID, POSTHOG_HOST.
+# Without them the sweep reports blocked:not-wired and changes nothing (no PR).
+
+on:
+  schedule:
+    - cron: "30 7 * * *" # daily, 07:30 UTC (after the 07:00 evidence sync)
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Evidence window (days)"
+        required: false
+        default: "30"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Sweep running experiments
+        env:
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_PROJECT_ID: ${{ secrets.POSTHOG_PROJECT_ID }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+        run: node packages/cli/bin/cli.js loop --days "${{ github.event.inputs.days || '30' }}"
+
+      - name: Open PR with evidence + proposals
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: systemix/loop-run
+          base: main
+          title: "chore(loop): runner sweep — evidence + close proposals"
+          commit-message: "chore(loop): sweep running experiments (evidence + close-proposal cards)"
+          body: |
+            Automated Ralph pass over the running experiments: fresh PostHog
+            evidence written into each experiment's frontmatter, and a
+            close-proposal card queued where the signal clears the dial.
+
+            The runner never closes — review the card(s) on Home (`/config`),
+            then close with `/close-experiment <id>` or `systemix experiment close`.
+          # Scope to the loop's files — node_modules is checked in, npm ci churns it.
+          add-paths: |
+            experiments/*.mdx
+            .systemix/queue.json

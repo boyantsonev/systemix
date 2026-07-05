@@ -64,12 +64,19 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
+// Per-node descriptions that beat the generic type blurb for the loop's key nodes.
+const NODE_DESC: Record<string, string> = {
+  "agent:hermes": "Hermes synthesises evidence into decisions and queues HITL cards for review.",
+  "infra:learnings":
+    "The compounding memory ledger. Every closed experiment appends one cited learning; recall seeds the next experiment from it — all three doors read it.",
+  "tool:cli":
+    "The systemix CLI — one of three doors onto the loop. Creates experiments, reads the memory ledger (learnings --recent / --for), and runs the Ralph runner (systemix loop) that advances experiments to decision-ready.",
+  "tool:mcp": "The systemix MCP — experiment_* tools so any agent can drive the loop. One of the three doors.",
+};
+
 function GenericBody({ node }: { node: TopoNode }) {
   const expSlug = node.type === "artifact" ? node.id.replace(/^experiment:/, "") : null;
-  const desc =
-    node.id === "agent:hermes"
-      ? "Hermes synthesises evidence into decisions and queues HITL cards for review."
-      : TYPE_DESC[node.type];
+  const desc = NODE_DESC[node.id] ?? TYPE_DESC[node.type];
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm leading-relaxed text-muted-foreground">{desc}</p>
@@ -87,9 +94,21 @@ function GenericBody({ node }: { node: TopoNode }) {
           View experiment →
         </a>
       )}
+      {node.id === "infra:learnings" && (
+        <a
+          href="/experiments/LEARNINGS"
+          className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          View the ledger →
+        </a>
+      )}
     </div>
   );
 }
+
+// Where "Set up this source →" points — the docs section on wiring a signal.
+const SETUP_HREF = "/docs/getting-started#connect-a-signal-optional-but-recommended";
+const SETUP_LINK = { href: SETUP_HREF, label: "Set up this source →" };
 
 function SourceBody({ source }: { source: SourceCard }) {
   if (source.kind === "manual") {
@@ -121,6 +140,7 @@ function SourceBody({ source }: { source: SourceCard }) {
         tone="muted"
         title="Wiring not verifiable here"
         lines={["This source's connection can't be confirmed from the app — check its own setup / credentials."]}
+        link={SETUP_LINK}
       />
     );
   }
@@ -133,6 +153,7 @@ function SourceBody({ source }: { source: SourceCard }) {
       ]}
       cmd="/connect-signal"
       cmdNote="guided wiring → verify → flip it on"
+      link={SETUP_LINK}
     />
   );
 }
@@ -143,12 +164,14 @@ function Body({
   lines,
   cmd,
   cmdNote,
+  link,
 }: {
   tone: "ok" | "warn" | "muted" | "manual";
   title: string;
   lines: string[];
   cmd?: string;
   cmdNote?: string;
+  link?: { href: string; label: string };
 }) {
   const dotColor = { ok: "#059669", warn: "#d97706", muted: "var(--muted-foreground)", manual: "#7c3aed" }[tone];
   return (
@@ -167,6 +190,14 @@ function Body({
           <code className=" text-sm text-foreground">{cmd}</code>
           {cmdNote && <p className="mt-1 text-xs text-muted-foreground">{cmdNote}</p>}
         </div>
+      )}
+      {link && (
+        <a
+          href={link.href}
+          className="mt-0.5 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          {link.label}
+        </a>
       )}
     </div>
   );

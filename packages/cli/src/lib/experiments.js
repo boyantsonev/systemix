@@ -15,6 +15,30 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 const isoDay = (d) => d.toISOString().slice(0, 10);
 
+/**
+ * Deep-copy parsed frontmatter into fresh plain objects, converting YAML
+ * timestamps back to YYYY-MM-DD strings (js-yaml parses bare dates as Date;
+ * re-dumping a Date would silently turn `created: 2026-06-18` into a full ISO
+ * timestamp). Doubles as the defensive clone against gray-matter's parse cache.
+ */
+function normalize(v) {
+  if (v instanceof Date) return isoDay(v);
+  if (Array.isArray(v)) return v.map(normalize);
+  if (v && typeof v === "object") {
+    const o = {};
+    for (const k of Object.keys(v)) o[k] = normalize(v[k]);
+    return o;
+  }
+  return v;
+}
+
+/**
+ * Serialize an experiment back to MDX. `lineWidth: -1` keeps every scalar on
+ * ONE line (no `>-` folded blocks) — the MCP door's flat frontmatter parser
+ * and grep-ability both depend on single-line values.
+ */
+const stringifyMdx = (content, data) => matter.stringify(content, data, { lineWidth: -1 });
+
 /** List experiment ids (top-level experiments/*.mdx, excluding the _example). */
 function listExperiments(root, { status } = {}) {
   const dir = layout.abs(root).experiments;
@@ -45,7 +69,11 @@ function getExperiment(root, id) {
   const file = layout.abs(root).experimentFile(id);
   if (!fs.existsSync(file)) throw new Error(`experiment not found: ${layout.rel.experimentFile(id)}`);
   const parsed = matter(fs.readFileSync(file, "utf8"));
-  return { file, data: parsed.data || {}, content: parsed.content || "" };
+  // Defensive clone (via normalize): gray-matter caches parses by content string,
+  // so the returned `data` object is SHARED across identical inputs — callers here
+  // mutate data before writing back (setMeasurement / closeExperiment / the loop
+  // runner), which would poison the cache for any other file with the same bytes.
+  return { file, data: normalize(parsed.data || {}), content: parsed.content || "" };
 }
 
 /** Create experiments/<id>.mdx (status: running). Throws if it already exists. */
@@ -82,7 +110,7 @@ function createExperiment(root, id, fields = {}) {
     "review-by": null,
   };
   const body = `\n# ${id}\n\n${fields.rationale ?? "Why this hypothesis — the ICP + job-to-be-done, the given (prompt/context), the AI workflow you are testing, the conclusion (win-state), and the metric that proves it."}\n`;
-  fs.writeFileSync(file, matter.stringify(body, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(body, data), "utf8");
   return file;
 }
 
@@ -91,7 +119,7 @@ function setMeasurement(root, id, { event, metric } = {}) {
   const { file, data, content } = getExperiment(root, id);
   if (event) data["posthog-event"] = event;
   if (metric) data.metric = metric;
-  fs.writeFileSync(file, matter.stringify(content, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(content, data), "utf8");
   return { file, "posthog-event": data["posthog-event"], metric: data.metric };
 }
 
@@ -110,25 +138,37 @@ function closeExperiment(root, id, { result, decision, confidence, learning, now
   if (decision != null) data.decision = decision;
   if (confidence != null) data.confidence = confidence;
   data["review-by"] = reviewBy;
-  fs.writeFileSync(file, matter.stringify(content, data), "utf8");
+  fs.writeFileSync(file, stringifyMdx(content, data), "utf8");
 
   const title = learning || result || id;
-  appendLearning(root, { id, title, decision, confidence, day, reviewBy });
+  // When a distinct learning title is given, the result becomes the evidence sentence
+  // (title = the insight, summary = what proved it) — mirrors the app writer's model.
+  const summary = learning && result ? result : undefined;
+  appendLearning(root, { id, title, decision, confidence, summary, day, reviewBy });
   const card = pushQueueCard(root, { id, decision, confidence, summary: result, now });
 
   return { file, reviewBy, learningsFile: layout.rel.learnings, card };
 }
 
-/** Append one provenance-stamped bullet to the ## Memory ledger in LEARNINGS.md. */
-function appendLearning(root, { id, title, decision, confidence, day, reviewBy }) {
+/**
+ * Append one provenance-stamped bullet to the ## Memory ledger in LEARNINGS.md.
+ * The bullet template is shared (by convention, not import — separate packages)
+ * with the MCP writer (packages/mcp-server/src/tools/experiment.ts) and the app
+ * writer (src/lib/contract/memory-mdx.ts `renderMemoryLine`). Keep all three
+ * byte-identical so the one reader (parseLearnings) reads every writer.
+ * Shape: confidence ALWAYS present (— when null); the summary sentence is optional.
+ */
+function appendLearning(root, { id, title, decision, confidence, summary, day, reviewBy }) {
   const file = layout.abs(root).learnings;
   let text = fs.existsSync(file)
     ? fs.readFileSync(file, "utf8")
     : "# Learnings\n\n## Memory\n\n*No entries yet.*\n";
 
+  const s = (summary ?? "").trim().replace(/\s+/g, " ");
+  const reason = s ? ` ${s}${/[.!?]$/.test(s) ? "" : "."}` : "";
   const bullet =
     `- **${day} · ${title}** — confidence ${confidence ?? "—"} · from [${id}], ` +
-    `decision: ${decision ?? "—"}. Review by: ${reviewBy}. Used by: —`;
+    `decision: ${decision ?? "—"}.${reason} Review by: ${reviewBy}. Used by: —`;
 
   if (!text.includes("## Memory")) text += `\n\n## Memory\n\n*No entries yet.*\n`;
 
@@ -171,11 +211,73 @@ function pushQueueCard(root, { id, decision, confidence, summary, now = new Date
   return card;
 }
 
-/** Read the synthesized loop memory (LEARNINGS.md), or a hint if absent. */
-function readLearnings(root) {
+/**
+ * Parse the `## Memory` bullets into structured entries (file order = newest-first).
+ * Tolerant of both the CLI format and the skill format (which adds a reason sentence
+ * between `decision:` and `Review by:`). A line is an entry iff it's a `-` bullet that
+ * cites an experiment (`from [<id>]`).
+ */
+function parseLearnings(raw) {
+  if (!raw) return [];
+  const lines = raw.split("\n");
+  const anchor = lines.findIndex((l) => l.trim() === "## Memory");
+  const scope = anchor === -1 ? lines : lines.slice(anchor + 1);
+  const entries = [];
+  for (const line of scope) {
+    const l = line.trim();
+    if (!l.startsWith("- ") || !l.includes("from [")) continue;
+    const pick = (re) => (l.match(re) || [])[1] ?? null;
+    const usedByRaw = (pick(/Used by:\s*(.+)$/) || "—").trim();
+    entries.push({
+      date: pick(/\*\*(\d{4}-\d{2}-\d{2})\s*·/),
+      title: pick(/·\s*([^*]+?)\s*\*\*/),
+      confidence: pick(/confidence\s+(\S+?)\s*·/),
+      id: pick(/from \[([^\]]+)\]/),
+      decision: pick(/decision:\s*([A-Za-z][\w-]*)/),
+      reviewBy: pick(/Review by:\s*(\d{4}-\d{2}-\d{2})/),
+      usedBy: usedByRaw === "—" ? [] : (usedByRaw.match(/\[([^\]]+)\]/g) || []).map((s) => s.slice(1, -1)),
+      raw: l,
+    });
+  }
+  return entries;
+}
+
+/**
+ * Read the synthesized loop memory (LEARNINGS.md), or null if absent.
+ * No opts → the full ledger (back-compat). With `recent` / `forId`, returns a
+ * SCOPED subset (the curated recall the loop seeds the next experiment from):
+ *   recent  — the N newest bullets.
+ *   forId   — bullets in <id>'s lineage (authored by it, or marked Used by it).
+ */
+function readLearnings(root, { recent, forId } = {}) {
   const file = layout.abs(root).learnings;
   if (!fs.existsSync(file)) return null;
-  return fs.readFileSync(file, "utf8");
+  const raw = fs.readFileSync(file, "utf8");
+  if (recent == null && forId == null) return raw; // full ledger
+  let entries = parseLearnings(raw);
+  if (forId != null) entries = entries.filter((e) => e.id === forId || e.usedBy.includes(forId));
+  if (recent != null) entries = entries.slice(0, Number(recent));
+  if (!entries.length) return "(no matching learnings yet)";
+  return entries.map((e) => e.raw).join("\n");
+}
+
+/**
+ * Backlink: record that `byId` built on the learning from `priorId` — flips that
+ * bullet's `Used by: —` to `Used by: [<byId>]` (idempotent, appends if already set).
+ * Turns recall from a read into a loop: which learnings are load-bearing becomes visible.
+ */
+function markLearningUsed(root, priorId, byId) {
+  const file = layout.abs(root).learnings;
+  if (!fs.existsSync(file)) return { updated: false, file };
+  const lines = fs.readFileSync(file, "utf8").split("\n");
+  const i = lines.findIndex((l) => l.trim().startsWith("- ") && l.includes(`from [${priorId}]`));
+  if (i === -1) return { updated: false, file };
+  const current = (lines[i].match(/Used by:\s*(.*)\s*$/) || [, "—"])[1].trim();
+  const refs = current === "—" ? [] : (current.match(/\[([^\]]+)\]/g) || []).map((s) => s.slice(1, -1));
+  if (!refs.includes(byId)) refs.push(byId);
+  lines[i] = lines[i].replace(/Used by:\s*.*\s*$/, `Used by: ${refs.map((r) => `[${r}]`).join(", ")}`);
+  fs.writeFileSync(file, lines.join("\n"), "utf8");
+  return { updated: true, file, usedBy: refs };
 }
 
 module.exports = {
@@ -185,7 +287,10 @@ module.exports = {
   setMeasurement,
   closeExperiment,
   readLearnings,
+  parseLearnings,
+  markLearningUsed,
   // internals exported for reuse/tests
   appendLearning,
   pushQueueCard,
+  stringifyMdx,
 };

@@ -3,9 +3,10 @@
 //
 // Shows EVERYTHING the instance has: sources · skills (slash commands) · agents ·
 // experiments (artifacts) · infra · surfaces (concept) · tools. Edges trace the
-// loop (source → experiment → measure → Hermes → decide). "active" = available /
-// in play; only sources that aren't wired dim (the honest "no signal" state) —
-// dimmed nodes stay visible (the onboarding map).
+// loop (source → experiment → measure → Hermes → decide → learn → recall). "active"
+// = available / in play; sources that aren't wired dim (the honest "no signal"
+// state), as does the ledger until the first learning lands — dimmed nodes stay
+// visible (the onboarding map).
 
 import fs from "node:fs";
 import path from "node:path";
@@ -129,15 +130,22 @@ export function buildInstanceTopology(cfg: InstanceConfig | null): InstanceTopol
   // ── Infra (the instance plumbing) ───────────────────────────────────────────
   add({ id: "infra:contract", label: "contract", sub: "systemix.config.yaml", type: "infra", size: "sm" });
   add({ id: "infra:queue", label: "HITL queue", sub: ".systemix/queue.json", type: "infra", size: "sm" });
+  // The memory ledger — the loop's compounding recall. Live only when the file
+  // actually exists (honest: a fresh instance has none until the first close).
+  add(
+    { id: "infra:learnings", label: "LEARNINGS.md", sub: "the memory ledger", type: "infra", size: "md" },
+    fs.existsSync(path.join(root, "experiments", "LEARNINGS.md")),
+  );
 
   // ── Surfaces under test (concept / UI) ──────────────────────────────────────
   for (const surf of cfg?.surfaces ?? []) {
     add({ id: `surface:${surf}`, label: surf, sub: "surface", type: "concept", size: "sm" });
   }
 
-  // ── Tools (the engine + the MCP) ────────────────────────────────────────────
+  // ── Tools (the engine + the three doors: skills · CLI · MCP) ────────────────
   add({ id: "tool:claude-code", label: "Claude Code", sub: "engine", type: "tool", size: "md" });
   add({ id: "tool:mcp", label: "systemix MCP", sub: "experiment_* tools", type: "tool", size: "sm" });
+  add({ id: "tool:cli", label: "systemix CLI", sub: "experiment · learnings", type: "tool", size: "sm" });
 
   // ── Edges — the loop around each experiment ─────────────────────────────────
   const experimentIds = nodes.filter((n) => n.type === "artifact").map((n) => n.id);
@@ -153,6 +161,14 @@ export function buildInstanceTopology(cfg: InstanceConfig | null): InstanceTopol
   link("tool:claude-code", "agent:hermes"); // the engine runs Hermes
   link("agent:hermes", "infra:queue"); // Hermes writes decision cards
   link("tool:mcp", "infra:contract");
+
+  // ── The memory ledger — the loop's compounding recall (all three doors read it) ─
+  link("skill:close-experiment", "infra:learnings"); // close writes the learning (+ Used-by backlink)
+  link("infra:learnings", "skill:init-experiment"); // recall — the ledger seeds the next experiment
+  link("agent:hermes", "infra:learnings"); // Hermes synthesises from memory
+  link("tool:cli", "infra:learnings"); // `systemix experiment learnings --recent/--for`
+  link("tool:mcp", "infra:learnings"); // `experiment_learnings({ recent, for })`
+  link("tool:cli", "infra:contract"); // the CLI door drives the same files as the MCP
 
   return { nodes, links, activeIds: [...active] };
 }
