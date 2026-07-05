@@ -37,6 +37,125 @@
         "note": null,
         "resolvedBy": "dashboard"
       }
+    },
+    {
+      "id": "engagement-landing-1783244349757",
+      "type": "engagement-snapshot",
+      "recordPath": "contract/engagement/landing.mdx",
+      "surface": "landing",
+      "hypothesis": "Landing engagement — 6 visitors, 1 install",
+      "metric": "install conversion",
+      "baselineRate": 0.16666666666666666,
+      "variantRate": null,
+      "sessions": 6,
+      "confidenceLevel": 0.2,
+      "context": "Over 30d: 6 unique visitors, 30 pageviews, 1 ran the install command (16.7% conversion). CTAs — hero 1, nav 0. Top sections: hero, services, trust.",
+      "proposal": "keep-collecting (sample below 100 visitors)",
+      "_posthogData": {
+        "surface": "landing",
+        "period_days": 30,
+        "fetched_at": "2026-07-05",
+        "unique_visitors": 6,
+        "pageviews": 30,
+        "install_copies": 2,
+        "install_persons": 1,
+        "install_conversion": 0.16666666666666666,
+        "cta_clicks": {
+          "hero": 1,
+          "nav": 0
+        },
+        "sections": [
+          {
+            "section": "hero",
+            "views": 9
+          },
+          {
+            "section": "services",
+            "views": 5
+          },
+          {
+            "section": "trust",
+            "views": 5
+          },
+          {
+            "section": "problem",
+            "views": 4
+          },
+          {
+            "section": "three-doors",
+            "views": 4
+          },
+          {
+            "section": "effect",
+            "views": 3
+          },
+          {
+            "section": "loop",
+            "views": 3
+          },
+          {
+            "section": "the-gap",
+            "views": 3
+          },
+          {
+            "section": "bottom-cta",
+            "views": 3
+          },
+          {
+            "section": "magic-glue",
+            "views": 2
+          },
+          {
+            "section": "brand-clone",
+            "views": 2
+          },
+          {
+            "section": "the-loop",
+            "views": 1
+          },
+          {
+            "section": "surfaces",
+            "views": 1
+          },
+          {
+            "section": "hitl-preview",
+            "views": 1
+          },
+          {
+            "section": "storybook-callout",
+            "views": 1
+          }
+        ],
+        "source": "live"
+      },
+      "requestedAt": "2026-07-05T09:39:09.757Z",
+      "status": "pending"
+    },
+    {
+      "id": "evidence-landing-live-loop-2026-06-1783244350966",
+      "type": "experiment-validation",
+      "project": "systemix",
+      "experimentId": "landing-live-loop-2026-06",
+      "hypothesis": "Seeing Systemix's own loop running live — real experiments rendered as their AI workflows — converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch or a hands-on trial.",
+      "metric": "book-a-call-rate",
+      "baselineRate": 0.16666666666666666,
+      "variantRate": null,
+      "sessions": 6,
+      "confidenceLevel": 0.2,
+      "context": "Over 30d: 6 visitors, 1 fired `book_a_call` (16.7% on book-a-call-rate).",
+      "proposal": "keep-collecting (sample below 100 visitors)",
+      "_posthogData": {
+        "event": "book_a_call",
+        "period_days": 30,
+        "fetched_at": "2026-07-05",
+        "visitors": 6,
+        "event_count": 1,
+        "event_persons": 1,
+        "rate": 0.16666666666666666,
+        "source": "live"
+      },
+      "requestedAt": "2026-07-05T09:39:10.966Z",
+      "status": "pending"
     }
   ]
 }
