@@ -17,23 +17,39 @@ export const ROTATING_PHRASES = [
   "evidence trail",
 ] as const;
 
+const DS_PHRASES = [
+  "remembers why",
+  "learns your workflow",
+  "updates its own skills",
+  "runs your experiments",
+] as const;
+
 export type HeroVariant = {
   eyebrow: string;
+  lead: string;
+  phrases: readonly string[];
   body: string;
 };
 
 export const hero = {
-  lead: "Your",
-  phrases: ROTATING_PHRASES,
-  /** A/B variants — same eyebrow/body for now; seam kept for future tests. */
+  /**
+   * A/B variants — the seam experiment `landing-ai-native-ds-2026-07` ships
+   * through. No `landing-hero` flag exists, so everyone gets variant_b
+   * (ship-and-compare); control is the pre-experiment copy, kept for the
+   * record and for a future real split.
+   */
   variants: {
     control: {
       eyebrow: "For the founder who ships daily with agents",
+      lead: "Your",
+      phrases: ROTATING_PHRASES,
       body: "You ship a new idea every day with your agents, read the numbers, and move on. A month later you're re-deciding something you already settled — because nothing wrote down why. Systemix is the loop that remembers.",
     },
     variant_b: {
-      eyebrow: "For the founder who ships daily with agents",
-      body: "You ship a new idea every day with your agents, read the numbers, and move on. A month later you're re-deciding something you already settled — because nothing wrote down why. Systemix is the loop that remembers.",
+      eyebrow: "The AI-native design system · lives in Claude Code",
+      lead: "The design system that",
+      phrases: DS_PHRASES,
+      body: "AI can generate a design system in an afternoon — and by week two it's slop, because nothing wrote down why. Systemix keeps the why: every component carries its rationale in MDX, every experiment writes its decision back, and its skills update around your workflow. In Claude Code, in your repo.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,
   spine: ["ship", "measure", "learn", "decide"],
@@ -130,28 +146,28 @@ export type ServiceTier = {
 
 export const services = {
   label: "Pick your path",
-  heading: "Free to start. Sprint to ship.",
-  body: "The kit is open-source and runs in Claude Code. Want it wired to your stack this week? That's a sprint.",
+  heading: "Free kit. Paid build. Design partner.",
+  body: "The kit is open-source and runs in Claude Code. Want an AI-native design system built around your team's workflow? That's the sprint — or apply for the design-partner rung.",
   tiers: [
     {
       name: "Free kit",
       price: "Forever free",
-      body: "npx systemix init — a few prompts, your experiments tracked in MDX, in your repo. Claude Code skills included.",
+      body: "npx systemix init — the loop scaffolded in MDX, in your repo, with the design-system spine optional. Claude Code skills included.",
       cta: { label: "Get the kit", href: GITHUB_URL },
       highlight: false,
     },
     {
-      name: "1-week sprint",
+      name: "Design system build",
       price: "Book a call",
-      body: "Boyan wires the loop to your stack. Brand clone in session one, experiments live by end of week, the loop yours when we're done.",
-      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20sprint" },
+      body: "A 1-week sprint: Boyan builds your AI-native design system — components with their rationale in MDX, decisions written back by the loop, custom skills tuned to your workflow. Yours when we're done.",
+      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20system%20sprint" },
       highlight: true,
     },
     {
-      name: "Building in public",
-      price: "Follow along",
-      body: "Systemix dogfoods itself. The experiments that shape this product are open in this repo.",
-      cta: { label: "See the loop", href: "/experiments" },
+      name: "Design partner",
+      price: "Free · limited seats",
+      body: "Free Systemix setup plus workflow mapping across your marketing, engineering, business, and design. One or two partners at a time — you get the system, the loop gets its proving ground.",
+      cta: { label: "Apply as a design partner", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20partner" },
       highlight: false,
     },
   ] satisfies ServiceTier[],

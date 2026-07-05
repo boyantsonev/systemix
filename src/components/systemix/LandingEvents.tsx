@@ -17,6 +17,9 @@ export function InstallCommand() {
     navigator.clipboard.writeText(cmd).then(() => {
       setCopied(true);
       ph.capture("install_command_copied", { location: "hero", variant });
+      // hero-cta-click-rate is experiment landing-ai-native-ds-2026-07's metric:
+      // every hero CTA fires hero_cta_click, disambiguated by `cta`.
+      ph.capture("hero_cta_click", { cta: "install", variant });
       setTimeout(() => setCopied(false), 2000);
     });
   }

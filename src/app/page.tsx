@@ -359,7 +359,7 @@ function Services() {
               <TrackedLink
                 href={t.cta.href}
                 event="book_a_call"
-                location={`services-${t.name}`}
+                location={`services-${t.name.toLowerCase().replace(/\s+/g, "-")}`}
                 className={cn(
                   "mt-5 inline-block rounded-full px-4 py-2 text-[12px] font-medium transition-opacity hover:opacity-80",
                   t.highlight
@@ -421,7 +421,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <LandingNav />
       <main>
-        <SectionTrack name="hero" experimentId="landing-live-loop-2026-06">
+        <SectionTrack name="hero" experimentId="landing-ai-native-ds-2026-07">
           <LandingHero />
         </SectionTrack>
         <SectionTrack name="problem">

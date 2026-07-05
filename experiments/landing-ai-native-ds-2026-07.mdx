@@ -1,0 +1,122 @@
+---
+type: experiment
+id: landing-ai-native-ds-2026-07
+section: hero
+icp: pre-pmf-founder
+jtbd: know whether an idea is worth a sprint before building it
+goal: consultancy-leads
+hypothesis: 'Leading the landing with what Systemix concretely is — an AI-native design system built on the learning loop (rationale in MDX, skills that update around your workflow, lives in Claude) — plus a named consultancy ladder (DS build sprint, design partner) converts the founder better than the abstract loop-memory pitch, which is a burden to understand.'
+given: a founder (or anyone who owns a design system) lands on Systemix from a feed and gives the hero five seconds
+conclusion: 'the design-system-first hero engages a meaningfully higher share of visitors (hero CTA clicks per visitor) than the loop-abstraction hero, and the consultancy ladder produces its first design-partner inquiry'
+status: running
+metric: hero-cta-click-rate
+variants:
+  control: loop-abstraction hero ('Your shipping memory') + generic sprint tiers
+  variant_b: 'AI-native design system hero + consultancy ladder (DS build sprint, design partner rung)'
+workflow:
+  steps:
+    - id: reposition
+      kind: input
+      label: "the repositioning bet"
+      note: given
+    - id: frame
+      kind: agent
+      label: "frame the hypothesis"
+      note: ICP · JTBD · metric
+      agent: hermes
+    - id: copy
+      kind: tool
+      label: "write the variant copy"
+      note: hero + services ladder
+    - id: ship
+      kind: tool
+      label: "ship at 100%"
+      note: variant_b via the seam
+    - id: measure
+      kind: tool
+      label: "measure"
+      note: hero_cta_click before/after
+    - id: decide
+      kind: human
+      label: "decide"
+      note: HITL card
+    - id: learn
+      kind: agent
+      label: "write the learning"
+      note: LEARNINGS.md
+      agent: hermes
+  edges:
+    - from: reposition
+      to: frame
+    - from: frame
+      to: copy
+    - from: copy
+      to: ship
+    - from: ship
+      to: measure
+    - from: measure
+      to: decide
+    - from: decide
+      to: learn
+posthog-event: hero_cta_click
+result: null
+decision: null
+confidence: null
+evidence-posthog: null
+evidence-social: null
+created: '2026-07-05'
+review-by: '2026-08-04'
+---
+
+## Why this hypothesis
+
+v7 made the abstract loop the pitch and demoted the design system to an optional
+substrate — and the landing became a burden to understand. The founder's read:
+the design system is not the substrate, it is **the flagship use case** of the
+loop, and the consultancy upsell. There are many AI-slopped design systems;
+Systemix is the AI-native one — MDX files as the decision layer, a learning loop
+for the design rationale behind every component, custom skills that update
+around the user's own workflow, living in Claude. The loop serves both verticals
+(design system + experiments); the hero should lead with the concrete one people
+recognize.
+
+## Given
+
+A pre-PMF founder (or anyone who owns a design system) lands on Systemix from a
+feed and gives the hero five seconds. Today they meet "Your shipping memory" —
+an abstraction they must decode before they know what Systemix is for.
+
+## The AI workflow
+
+The repositioning bet → Hermes frames the hypothesis (ICP · JTBD · metric) →
+write the variant copy (hero + the services ladder) → ship at 100% through the
+existing `landing-hero` variant seam → measure `hero_cta_click` per visitor,
+before vs after → a human decides → the learning is written back. Ship-and-compare,
+not a split: at ~6 visitors/30 days a real A/B cannot resolve, so the honest
+read is directional.
+
+## Measurement notes
+
+- `hero_cta_click` previously fired only on the GitHub link; the ship extends it
+  to every hero CTA (`cta: github | install`). The before-window baseline for
+  the install CTA is approximated by the pre-existing `install_command_copied`
+  event.
+- `book_a_call` stays experiment #1's site-wide signal; the new design-partner
+  CTA fires it with `location: services-design-partner`, so the ladder's effect
+  is visible without contaminating #1's metric.
+
+## Conclusion
+
+The design-system-first hero engages a meaningfully higher share of visitors
+than the loop-abstraction hero, and the consultancy ladder produces its first
+design-partner inquiry.
+
+## Decision criteria
+
+- `promote`: hero CTA clicks per visitor rise meaningfully over the prior window
+  → the design-system framing becomes the landing's spine (extend it to
+  Problem/Effect/Loop in a follow-up pass).
+- `iterate`: engagement flat but design-partner inquiries arrive → the offer
+  works, the hero words don't; tighten the H1/body, keep the ladder.
+- `kill`: no lift and no inquiries → the category framing isn't the hook;
+  revisit which vertical leads (experiments-first?) or the ICP.
