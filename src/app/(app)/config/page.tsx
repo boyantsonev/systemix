@@ -1,6 +1,9 @@
 import { loadInstanceConfig, signalStatus } from "@/lib/state/instance-config";
 import { buildInstanceTopology } from "@/lib/state/instance-topology";
 import { loadRuntimeState } from "@/lib/state/runtime-state";
+import { loadLearnings } from "@/lib/contract/learnings";
+import { getTrend } from "@/lib/state/drift-history";
+import { listSkills } from "@/lib/skill-map";
 import { ConfigView } from "./ConfigView";
 
 // Reads the local instance config at request time and writes it back on save.
@@ -13,6 +16,11 @@ export default function ConfigPage() {
   // The live instance loop as graph data (ADR-021) — slice 1 seeds source nodes.
   const topology = buildInstanceTopology(cfg);
   const signals = signalStatus(cfg);
+  const learnings = loadLearnings();
+  const driftTrend = getTrend(30);
+  const skills = listSkills();
+  // Skill runs spawn processes — a local-app capability, not a Vercel one.
+  const runsEnabled = !process.env.VERCEL;
 
   if (!cfg) {
     return (
@@ -32,5 +40,16 @@ export default function ConfigPage() {
     );
   }
 
-  return <ConfigView cfg={cfg} runtime={runtime} signals={signals} topology={topology} />;
+  return (
+    <ConfigView
+      cfg={cfg}
+      runtime={runtime}
+      signals={signals}
+      topology={topology}
+      skills={skills}
+      runsEnabled={runsEnabled}
+      learnings={learnings}
+      driftTrend={driftTrend}
+    />
+  );
 }
