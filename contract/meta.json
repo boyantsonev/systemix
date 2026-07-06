@@ -4,6 +4,11 @@
     "index",
     "engagement/landing",
     "---Ledger---",
-    "[Decisions](/contract/decisions)"
+    "[Decisions](/contract/decisions)",
+    "[Memory](/contract/memory)",
+    "---Records---",
+    "tokens/color-primary",
+    "tokens/radius",
+    "components/hitl-queue"
   ]
 }

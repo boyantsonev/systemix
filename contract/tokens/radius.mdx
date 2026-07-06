@@ -1,0 +1,22 @@
+---
+title: --radius
+token: --radius
+value: 0.5rem
+status: clean
+resolved: false
+collection: shape
+source: src/app/globals.css
+last-updated: 2026-07-06
+---
+
+## Rationale
+
+0.5rem is the single radius the whole shadcn surface derives from — cards,
+inputs, and sheets compute their corner scale off this one token. It sits
+between "sharp enough to read as a tool" and "soft enough for a landing page",
+which matters because Systemix renders both from the same system.
+
+## Drift
+
+None recorded. Rounded-full pills (nav, chips) are intentional exceptions,
+not drift — they opt out of the scale by design.

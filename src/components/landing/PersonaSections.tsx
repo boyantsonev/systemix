@@ -118,7 +118,7 @@ function ContractSnippet() {
     <pre className="overflow-x-auto rounded-lg border border-border/50 bg-background p-4 font-mono text-[12px] leading-relaxed">
       <code>
         <span className="text-muted-foreground/50">{`// contract/components/hitl-queue.mdx`}</span>{"\n"}
-        {`---\ntype: component\nstatus: aligned\ntokens: [--card, --border, --muted]\n---\n\n## Rationale\nDecisions queue here instead of shipping silently —\nthe amber border is the "a human owes this a call" signal.\n\n## Drift\nNone recorded. Last audit: pending first /drift-report run.`}
+        {`---\ncomponent: HitlQueue\nparity: clean\npath: src/components/systemix/HitlQueue.tsx\n---\n\n## Rationale\nDecisions queue here instead of shipping silently —\nthe amber border is the "a human owes this a call" signal.\n\n## Drift\nNone recorded. Last audit: pending first /drift-report run.`}
       </code>
     </pre>
   );
