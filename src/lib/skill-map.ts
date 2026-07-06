@@ -42,6 +42,14 @@ export const SKILL_MAP: Record<string, SkillDef> = {
     args: ["run", "build"],
     description: "Next.js production build",
   },
+  // node + repo-relative path (not npx) so the spawn from /api/run resolves the
+  // workspace bin deterministically.
+  "loop": {
+    label: "Run the Loop",
+    command: "node",
+    args: ["packages/cli/bin/cli.js", "loop"],
+    description: "Sweep running experiments — evidence → evaluate → queue close-proposal",
+  },
 };
 
 export function getSkill(slug: string): SkillDef | null {

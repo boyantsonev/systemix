@@ -5,13 +5,18 @@ import { Settings, X, ArrowUpRight } from "lucide-react";
 import { SystemGraph3D } from "@/components/graph/SystemGraph3D";
 import { NodeCard } from "@/components/graph/NodeCardPanel";
 import { HitlQueue } from "@/components/systemix/HitlQueue";
+import { MemoryCard } from "@/components/systemix/MemoryCard";
+import { RuntimeFeed } from "@/components/systemix/RuntimeFeed";
+import { SkillRunner, type SkillListing } from "@/components/systemix/SkillRunner";
 import { SettingsDialog } from "./SettingsDialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { tierLabel } from "@/lib/contract/write-policy";
+import type { LearningEntry } from "@/lib/contract/learnings";
 import type { InstanceConfig, SignalStatus } from "@/lib/state/instance-config";
 import type { InstanceTopology } from "@/lib/state/instance-topology";
+import type { DriftSnapshot } from "@/lib/state/drift-history";
 import type { RuntimeState } from "@/lib/state/runtime-state";
 
 const cardCls = "flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm";
@@ -37,15 +42,30 @@ export function ConfigView({
   runtime,
   signals = [],
   topology,
+  skills = [],
+  runsEnabled = false,
+  learnings = [],
+  driftTrend = [],
 }: {
   cfg: InstanceConfig;
   runtime: RuntimeState;
   signals?: SignalStatus[];
   topology: InstanceTopology;
+  skills?: SkillListing[];
+  runsEnabled?: boolean;
+  learnings?: LearningEntry[];
+  driftTrend?: DriftSnapshot[];
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [feedRefresh, setFeedRefresh] = useState(0);
+
+  // Deploy stays HITL territory: hidden while the instance runs at ghost tier.
+  const playableSkills = useMemo(() => {
+    const tier = cfg.trust?.hermes_tier ?? 0;
+    return skills.filter(({ slug }) => slug !== "deploy" || tier > 0);
+  }, [skills, cfg.trust?.hermes_tier]);
 
   // Inactive nodes (no live data) dim but stay visible; the builder marks active ones.
   const activeSet = useMemo(() => new Set(topology.activeIds), [topology.activeIds]);
@@ -98,34 +118,31 @@ export function ConfigView({
               <Stat label="Autonomy" value={autonomy} />
               <Stat label="Status" value={runtime.activeRuns.length ? "running" : "idle"} />
             </div>
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Runtime feed
+              </h3>
+              <RuntimeFeed refreshKey={feedRefresh} />
+            </div>
             <div>
               <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Active runs
+                Play a skill
               </h3>
-              {runtime.activeRuns.length === 0 ? (
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  No active runs — the pipeline is idle. Skill and agent runs appear here while they execute.
-                </p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {runtime.activeRuns.map((r, i) => (
-                    <div key={r.id ?? i} className="rounded-lg border p-2.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm text-foreground">
-                          {r.skill ?? r.label ?? r.id ?? "run"}
-                        </span>
-                        <span className="shrink-0 text-xs text-muted-foreground">{r.status ?? "running"}</span>
-                      </div>
-                      {r.startedAt && <span className="text-xs text-muted-foreground">{fmt(r.startedAt)}</span>}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <SkillRunner
+                skills={playableSkills}
+                runsEnabled={runsEnabled}
+                onRunStarted={() => setFeedRefresh((k) => k + 1)}
+              />
             </div>
           </div>
 
-          {/* Architecture — calm topology preview, expands to the full graph (bottom-left) */}
-          <div className={cn(cardCls, "relative h-[340px] lg:col-span-2 lg:row-start-2 lg:h-auto")}>
+          {/* Memory — drift score + last learnings (bottom-left) */}
+          <div className="lg:col-start-1 lg:row-start-2">
+            <MemoryCard learnings={learnings} driftTrend={driftTrend} />
+          </div>
+
+          {/* Architecture — calm topology preview, expands to the full graph (bottom-middle) */}
+          <div className={cn(cardCls, "relative h-[340px] lg:col-start-2 lg:row-start-2 lg:h-auto")}>
             <div className="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-2.5">
               <div className="flex min-w-0 items-baseline gap-2">
                 <span className="text-sm font-medium text-foreground">Architecture</span>

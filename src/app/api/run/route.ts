@@ -36,6 +36,16 @@ export async function POST(request: Request) {
     );
   }
 
+  // Skill runs spawn child processes and persist to .systemix/runs/ — neither
+  // survives on Vercel serverless. The deployed demo degrades to a pointer at
+  // the local app; the UI renders play buttons disabled off this same 503.
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      { error: "Skill runs execute in the local app — npx systemix init" },
+      { status: 503, headers: CORS_HEADERS }
+    );
+  }
+
   const { skill: skillSlug, context } = body;
 
   if (!skillSlug || typeof skillSlug !== "string") {
