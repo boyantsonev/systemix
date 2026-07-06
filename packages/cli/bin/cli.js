@@ -27,7 +27,7 @@ const HELP = `
     npx systemix init                    Interactive setup wizard (run once per project)
     npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
     npx systemix config show             Print the active instance topology
-    npx systemix workflow add <name>     Install a workflow to ~/.claude/skills/
+    npx systemix workflow add <name>     Install a workflow into this repo's .claude/skills/
     npx systemix workflow list           List available workflows
     npx systemix add <name>              Alias for: workflow add
     npx systemix update                  Check npm + skill-pack updates and apply

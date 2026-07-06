@@ -68,7 +68,8 @@ function skillState(srcFile, destFile) {
 
 /**
  * Sync one pipeline's bundled skills into the target skills dir.
- * Injectable seams (opts.pipelinesDir / homeDir / projectRoot) keep it testable.
+ * Injectable seams (opts.pipelinesDir / homeDir / projectRoot / skillsDir) keep it
+ * testable and let callers (e.g. `update`) target a pre-resolved skills dir.
  * Returns { skillsDir, pipeline, dryRun, results:[{skill,state,from?,to?}] }.
  */
 function syncSkills(flags, opts = {}) {
@@ -77,8 +78,9 @@ function syncSkills(flags, opts = {}) {
   const cwd = opts.projectRoot ?? process.cwd();
   const pipeline = typeof flags.pipeline === "string" ? flags.pipeline : DEFAULT_PIPELINE;
   const dryRun = !!flags["dry-run"];
-  const targetRoot = flags.global ? home : cwd;
-  const skillsDir = path.join(targetRoot, ".claude", "skills");
+  // opts.skillsDir wins (caller already resolved a target); otherwise flags.global
+  // picks ~/.claude/skills vs <cwd>/.claude/skills.
+  const skillsDir = opts.skillsDir ?? path.join(flags.global ? home : cwd, ".claude", "skills");
 
   const manifestPath = path.join(pipelinesDir, pipeline, "manifest.json");
   if (!fs.existsSync(manifestPath)) {

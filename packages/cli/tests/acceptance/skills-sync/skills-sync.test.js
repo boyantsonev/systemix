@@ -91,4 +91,15 @@ describe("skills sync — vendor the loop skills in place", () => {
   it("throws on an unknown pipeline", () => {
     expect(() => syncSkills({ global: true, pipeline: "nope" }, { homeDir: home })).toThrow(/pipeline not found/);
   });
+
+  it("opts.skillsDir overrides flag-based resolution (the seam `update` reuses)", () => {
+    // `update` resolves its own target dir (project if present, else global) and hands
+    // it to syncSkills directly — so skillsDir must win over --global/cwd.
+    const explicit = path.join(home, "custom-skills-root");
+    const r = syncSkills({ global: true }, { homeDir: home, skillsDir: explicit });
+    expect(r.skillsDir).toBe(explicit);
+    expect(fs.existsSync(path.join(explicit, "init-experiment", "SKILL.md"))).toBe(true);
+    // the --global default location was NOT used
+    expect(fs.existsSync(skillFile(home, "init-experiment"))).toBe(false);
+  });
 });
