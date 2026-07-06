@@ -129,7 +129,13 @@
         "source": "live"
       },
       "requestedAt": "2026-07-05T09:39:09.757Z",
-      "status": "pending"
+      "status": "approved",
+      "resolvedAt": "2026-07-06T10:54:59.381Z",
+      "resolution": {
+        "action": "approved",
+        "note": null,
+        "resolvedBy": "dashboard"
+      }
     },
     {
       "id": "evidence-landing-live-loop-2026-06-1783244350966",
@@ -155,7 +161,13 @@
         "source": "live"
       },
       "requestedAt": "2026-07-05T09:39:10.966Z",
-      "status": "pending"
+      "status": "deferred",
+      "resolvedAt": "2026-07-06T10:55:03.008Z",
+      "resolution": {
+        "action": "deferred",
+        "note": null,
+        "resolvedBy": "dashboard"
+      }
     }
   ]
 }

@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { describe, expect, it } from "vitest";
 import { MCP_TOOL_NAMES, PERSONAS, personaContent } from "./personas";
 
@@ -45,6 +47,13 @@ describe("persona registry", () => {
   it("points every guideHref at /docs/guides/<persona>", () => {
     for (const key of PERSONAS) {
       expect(personaContent[key].guideHref).toBe(`/docs/guides/${key}`);
+    }
+  });
+
+  it("every guideHref resolves to a real docs guide file", () => {
+    for (const key of PERSONAS) {
+      const file = path.join(process.cwd(), "content", "docs", "guides", `${key}.mdx`);
+      expect(fs.existsSync(file), file).toBe(true);
     }
   });
 
