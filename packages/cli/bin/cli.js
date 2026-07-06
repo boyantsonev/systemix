@@ -18,6 +18,7 @@ const { experiment } = require("../src/commands/experiment");
 const { goal } = require("../src/commands/goal");
 const { loop } = require("../src/commands/loop");
 const { skills } = require("../src/commands/skills");
+const { mcp } = require("../src/commands/mcp");
 
 const [, , command, ...args] = process.argv;
 
@@ -27,6 +28,8 @@ const HELP = `
   Usage:
     npx systemix init                    Interactive setup wizard (run once per project)
     npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
+    npx systemix init --global-mcp       Also register systemix-mcp in the global Claude Desktop config
+    npx systemix mcp register [--force]  (Re-)register systemix-mcp; --global includes Claude Desktop
     npx systemix config show             Print the active instance topology
     npx systemix workflow add <name>     Install a workflow into this repo's .claude/skills/
     npx systemix workflow list           List available workflows
@@ -83,6 +86,8 @@ async function main() {
       await init({
         reconfigure: args.includes("--reconfigure"),
         defaults: args.includes("--defaults"),
+        globalMcp: args.includes("--global-mcp"),
+        forceMcp: args.includes("--force-mcp"),
       });
       break;
     case "config":
@@ -147,6 +152,9 @@ async function main() {
       break;
     case "skills":
       await skills(args);
+      break;
+    case "mcp":
+      await mcp(args);
       break;
     case "help":
     case "--help":
