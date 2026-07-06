@@ -16,6 +16,7 @@ const { evidence } = require("../src/commands/evidence");
 const { config } = require("../src/commands/config");
 const { experiment } = require("../src/commands/experiment");
 const { loop } = require("../src/commands/loop");
+const { skills } = require("../src/commands/skills");
 
 const [, , command, ...args] = process.argv;
 
@@ -26,7 +27,7 @@ const HELP = `
     npx systemix init                    Interactive setup wizard (run once per project)
     npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
     npx systemix config show             Print the active instance topology
-    npx systemix workflow add <name>     Install a workflow to ~/.claude/skills/
+    npx systemix workflow add <name>     Install a workflow into this repo's .claude/skills/
     npx systemix workflow list           List available workflows
     npx systemix add <name>              Alias for: workflow add
     npx systemix update                  Check npm + skill-pack updates and apply
@@ -44,6 +45,7 @@ const HELP = `
     npx systemix evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
     npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
     npx systemix loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
+    npx systemix skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
 
   Workflows (install with: npx systemix workflow add <name>):
     design-system                        Product A — Figma↔code token sync (6 skills)
@@ -137,6 +139,9 @@ async function main() {
       break;
     case "loop":
       await loop(args);
+      break;
+    case "skills":
+      await skills(args);
       break;
     case "help":
     case "--help":

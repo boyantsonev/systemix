@@ -44,6 +44,17 @@ describe("the three doors share one canonical loop layout", () => {
     expect(mcpTool).toContain(MEMORY_ANCHOR);
   });
 
+  it("experiment_new scaffolds the SAME frontmatter fields across the CLI and MCP doors", () => {
+    // The scaffold's AI-native fields must exist on both doors, or an agent that
+    // creates an experiment through the MCP gets a thinner file than the CLI —
+    // and LEARNINGS stops compounding on the missing dimensions (icp/jtbd/goal).
+    const scaffoldFields = ["icp", "jtbd", "goal", "given", "conclusion", "review-by", "workflow"];
+    for (const field of scaffoldFields) {
+      expect(cliLib).toContain(field);
+      expect(mcpTool).toContain(field);
+    }
+  });
+
   it("all three memory writers share ONE canonical learning bullet template (no format drift)", () => {
     // The CLI lib, the MCP tool, and the app writer (memory-mdx.ts) render the same
     // bullet by convention (separate packages, can't import). These markers — confidence

@@ -119,6 +119,8 @@ Options:
   if (!latest) {
     console.log('Could not reach npm registry — running offline.');
     console.log('  Skills are up to date based on local state.');
+    // Loop skills reconcile from the local bundle — works offline.
+    syncBundledLoopSkills(checkOnly);
     // Still try skill packs (they use a separate GitHub fetch)
     await updateSkillPacks({ checkOnly, force, packFilter: null, skillsDir: SKILLS_DIR });
     return;
@@ -159,10 +161,41 @@ Options:
     }
   }
 
+  // ── Bundled loop skills: reconcile the installed set with the CLI source ────
+  // The npm check above compares the PACKAGE version; the loop skills can drift in
+  // place independently of it — e.g. the user-global ~/.claude/skills/ that init and
+  // `workflow add` never touch (ADR-008). Always reconcile them here so `update`
+  // heals that drift too. Reuses `skills sync` against the dir update already resolved.
+  syncBundledLoopSkills(checkOnly);
+
   // ── Skill-packs fetch phase (always runs for full update) ──────────────────
   await updateSkillPacks({ checkOnly, force, packFilter: null, skillsDir: SKILLS_DIR });
 
   console.log('\n  Run `npx systemix doctor` to verify your setup.');
+}
+
+/**
+ * Reconcile the bundled loop (hypothesis-validation) skills into SKILLS_DIR, the
+ * same dir the rest of `update` writes to (project .claude/skills/ if present, else
+ * global). Honors --check via dry-run. Best-effort: a failure here never fails update.
+ */
+function syncBundledLoopSkills(checkOnly) {
+  try {
+    const { syncSkills } = require('./skills');
+    const r = syncSkills({ 'dry-run': checkOnly }, { skillsDir: SKILLS_DIR });
+    const changed = r.results.filter(x => x.state === 'create' || x.state === 'update');
+    console.log(`\nLoop skills (${r.pipeline}):`);
+    if (!changed.length) {
+      console.log('  All current.');
+      return;
+    }
+    for (const x of changed) {
+      console.log(`  ${x.skill.padEnd(20)} ${x.state === 'update' ? `${x.from} → ${x.to}` : '(new)'}`);
+    }
+    console.log(checkOnly ? '  Run without --check to apply.' : `  ${changed.length} synced.`);
+  } catch (err) {
+    console.warn('\n  Loop skill sync skipped:', err.message);
+  }
 }
 
 /**

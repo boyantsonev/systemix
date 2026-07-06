@@ -209,35 +209,53 @@ export const experimentNewDefinition: ToolDefinition = {
     properties: {
       id: { type: "string", description: "Experiment id, e.g. 'hero-cta-2026-06'." },
       hypothesis: { type: "string", description: "If we [X], then [Y], measured by [Z]." },
-      icp: { type: "string", description: "Who this targets." },
-      section: { type: "string", description: "Surface/area, e.g. 'landing', 'pricing'." },
+      icp: { type: "string", description: "Who this targets, e.g. 'pre-pmf-founder'." },
+      jtbd: { type: "string", description: "The job-to-be-done this ICP is hiring the product for." },
+      goal: { type: "string", description: "The goal this experiment serves, e.g. 'consultancy-leads'." },
+      section: { type: "string", description: "Surface/area, e.g. 'landing', 'hero', 'pricing'." },
       metric: { type: "string", description: "Primary KPI, e.g. 'cta-click-rate'." },
       control: { type: "string", description: "Control variant copy/behaviour." },
       variant_b: { type: "string", description: "Proposed variant copy/behaviour." },
+      given: { type: "string", description: "The situation the visitor/user is in when the bet is tested." },
+      conclusion: { type: "string", description: "The win-state in plain words." },
+      "review-by": { type: "string", description: "When the evidence is worth reading (YYYY-MM-DD)." },
     },
     required: ["id"],
   },
 };
 
 export async function experimentNewHandler(
-  args: { id: string; hypothesis?: string; icp?: string; section?: string; metric?: string; control?: string; variant_b?: string },
+  args: {
+    id: string; hypothesis?: string; icp?: string; jtbd?: string; goal?: string;
+    section?: string; metric?: string; control?: string; variant_b?: string;
+    given?: string; conclusion?: string; "review-by"?: string;
+  },
   projectRoot: string
 ): Promise<ToolResult> {
   const file = expPath(projectRoot, args.id);
   if (fs.existsSync(file)) return fail(`experiment already exists: ${EXPERIMENTS_DIR}/${args.id}.mdx`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
+  const nullable = (v?: string) => (v ? q(v) : "null"); // quoted scalar, or bare null
+  // Field order mirrors the CLI door (src/lib/experiments.js createExperiment) so
+  // the three doors write byte-comparable scaffolds; the skill enriches workflow +
+  // the prose body afterwards.
   const mdx =
     `---\n` +
     `type: experiment\n` +
     `id: ${args.id}\n` +
     `section: ${q(args.section ?? "landing")}\n` +
+    `icp: ${nullable(args.icp)}\n` +
+    `jtbd: ${nullable(args.jtbd)}\n` +
+    `goal: ${nullable(args.goal)}\n` +
     `hypothesis: ${q(args.hypothesis ?? "Replace with the assumption you are testing.")}\n` +
-    `icp: ${args.icp ? q(args.icp) : "null"}\n` +
+    `given: ${nullable(args.given)}\n` +
+    `conclusion: ${nullable(args.conclusion)}\n` +
     `status: running\n` +
-    `metric: ${args.metric ? q(args.metric) : "null"}\n` +
+    `metric: ${nullable(args.metric)}\n` +
     `variants:\n` +
     `  control: ${q(args.control ?? "Current experience")}\n` +
     `  variant_b: ${q(args.variant_b ?? "The proposed change")}\n` +
+    `workflow: null\n` +
     `posthog-event: null\n` +
     `result: null\n` +
     `decision: null\n` +
@@ -245,8 +263,8 @@ export async function experimentNewHandler(
     `evidence-posthog: null\n` +
     `evidence-social: null\n` +
     `created: ${isoDay(new Date())}\n` +
-    `review-by: null\n` +
-    `---\n\n# ${args.id}\n\nWhy this hypothesis — fill in the assumption, the ICP, and the metric.\n`;
+    `review-by: ${nullable(args["review-by"])}\n` +
+    `---\n\n# ${args.id}\n\nWhy this hypothesis — the ICP + job-to-be-done, the given (prompt/context), the AI workflow you are testing, the conclusion (win-state), and the metric that proves it.\n`;
   fs.writeFileSync(file, mdx, "utf8");
   return ok(`created ${EXPERIMENTS_DIR}/${args.id}.mdx (status: running)`);
 }
