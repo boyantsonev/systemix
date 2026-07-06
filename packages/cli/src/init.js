@@ -169,6 +169,8 @@ async function init(opts = {}) {
     ?? (opts.defaults ? { ask: async () => "", close() {} } : createPrompt());
   const detectClients = opts.detectClients ?? mcpRegistrar.detectClients;
   const registerServer = opts.registerServer ?? mcpRegistrar.registerServer;
+  const globalMcp = opts.globalMcp ?? false;  // repo-scoped by default; opt in to write the global Claude Desktop config
+  const forceMcp  = opts.forceMcp  ?? false;  // overwrite an existing systemix-mcp entry pointing at another project
   const userConfigPath = path.join(opts.homeDir ?? os.homedir(), ".systemix", "config.json");
 
   console.log("\n  systemix init — 2-minute setup\n");
@@ -283,8 +285,13 @@ async function init(opts = {}) {
   console.log();
 
   // ── Register MCP server ───────────────────────────────────────────────────
+  // Prefer repo-scoped clients. The global Claude Desktop config is opt-in
+  // (--global-mcp) so a stray `init` in a scratch dir can't silently repoint an
+  // existing global registration.
   console.log("  Registering systemix-mcp...\n");
-  const clients = detectClients().filter((c) => c.exists);
+  const existingClients = detectClients().filter((c) => c.exists);
+  const clients = existingClients.filter((c) => globalMcp || c.name !== "Claude Desktop");
+  const skippedGlobal = !globalMcp && existingClients.some((c) => c.name === "Claude Desktop");
   if (clients.length === 0) {
     console.log("  ⚠  No MCP client config found. Add this to your Claude Code ~/.claude.json manually:\n");
     console.log('     "systemix-mcp": {');
@@ -293,9 +300,12 @@ async function init(opts = {}) {
     console.log("     }\n");
   } else {
     for (const client of clients) {
-      registerServer(client.configPath);
+      registerServer(client.configPath, { force: forceMcp, projectRoot });
     }
     console.log();
+  }
+  if (skippedGlobal) {
+    console.log("  -  Claude Desktop (global) left untouched. Register it there with: systemix mcp register --global\n");
   }
 
   // ── .gitignore ────────────────────────────────────────────────────────────

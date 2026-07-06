@@ -23,8 +23,7 @@ const os   = require("os");
 
 const SERVER_NAME = "systemix-mcp";
 
-function getServerConfig() {
-  const projectRoot = process.cwd();
+function getServerConfig(projectRoot = process.cwd()) {
   // Resolve the MCP server binary relative to this file so it works when
   // installed globally via npm/npx, not just from the monorepo root.
   let mcpServerPath;
@@ -135,26 +134,57 @@ function isRegistered(configPath) {
 }
 
 /**
+ * Reads the --project-root value out of a stored mcpServers entry.
+ * Returns null when the entry has no --project-root arg (or no args at all).
+ * @param {object} entry
+ * @returns {string|null}
+ */
+function projectRootOf(entry) {
+  const args = entry && entry.args;
+  if (!Array.isArray(args)) return null;
+  const i = args.indexOf("--project-root");
+  return i >= 0 && i + 1 < args.length ? args[i + 1] : null;
+}
+
+/**
  * Adds the "systemix-mcp" entry to mcpServers in the given config file.
- * Skips with a message if the entry is already present.
+ *
+ * Safety rules (a mis-run of `init` in a scratch dir must NOT silently repoint
+ * an existing global registration):
+ *   - Same --project-root already registered → idempotent skip.
+ *   - DIFFERENT --project-root already registered → left untouched, with a
+ *     warning showing the existing root and how to re-register intentionally.
+ *   - opts.force → overwrite regardless (the intentional re-register path).
  *
  * @param {string} configPath
+ * @param {{ force?: boolean, projectRoot?: string }} [opts]
  */
-function registerServer(configPath) {
+function registerServer(configPath, opts = {}) {
+  const { force = false, projectRoot = process.cwd() } = opts;
   const config = readConfig(configPath);
 
   // Ensure mcpServers block exists
   if (!config.mcpServers) config.mcpServers = {};
 
-  // Skip if already registered
-  if (config.mcpServers[SERVER_NAME]) {
+  const existing = config.mcpServers[SERVER_NAME];
+  if (existing && !force) {
+    const existingRoot = projectRootOf(existing);
+    if (existingRoot && existingRoot !== projectRoot) {
+      console.log(`  ⚠ "${SERVER_NAME}" already registered in ${path.basename(configPath)} pointing at a different project — left unchanged:`);
+      console.log(`      existing --project-root: ${existingRoot}`);
+      console.log(`      this project:            ${projectRoot}`);
+      console.log(`      To repoint it here, re-register intentionally: systemix mcp register --force`);
+      return;
+    }
+    // Same root (or no discernible root) — already registered, nothing to do.
     console.log(`  ⚠ "${SERVER_NAME}" already registered in ${path.basename(configPath)} — skipped`);
     return;
   }
 
-  config.mcpServers[SERVER_NAME] = getServerConfig();
+  config.mcpServers[SERVER_NAME] = getServerConfig(projectRoot);
   writeConfig(configPath, config);
-  console.log(`  ✓ Registered "${SERVER_NAME}" in ${configPath}`);
+  const verb = existing ? "Re-registered" : "Registered";
+  console.log(`  ✓ ${verb} "${SERVER_NAME}" in ${configPath}`);
 }
 
 /**
@@ -197,6 +227,7 @@ module.exports = {
   unregisterServer,
   isRegistered,
   listRegistered,
+  projectRootOf,
   SERVER_NAME,
   getServerConfig,
 };
