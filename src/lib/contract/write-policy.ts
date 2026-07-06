@@ -9,6 +9,7 @@ export type Artifact =
   | "memory" // a memory entry on the root contract
   | "skill" // a vendored skill (.claude/skills/*/SKILL.md) — self-improvement target
   | "guardrail" // a design guardrail (design/guardrails.mdx) — self-improvement target
+  | "workflow" // a generated orchestration workflow (.claude/workflows/*.js, /atlas) — spawns agents
   | "brief" // the contract brief
   | "goal" // a goal contract
   | "record"; // record status fields (drift, parity)
@@ -26,6 +27,7 @@ const AUTO_AT: Record<Artifact, number> = {
   memory: 2, // ghost/balanced propose; high auto-appends
   skill: Infinity, // self-modification is always proposed — HITL even in autonomous (audit-window bounded)
   guardrail: Infinity, // self-modification is always proposed — HITL even in autonomous
+  workflow: Infinity, // spawns agents — same self-modification class as skills, always HITL
   brief: Infinity, // always proposed
   goal: Infinity, // the covenant — humans give goals
 };
@@ -92,6 +94,7 @@ export const MATRIX_ARTIFACTS: { artifact: Artifact; label: string }[] = [
   { artifact: "memory", label: "Memory entries" },
   { artifact: "skill", label: "Skills (self-improvement)" },
   { artifact: "guardrail", label: "Design guardrails (self-improvement)" },
+  { artifact: "workflow", label: "Loop workflows (self-improvement)" },
   { artifact: "goal", label: "Goals" },
   { artifact: "brief", label: "The brief" },
   { artifact: "record", label: "Record status (drift, parity)" },

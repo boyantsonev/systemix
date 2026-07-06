@@ -13,7 +13,8 @@
     "measure",
     "growth-audit",
     "close-experiment",
-    "hermes"
+    "hermes",
+    "atlas"
   ],
   "requires": {
     "mcp": [

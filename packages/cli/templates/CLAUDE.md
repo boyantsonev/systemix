@@ -12,6 +12,10 @@ system is an optional substrate in `design/`.
 - **Sync + improve:** `/drift-report` keeps code true to the design substrate
   (`design/tokens.css` + `design/guardrails.mdx`); Hermes proposes new/updated
   skills and guardrails as HITL cards.
+- **Scale up:** `/atlas` interviews the instance topology (ICP, surfaces,
+  signal) and generates a multi-agent loop workflow that wraps `systemix loop`
+  — propose-only, regenerated via `/atlas update`, HITL like all
+  self-modification.
 
 ## Guardrails
 - **Autonomy dial** (`systemix.config.yaml`): ghost / assisted / autonomous.

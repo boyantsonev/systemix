@@ -68,6 +68,18 @@ describe("experiments/ loop — file-first ops", () => {
     expect(fm.workflow.edges[0]).toEqual({ from: "given", to: "frame" });
   });
 
+  it("new persists goal + review-by, and defaults both to null when omitted", () => {
+    exp.createExperiment(root, "with-goal", { goal: "consultancy-leads", reviewBy: "2026-08-04", now: NOW });
+    const fm = readMdx(root, "with-goal").data;
+    expect(fm.goal).toBe("consultancy-leads");
+    expect(fm["review-by"]).toBe("2026-08-04");
+
+    exp.createExperiment(root, "no-goal", { now: NOW });
+    const bare = readMdx(root, "no-goal").data;
+    expect(bare.goal).toBeNull();
+    expect(bare["review-by"]).toBeNull();
+  });
+
   it("new throws if the experiment already exists", () => {
     exp.createExperiment(root, "dup", { now: NOW });
     expect(() => exp.createExperiment(root, "dup", { now: NOW })).toThrow(/already exists/);
@@ -166,6 +178,16 @@ describe("experiments/ loop — file-first ops", () => {
     expect(fm.id).toBe("cli-made");
     expect(fm.hypothesis).toBe("from the CLI");
     expect(fm.status).toBe("running");
+  });
+
+  it("CLI door: `experiment new --goal --review-by` reaches the frontmatter", async () => {
+    await experiment(
+      ["new", "cli-goal", "--goal", "consultancy-leads", "--review-by", "2026-08-04"],
+      { projectRoot: root }
+    );
+    const fm = readMdx(root, "cli-goal").data;
+    expect(fm.goal).toBe("consultancy-leads");
+    expect(fm["review-by"]).toBe("2026-08-04");
   });
 });
 
