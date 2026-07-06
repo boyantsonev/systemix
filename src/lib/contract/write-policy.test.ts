@@ -41,10 +41,11 @@ describe("write-policy matrix", () => {
     }
   });
 
-  it("self-modification (skills + guardrails) is never autonomous, at any tier", () => {
+  it("self-modification (skills + guardrails + workflows) is never autonomous, at any tier", () => {
     for (const tier of [0, 1, 2, 3, 99]) {
       expect(mayWrite(tier, "skill")).toBe("propose");
       expect(mayWrite(tier, "guardrail")).toBe("propose");
+      expect(mayWrite(tier, "workflow")).toBe("propose");
     }
   });
 
@@ -94,18 +95,24 @@ describe("assertWriteAllowed", () => {
     ).toThrow(WritePolicyError);
   });
 
-  it("self-modification (skill/guardrail) is rejected autonomously even at the highest tier", () => {
+  it("self-modification (skill/guardrail/workflow) is rejected autonomously even at the highest tier", () => {
     expect(() =>
       assertWriteAllowed({ tier: 3, artifact: "skill", humanApproved: false }),
     ).toThrow(WritePolicyError);
     expect(() =>
       assertWriteAllowed({ tier: 99, artifact: "guardrail", humanApproved: false }),
     ).toThrow(WritePolicyError);
+    expect(() =>
+      assertWriteAllowed({ tier: 99, artifact: "workflow", humanApproved: false }),
+    ).toThrow(WritePolicyError);
   });
 
   it("a human-approved self-modification is allowed (HITL is the gate)", () => {
     expect(() =>
       assertWriteAllowed({ tier: 0, artifact: "skill", humanApproved: true }),
+    ).not.toThrow();
+    expect(() =>
+      assertWriteAllowed({ tier: 0, artifact: "workflow", humanApproved: true }),
     ).not.toThrow();
   });
 });
@@ -116,5 +123,12 @@ describe("MATRIX_ROWS (the rows the AutonomyClause renders)", () => {
     expect(memory).toMatchObject({ ghost: "propose", assisted: "propose", autonomous: "auto" });
     const goal = MATRIX_ROWS.find((r) => r.artifact === "goal")!;
     expect(goal).toMatchObject({ ghost: "propose", assisted: "propose", autonomous: "propose" });
+    const workflow = MATRIX_ROWS.find((r) => r.artifact === "workflow")!;
+    expect(workflow).toMatchObject({
+      label: "Loop workflows (self-improvement)",
+      ghost: "propose",
+      assisted: "propose",
+      autonomous: "propose",
+    });
   });
 });
