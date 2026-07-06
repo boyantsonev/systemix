@@ -12,7 +12,7 @@ const EXPERIMENT_HELP = `
   systemix experiment — drive the validation loop (experiments/)
 
   Usage:
-    systemix experiment new <id> [--hypothesis "…"] [--icp …] [--jtbd "…"] [--given "…"] [--conclusion "…"] [--section …] [--metric …] [--control "…"] [--variant "…"]
+    systemix experiment new <id> [--hypothesis "…"] [--icp …] [--jtbd "…"] [--given "…"] [--conclusion "…"] [--section …] [--metric …] [--control "…"] [--variant "…"] [--goal <goal-id>]
     systemix experiment list [--status running|complete]
     systemix experiment measure <id> --event <posthog-event> [--metric <metric>]
     systemix experiment close <id> --result "…" --decision promote|iterate|kill|no-action [--confidence 0.0-1.0] [--learning "…"]
@@ -58,6 +58,7 @@ async function experiment(args = [], opts = {}) {
         variant_b: str(flags.variant),
         given: str(flags.given),
         conclusion: str(flags.conclusion),
+        goal: str(flags.goal),
       });
       console.log(`  ✓  created ${path.relative(root, file) || file} (status: running)`);
       console.log(`     next: build the variant, then \`systemix experiment measure ${id} --event <name>\``);

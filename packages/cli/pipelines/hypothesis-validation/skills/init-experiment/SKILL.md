@@ -31,6 +31,7 @@ Surface anything related to the user ("we already tested X — it promoted/kille
 If `$ARGUMENTS` is provided, use it as the experiment ID (e.g. `hero-vp-icp-match-2026-04`). Otherwise ask the user:
 - What section of the product does this experiment target? (e.g. `hero`, `pricing`, `onboarding`)
 - What is the ICP for this experiment? (e.g. `ops-heavy-roles`, `design-system-leads`, `founding-engineers`)
+- Which goal does this experiment serve? Run `systemix goal list` to see what exists. If none fits, use `/new-goal` (or `systemix goal new`) to declare one first — don't leave an experiment goal-less by default.
 - Construct an ID: `<section>-<short-description>-<YYYY-MM>`
 
 ### Step 2 — Collect the hypothesis
@@ -59,6 +60,7 @@ id: <experiment-id>
 section: <section>
 hypothesis: "<hypothesis statement>"
 icp: <icp>
+goal: <goal-id>
 status: running
 metric: <primary metric, e.g. cta-click-rate>
 created: <today YYYY-MM-DD>
