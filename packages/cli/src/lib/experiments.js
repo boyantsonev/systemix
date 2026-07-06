@@ -88,6 +88,8 @@ function createExperiment(root, id, fields = {}) {
     section: fields.section ?? "landing",
     icp: fields.icp ?? null,
     jtbd: fields.jtbd ?? null,
+    // The one-directional link to experiments/goals/<goal>.mdx — goal-map.ts reads
+    // this field back at request time; nothing is stored on the goal file itself.
     goal: fields.goal ?? null,
     hypothesis: fields.hypothesis ?? "Replace with the assumption you are testing.",
     given: fields.given ?? null,

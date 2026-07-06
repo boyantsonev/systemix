@@ -9,24 +9,28 @@ import { RiArrowRightUpLine } from "@remixicon/react";
 // experiment shows "measuring", a closed one shows its decision + confidence and
 // the first cited LEARNINGS line. No placeholders, no invented numbers.
 
-const EXPERIMENT_ID = "landing-live-loop-2026-06";
-
 type ExperimentFM = {
+  id?: string;
   hypothesis?: string;
   metric?: string;
   status?: string;
   icp?: string;
   decision?: string | null;
   confidence?: number | null;
+  created?: string;
 };
 
+/** Newest running experiment in experiments/ (fallback: newest overall). */
 function readExperiment(): ExperimentFM | null {
   try {
-    const raw = fs.readFileSync(
-      path.join(process.cwd(), "experiments", `${EXPERIMENT_ID}.mdx`),
-      "utf8",
-    );
-    return matter(raw).data as ExperimentFM;
+    const dir = path.join(process.cwd(), "experiments");
+    const all = fs
+      .readdirSync(dir)
+      .filter((f) => f.endsWith(".mdx"))
+      .map((f) => matter(fs.readFileSync(path.join(dir, f), "utf8")).data as ExperimentFM)
+      .filter((fm) => fm.id)
+      .sort((a, b) => String(b.created ?? "").localeCompare(String(a.created ?? "")));
+    return all.find((fm) => fm.status === "running") ?? all[0] ?? null;
   } catch {
     return null;
   }
@@ -62,7 +66,7 @@ export function LiveLoopProof({ className }: { className?: string }) {
       <div className="rounded-xl border border-border/50 bg-card p-6 sm:p-8">
         <div className="mb-4 flex items-center justify-between gap-4">
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
-            Running on this site · {EXPERIMENT_ID}
+            Running on this site · {exp.id}
           </span>
           <span
             className={
@@ -122,7 +126,7 @@ export function LiveLoopProof({ className }: { className?: string }) {
 
         <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
           <Link
-            href={`/experiments/${EXPERIMENT_ID}`}
+            href={`/experiments/${exp.id}`}
             className="inline-flex items-center gap-1 text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
           >
             See this experiment <RiArrowRightUpLine className="h-4 w-4" />

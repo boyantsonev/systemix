@@ -15,6 +15,7 @@ const { socialSignal } = require("../src/commands/social-signal");
 const { evidence } = require("../src/commands/evidence");
 const { config } = require("../src/commands/config");
 const { experiment } = require("../src/commands/experiment");
+const { goal } = require("../src/commands/goal");
 const { loop } = require("../src/commands/loop");
 const { skills } = require("../src/commands/skills");
 
@@ -44,6 +45,7 @@ const HELP = `
     npx systemix token-guard [sub]       Manage TokenGuard (status|reset|remove)
     npx systemix evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
     npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
+    npx systemix goal <sub>              Declare what experiments are for: new|list (experiments/goals/)
     npx systemix loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
     npx systemix skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
 
@@ -136,6 +138,9 @@ async function main() {
       break;
     case "experiment":
       await experiment(args);
+      break;
+    case "goal":
+      await goal(args);
       break;
     case "loop":
       await loop(args);

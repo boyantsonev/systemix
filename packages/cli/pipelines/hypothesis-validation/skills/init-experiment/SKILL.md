@@ -55,9 +55,13 @@ Ask these together, then reflect the frame back before touching files:
 4. **ICP + JTBD** — reuse the existing `icp`/`jtbd` values from prior
    experiments whenever the bet allows; LEARNINGS compound only when the same
    ICP strings recur across bullets.
-5. **Review-by window** — when is the evidence worth reading? (typically
+5. **Which goal it serves** — run `systemix goal list`. If an existing goal
+   (status `active`/`validated`) fits, use its id; if none does, use `/new-goal`
+   (or `systemix goal new`) to declare one first. Don't leave an experiment
+   goal-less by default — the goal is what LEARNINGS compound toward.
+6. **Review-by window** — when is the evidence worth reading? (typically
    created + 30 days; low traffic → longer).
-6. **Ship scope** — which files/copy does variant_b actually touch? Name the
+7. **Ship scope** — which files/copy does variant_b actually touch? Name the
    seam (see Step 4) and anything explicitly out of scope.
 
 ### Step 2 — Scaffold via the CLI door, then enrich

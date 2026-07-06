@@ -1,13 +1,25 @@
 ---
 type: goal
 id: example-goal
-status: open
+title: "Example goal"
+order: 0
+given: null
+goal-type: surface
+icp: null
+status: active
+success-criteria: null
+kill-if: null
 created: 2026-01-01
 ---
 
 # Example goal
 
 Humans give goals — the engine never self-assigns one. State the outcome you want
-(a KPI or business result) and how you'll know it's met. Experiments in
-`experiments/` are how the engine pursues and validates this goal; link them here
-as they're created.
+(a KPI or business result) and how you'll know it's met, and who it's for (`icp`).
+`success-criteria` and `kill-if` are read by a human (or Hermes) when deciding
+whether to keep pursuing it — nothing here is machine-enforced yet.
+
+Experiments in `experiments/` link to this goal via their own `goal:` field
+(`systemix experiment new <id> --goal example-goal`, or the `/init-experiment`
+skill) — nothing needs to be hand-maintained on the goal file itself; the link
+and the experiment count are both derived live from the experiment side.

@@ -17,23 +17,39 @@ export const ROTATING_PHRASES = [
   "evidence trail",
 ] as const;
 
+const DS_PHRASES = [
+  "remembers why",
+  "learns your workflow",
+  "updates its own skills",
+  "runs your experiments",
+] as const;
+
 export type HeroVariant = {
   eyebrow: string;
+  lead: string;
+  phrases: readonly string[];
   body: string;
 };
 
 export const hero = {
-  lead: "Your",
-  phrases: ROTATING_PHRASES,
-  /** A/B variants — same eyebrow/body for now; seam kept for future tests. */
+  /**
+   * A/B variants — the seam experiment `landing-ai-native-ds-2026-07` ships
+   * through. No `landing-hero` flag exists, so everyone gets variant_b
+   * (ship-and-compare); control is the pre-experiment copy, kept for the
+   * record and for a future real split.
+   */
   variants: {
     control: {
       eyebrow: "For the founder who ships daily with agents",
+      lead: "Your",
+      phrases: ROTATING_PHRASES,
       body: "You ship a new idea every day with your agents, read the numbers, and move on. A month later you're re-deciding something you already settled — because nothing wrote down why. Systemix is the loop that remembers.",
     },
     variant_b: {
-      eyebrow: "For the founder who ships daily with agents",
-      body: "You ship a new idea every day with your agents, read the numbers, and move on. A month later you're re-deciding something you already settled — because nothing wrote down why. Systemix is the loop that remembers.",
+      eyebrow: "The AI-native design system · lives in Claude Code",
+      lead: "The design system that",
+      phrases: DS_PHRASES,
+      body: "AI can generate a design system in an afternoon — and by week two it's slop, because nothing wrote down why. Systemix keeps the why: every component carries its rationale in MDX, every experiment writes its decision back, and its skills update around your workflow. In Claude Code, in your repo.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,
   spine: ["ship", "measure", "learn", "decide"],
@@ -47,11 +63,11 @@ export const hero = {
 
 export const gap = {
   label: "The gap",
-  heading: "You're shipping faster than you can remember.",
-  body: "Every idea you ship with your agents adds to the pile. The numbers land in PostHog. The decision — why you kept it, why you killed it — never gets written down. A month later you're testing it again.",
+  heading: "A design system is an afternoon's work now. Keeping it true isn't.",
+  body: "Your agents can scaffold components, tokens, and docs in an afternoon. What they can't do is remember why any of it looks the way it does. No rationale, no decisions — by the second sprint it drifts, and you're re-litigating spacing you already settled.",
   stats: [
-    { k: "Time to ship an idea", v: "An afternoon, with agents" },
-    { k: "Time that decision resurfaces", v: "Never — unless you remember" },
+    { k: "Time to generate a design system", v: "An afternoon, with agents" },
+    { k: "Where the why ends up", v: "Nowhere — unless something writes it down" },
   ],
 };
 
@@ -59,11 +75,11 @@ export const gap = {
 
 export const effect = {
   label: "What it costs you",
-  heading: "Every ship lands in a void.",
+  heading: "That's how a design system turns to slop.",
   items: [
-    { title: "Déjà-ship", body: "You test something you already tested — nothing flagged it, because nothing recorded the call you made last time." },
-    { title: "Context amnesia", body: "Three weeks later you can't reconstruct why the page looks this way. The reasoning shipped and evaporated." },
-    { title: "Evidence graveyard", body: "PostHog logged every event. The decision that followed? Nowhere — not in the repo, not in your head. Gone." },
+    { title: "Drift by generation", body: "Every new component invents its own spacing, radius, and variants — nothing states the rules or the why, so the agents can't follow them." },
+    { title: "Context amnesia", body: "Three weeks later nobody can reconstruct why the button looks this way. The reasoning shipped and evaporated." },
+    { title: "Evidence graveyard", body: "PostHog logged how users actually behaved. The design decisions never met the data — they lived in someone's head." },
   ],
 };
 
@@ -72,7 +88,7 @@ export const effect = {
 export const loop = {
   label: "How it works",
   heading: "One loop. Every decision, recorded.",
-  body: "Systemix sits in your shipping stack. Each experiment is a file in your repo — hypothesis, evidence, decision, confidence — written back when you close the loop, so the next idea starts from what the last one proved.",
+  body: "Systemix lives inside your design system. Every component decision and every experiment is an MDX file in your repo — hypothesis, evidence, decision, confidence — written back when the loop closes. The system learns instead of drifting, and its skills update around how you actually work.",
   steps: [
     { n: "01", title: "ship" },
     { n: "02", title: "measure" },
@@ -86,7 +102,7 @@ export const loop = {
 export const doors = {
   label: "How you drive it",
   heading: "Terminal, agent, or slash command — your call.",
-  body: "Three ways to drive the same loop. Pick the one that fits how you ship.",
+  body: "Three ways to drive the same design system. Pick the one that fits how you ship.",
   cta: { label: "Read the docs", href: "/docs" },
   items: [
     { key: "cli", name: "CLI", code: "systemix experiment new", body: "Scriptable in CI and your terminal.", media: "cli-demo.gif" },
@@ -130,28 +146,28 @@ export type ServiceTier = {
 
 export const services = {
   label: "Pick your path",
-  heading: "Free to start. Sprint to ship.",
-  body: "The kit is open-source and runs in Claude Code. Want it wired to your stack this week? That's a sprint.",
+  heading: "Free kit. Paid build. Design partner.",
+  body: "The kit is open-source and runs in Claude Code. Want an AI-native design system built around your team's workflow? That's the sprint — or apply for the design-partner rung.",
   tiers: [
     {
       name: "Free kit",
       price: "Forever free",
-      body: "npx systemix init — a few prompts, your experiments tracked in MDX, in your repo. Claude Code skills included.",
+      body: "npx systemix init — the loop scaffolded in MDX, in your repo, with the design-system spine optional. Claude Code skills included.",
       cta: { label: "Get the kit", href: GITHUB_URL },
       highlight: false,
     },
     {
-      name: "1-week sprint",
+      name: "Design system build",
       price: "Book a call",
-      body: "Boyan wires the loop to your stack. Brand clone in session one, experiments live by end of week, the loop yours when we're done.",
-      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20sprint" },
+      body: "A 1-week sprint: Boyan builds your AI-native design system — components with their rationale in MDX, decisions written back by the loop, custom skills tuned to your workflow. Yours when we're done.",
+      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20system%20sprint" },
       highlight: true,
     },
     {
-      name: "Building in public",
-      price: "Follow along",
-      body: "Systemix dogfoods itself. The experiments that shape this product are open in this repo.",
-      cta: { label: "See the loop", href: "/experiments" },
+      name: "Design partner",
+      price: "Free · limited seats",
+      body: "Free Systemix setup plus workflow mapping across your marketing, engineering, business, and design. One or two partners at a time — you get the system, the loop gets its proving ground.",
+      cta: { label: "Apply as a design partner", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20partner" },
       highlight: false,
     },
   ] satisfies ServiceTier[],
@@ -171,7 +187,7 @@ export const about = {
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 export const bottomCta = {
-  heading: "Your decisions deserve a record.",
+  heading: "Your design system deserves a memory.",
   body: "Start with the free kit in minutes — or send your URL and I'll clone your brand identity in session one.",
   fineprint: "Free forever · open-source · no lock-in · files in your own repo",
 };
@@ -194,7 +210,7 @@ export const nav = {
 };
 
 export const footer = {
-  tagline: "Decisions deserve a record.",
+  tagline: "A design system that remembers why.",
   links: [
     { label: "GitHub", href: GITHUB_URL },
     { label: "Docs", href: "/docs" },

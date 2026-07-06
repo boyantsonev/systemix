@@ -33,8 +33,8 @@ export function LandingHero() {
         </p>
 
         <h1 className="text-[2.75rem] sm:text-[3.75rem] font-black tracking-tight leading-[1.05] mb-7">
-          <span className="block">{hero.lead}</span>
-          <RotatingWord phrases={hero.phrases} className="text-foreground" />
+          <span className="block">{v.lead}</span>
+          <RotatingWord phrases={v.phrases} className="text-foreground" />
         </h1>
 
         {/* the spine */}
@@ -62,7 +62,7 @@ export function LandingHero() {
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => ph.capture("hero_cta_click", { cta: "github" })}
+              onClick={() => ph.capture("hero_cta_click", { cta: "github", variant: variantKey })}
               className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
             >
               or star on GitHub →

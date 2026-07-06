@@ -12,7 +12,7 @@ const EXPERIMENT_HELP = `
   systemix experiment — drive the validation loop (experiments/)
 
   Usage:
-    systemix experiment new <id> [--hypothesis "…"] [--icp …] [--jtbd "…"] [--goal …] [--given "…"] [--conclusion "…"] [--section …] [--metric …] [--control "…"] [--variant "…"] [--review-by YYYY-MM-DD]
+    systemix experiment new <id> [--hypothesis "…"] [--icp …] [--jtbd "…"] [--goal <goal-id>] [--given "…"] [--conclusion "…"] [--section …] [--metric …] [--control "…"] [--variant "…"] [--review-by YYYY-MM-DD]
     systemix experiment list [--status running|complete]
     systemix experiment measure <id> --event <posthog-event> [--metric <metric>]
     systemix experiment close <id> --result "…" --decision promote|iterate|kill|no-action [--confidence 0.0-1.0] [--learning "…"]
