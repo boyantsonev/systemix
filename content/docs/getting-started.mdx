@@ -23,21 +23,26 @@ The wizard walks you through:
 3. **Signal setup** — wire PostHog (recommended) or skip for now
 4. **First experiment** — ICP · JTBD · hypothesis · the AI workflow that tests it · the metric you'll measure
 
-It writes two files:
-
-- `experiments/<id>.mdx` — the experiment contract
-- `experiments/LEARNINGS.md` — the compounding memory ledger (starts blank)
-
 ## What you have after init
 
 ```
 experiments/
-  <id>.mdx          ← your first experiment
-  LEARNINGS.md      ← learnings accumulate here after each close
+  <id>.mdx          ← your first experiment (an _example.mdx if you skipped authoring)
+  LEARNINGS.md      ← the compounding memory ledger (starts blank)
   goals/            ← KPIs the experiments roll up to
-.claude/skills/     ← the six loop skills, installed project-scoped
+design/
+  DESIGN.md         ← the design substrate (optional; scaffold, point, or skip)
+  guardrails.mdx    ← the rules drift checks enforce
+  tokens.css        ← code-first tokens
+.claude/skills/     ← the loop skills, installed project-scoped
+CLAUDE.md           ← the per-instance loop orchestrator
 systemix.config.yaml
 ```
+
+Init also registers the `systemix-mcp` server (repo `.claude.json`, plus
+Claude Desktop if present) and updates `.gitignore`. Commit `experiments/`,
+`design/`, `.claude/skills/`, `CLAUDE.md`, and `systemix.config.yaml` so the
+instance is reproducible.
 
 ## Next: run the loop
 
