@@ -63,11 +63,11 @@ export const hero = {
 
 export const gap = {
   label: "The gap",
-  heading: "You're shipping faster than you can remember.",
-  body: "Every idea you ship with your agents adds to the pile. The numbers land in PostHog. The decision — why you kept it, why you killed it — never gets written down. A month later you're testing it again.",
+  heading: "A design system is an afternoon's work now. Keeping it true isn't.",
+  body: "Your agents can scaffold components, tokens, and docs in an afternoon. What they can't do is remember why any of it looks the way it does. No rationale, no decisions — by the second sprint it drifts, and you're re-litigating spacing you already settled.",
   stats: [
-    { k: "Time to ship an idea", v: "An afternoon, with agents" },
-    { k: "Time that decision resurfaces", v: "Never — unless you remember" },
+    { k: "Time to generate a design system", v: "An afternoon, with agents" },
+    { k: "Where the why ends up", v: "Nowhere — unless something writes it down" },
   ],
 };
 
@@ -75,11 +75,11 @@ export const gap = {
 
 export const effect = {
   label: "What it costs you",
-  heading: "Every ship lands in a void.",
+  heading: "That's how a design system turns to slop.",
   items: [
-    { title: "Déjà-ship", body: "You test something you already tested — nothing flagged it, because nothing recorded the call you made last time." },
-    { title: "Context amnesia", body: "Three weeks later you can't reconstruct why the page looks this way. The reasoning shipped and evaporated." },
-    { title: "Evidence graveyard", body: "PostHog logged every event. The decision that followed? Nowhere — not in the repo, not in your head. Gone." },
+    { title: "Drift by generation", body: "Every new component invents its own spacing, radius, and variants — nothing states the rules or the why, so the agents can't follow them." },
+    { title: "Context amnesia", body: "Three weeks later nobody can reconstruct why the button looks this way. The reasoning shipped and evaporated." },
+    { title: "Evidence graveyard", body: "PostHog logged how users actually behaved. The design decisions never met the data — they lived in someone's head." },
   ],
 };
 
@@ -88,7 +88,7 @@ export const effect = {
 export const loop = {
   label: "How it works",
   heading: "One loop. Every decision, recorded.",
-  body: "Systemix sits in your shipping stack. Each experiment is a file in your repo — hypothesis, evidence, decision, confidence — written back when you close the loop, so the next idea starts from what the last one proved.",
+  body: "Systemix lives inside your design system. Every component decision and every experiment is an MDX file in your repo — hypothesis, evidence, decision, confidence — written back when the loop closes. The system learns instead of drifting, and its skills update around how you actually work.",
   steps: [
     { n: "01", title: "ship" },
     { n: "02", title: "measure" },
@@ -102,7 +102,7 @@ export const loop = {
 export const doors = {
   label: "How you drive it",
   heading: "Terminal, agent, or slash command — your call.",
-  body: "Three ways to drive the same loop. Pick the one that fits how you ship.",
+  body: "Three ways to drive the same design system. Pick the one that fits how you ship.",
   cta: { label: "Read the docs", href: "/docs" },
   items: [
     { key: "cli", name: "CLI", code: "systemix experiment new", body: "Scriptable in CI and your terminal.", media: "cli-demo.gif" },
@@ -187,7 +187,7 @@ export const about = {
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 export const bottomCta = {
-  heading: "Your decisions deserve a record.",
+  heading: "Your design system deserves a memory.",
   body: "Start with the free kit in minutes — or send your URL and I'll clone your brand identity in session one.",
   fineprint: "Free forever · open-source · no lock-in · files in your own repo",
 };
@@ -210,7 +210,7 @@ export const nav = {
 };
 
 export const footer = {
-  tagline: "Decisions deserve a record.",
+  tagline: "A design system that remembers why.",
   links: [
     { label: "GitHub", href: GITHUB_URL },
     { label: "Docs", href: "/docs" },

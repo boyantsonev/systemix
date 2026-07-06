@@ -25,9 +25,9 @@ import {
 } from "@/lib/landing/content";
 
 export const metadata: Metadata = {
-  title: "Systemix — your shipping decisions, finally written down",
+  title: "Systemix — the AI-native design system that remembers why",
   description:
-    "For the founder shipping daily with agents: Systemix is the loop that records why you kept or killed each idea. Free CLI kit, or let Boyan wire the loop in a one-week sprint. Paste your URL — we clone your brand in session one.",
+    "AI can generate a design system in an afternoon — Systemix keeps it from turning to slop. Rationale in MDX, a learning loop for every decision, skills that update around your workflow. Free kit in Claude Code, or a one-week design-system build.",
 };
 
 // ── Shared section primitives ─────────────────────────────────────────────────

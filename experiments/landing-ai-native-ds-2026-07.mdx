@@ -12,7 +12,7 @@ status: running
 metric: hero-cta-click-rate
 variants:
   control: loop-abstraction hero ('Your shipping memory') + generic sprint tiers
-  variant_b: 'AI-native design system hero + consultancy ladder (DS build sprint, design partner rung)'
+  variant_b: 'AI-native design system positioning across the full page (hero, problem/effect, loop, CTA, metadata) + consultancy ladder (DS build sprint, design partner rung)'
 workflow:
   steps:
     - id: reposition
@@ -104,6 +104,10 @@ read is directional.
 - `book_a_call` stays experiment #1's site-wide signal; the new design-partner
   CTA fires it with `location: services-design-partner`, so the ladder's effect
   is visible without contaminating #1's metric.
+- The full-page body re-anchor (problem/effect/loop/CTA/metadata repositioned to
+  the design-system framing) ships in the same PR and evidence window — the
+  variant is the repositioned page as a whole; the hero metric still owns the
+  read.
 
 ## Conclusion
 

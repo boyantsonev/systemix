@@ -14,8 +14,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Systemix — Design System Hub",
-  description: "Living documentation for the Figma ↔ Code design system",
+  title: "Systemix — the AI-native design system",
+  description:
+    "The design system with a learning loop — rationale in MDX, decisions written back, skills that update around your workflow. Lives in Claude Code.",
 };
 
 export default function RootLayout({
