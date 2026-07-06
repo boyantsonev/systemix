@@ -1,0 +1,28 @@
+---
+title: HitlQueue
+component: HitlQueue
+parity: clean
+path: src/components/systemix/HitlQueue.tsx
+last-updated: 2026-07-06
+---
+
+## Rationale
+
+Decisions queue here instead of shipping silently. The queue is the visible
+form of the autonomy dial: at every trust tier, self-modification and
+experiment closes arrive as cards a human resolves — the engine proposes,
+humans close. The amber border on a pending card is the "a human owes this a
+call" signal; resolved cards dim rather than disappear so the ledger stays
+legible on the same surface.
+
+## States
+
+- **pending** — amber border, action buttons (approve / reject / defer).
+- **resolved** — dimmed, read-only; the decision and resolver are recorded and
+  the card gains a permalink in the decisions ledger at `/contract/decisions`.
+
+## Drift
+
+None recorded. Card types (close-proposal, drift-resolution,
+instrumentation-approval, new-token, engagement-snapshot) are defined next to
+the component; adding a type without a renderer is the drift to watch for.

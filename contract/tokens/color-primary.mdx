@@ -1,0 +1,22 @@
+---
+title: --primary
+token: --primary
+value: oklch(0.21 0.012 70)
+status: clean
+resolved: false
+collection: color
+source: src/app/globals.css
+last-updated: 2026-07-06
+---
+
+## Rationale
+
+The primary is a warm near-black charcoal, not a brand color. Systemix's own
+surfaces stay neutral so a client's cloned brand (the session-one globals.css
+diff) reads as the only saturated voice on the page. Actions get contrast from
+weight and shape, not hue.
+
+## Drift
+
+None recorded. Canonical value lives in `src/app/globals.css` (code-first);
+the Figma Variables bridge is the optional adapter, not the source of truth.
