@@ -47,12 +47,15 @@ export function TrackedLink({
   href,
   event,
   location,
+  persona,
   className,
   children,
 }: {
   href: string;
   event: string;
   location: string;
+  /** Which /for/<persona> page fired this — a breakdown property, never a new event name. */
+  persona?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -64,7 +67,7 @@ export function TrackedLink({
     <a
       href={href}
       className={className}
-      onClick={() => ph?.capture(event, { location, variant })}
+      onClick={() => ph?.capture(event, { location, variant, ...(persona ? { persona } : {}) })}
     >
       {children}
     </a>
@@ -73,9 +76,11 @@ export function TrackedLink({
 
 // ── Section view tracker (Intersection Observer) ──────────────────────────────
 
-export function SectionTrack({ name, experimentId, children, className }: {
+export function SectionTrack({ name, experimentId, persona, children, className }: {
   name: string;
   experimentId?: string;
+  /** Which /for/<persona> page this section rendered on — a breakdown property. */
+  persona?: string;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -90,7 +95,7 @@ export function SectionTrack({ name, experimentId, children, className }: {
       ([entry]) => {
         if (entry.isIntersecting && !fired.current) {
           fired.current = true;
-          ph.capture("section_viewed", { section: name });
+          ph.capture("section_viewed", { section: name, ...(persona ? { persona } : {}) });
           if (experimentId) {
             ph.capture("experiment_social_signal", {
               experiment_id: experimentId,
@@ -104,7 +109,7 @@ export function SectionTrack({ name, experimentId, children, className }: {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [name, experimentId, ph]);
+  }, [name, experimentId, persona, ph]);
 
   return <div ref={ref} className={className}>{children}</div>;
 }

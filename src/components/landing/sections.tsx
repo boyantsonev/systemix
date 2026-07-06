@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
+import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
 import { ThreeDoorsBento } from "@/components/landing/ThreeDoorsBento";
 import { TrustBento } from "@/components/landing/TrustBento";
 import {
@@ -19,7 +20,9 @@ import {
   loop,
   nav,
   services,
+  signals,
   trust,
+  valueProps,
 } from "@/lib/landing/content";
 
 // ── Shared section primitives ─────────────────────────────────────────────────
@@ -75,6 +78,7 @@ export function LandingNav() {
         </Link>
 
         <nav className="ml-4 hidden items-center gap-1 sm:flex">
+          <PersonaNavDropdown />
           {nav.links.map((l) => (
             <Link
               key={l.href}
@@ -96,6 +100,74 @@ export function LandingNav() {
         </div>
       </div>
     </header>
+  );
+}
+
+// ── Value props · the two pillars ────────────────────────────────────────────
+
+export function ValueProps() {
+  return (
+    <Section>
+      <div className="max-w-3xl">
+        <Eyebrow>{valueProps.label}</Eyebrow>
+        <SectionHeading>{valueProps.heading}</SectionHeading>
+      </div>
+      <div className="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-5">
+        {valueProps.items.map((it) => (
+          <div key={it.title} className="rounded-xl border border-border/40 bg-card p-7">
+            <p className="mb-3 text-[17px] font-bold text-foreground">{it.title}</p>
+            <p className="text-[14px] leading-relaxed text-muted-foreground">{it.body}</p>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// ── Signals · the wiring wall ────────────────────────────────────────────────
+
+export function SignalsWall() {
+  return (
+    <Section>
+      <div className="max-w-3xl">
+        <Eyebrow>{signals.label}</Eyebrow>
+        <SectionHeading>{signals.heading}</SectionHeading>
+        <Lead>{signals.body}</Lead>
+      </div>
+      <div className="mt-14 grid gap-3 sm:grid-cols-3">
+        {signals.items.map((s) => (
+          <div
+            key={s.id}
+            className="flex items-center gap-3 rounded-xl border border-border/40 bg-card px-5 py-4"
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "size-2 shrink-0 rounded-full",
+                s.status === "wired" ? "bg-emerald-500" : "bg-amber-500/70",
+              )}
+            />
+            <div className="min-w-0">
+              <p className="truncate text-[14px] font-medium text-foreground">{s.name}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
+                {s.status === "wired" ? "wired" : "wire on request"}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
+        <TrackedLink
+          href={signals.cta.href}
+          event="book_a_call"
+          location="signals-wall"
+          className="inline-block rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-opacity hover:opacity-90"
+        >
+          {signals.cta.label}
+        </TrackedLink>
+        <p className="text-[13px] text-muted-foreground/70">{signals.note}</p>
+      </div>
+    </Section>
   );
 }
 
@@ -391,15 +463,24 @@ export function LandingFooter() {
         <div className="flex items-center gap-2">
           <span className="font-mono text-[12px] text-muted-foreground/40">{footer.tagline}</span>
         </div>
-        <div className="flex items-center gap-4 font-mono text-[12px] text-muted-foreground/40">
-          {footer.links.map((l) => (
-            <Link key={l.href} href={l.href} className="transition-colors hover:text-muted-foreground">
-              {l.label}
-            </Link>
-          ))}
-          <span className="rounded border border-border/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">
-            {footer.badge}
-          </span>
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <div className="flex flex-wrap items-center gap-4 font-mono text-[12px] text-muted-foreground/40">
+            {footer.links.map((l) => (
+              <Link key={l.href} href={l.href} className="transition-colors hover:text-muted-foreground">
+                {l.label}
+              </Link>
+            ))}
+            <span className="rounded border border-border/50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">
+              {footer.badge}
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 font-mono text-[12px] text-muted-foreground/40">
+            {footer.personaLinks.map((l) => (
+              <Link key={l.href} href={l.href} className="transition-colors hover:text-muted-foreground">
+                {l.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

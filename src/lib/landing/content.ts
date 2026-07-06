@@ -11,7 +11,7 @@ export const BRAND_CLONE_MAILTO =
   "mailto:boyan.works@gmail.com?subject=Brand%20clone%20request";
 
 export const ROTATING_PHRASES = [
-  "shipping memory",
+  "design system memory",
   "decision log",
   "learning loop",
   "evidence trail",
@@ -36,7 +36,9 @@ export const hero = {
    * A/B variants — the seam experiment `landing-ai-native-ds-2026-07` ships
    * through. No `landing-hero` flag exists, so everyone gets variant_b
    * (ship-and-compare); control is the pre-experiment copy, kept for the
-   * record and for a future real split.
+   * record and for a future real split. Positioning grafted 2026-07-06:
+   * variant_b keeps the anti-slop spine and adds the "+ growth engine /
+   * wiring-as-a-service" emphasis.
    */
   variants: {
     control: {
@@ -46,10 +48,10 @@ export const hero = {
       body: "You ship a new idea every day with your agents, read the numbers, and move on. A month later you're re-deciding something you already settled — because nothing wrote down why. Systemix is the loop that remembers.",
     },
     variant_b: {
-      eyebrow: "The AI-native design system · lives in Claude Code",
+      eyebrow: "The AI-native design system + growth engine · lives in Claude Code",
       lead: "The design system that",
       phrases: DS_PHRASES,
-      body: "AI can generate a design system in an afternoon — and by week two it's slop, because nothing wrote down why. Systemix keeps the why: every component carries its rationale in MDX, every experiment writes its decision back, and its skills update around your workflow. In Claude Code, in your repo.",
+      body: "AI can generate a design system in an afternoon — and by week two it's slop, because nothing wrote down why. Systemix keeps the why in MDX and runs it as a growth engine: every experiment writes its decision back, and skills review and learn weekly from your signals. In Claude Code, in your repo — I wire the signals as a service.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,
   spine: ["ship", "measure", "learn", "decide"],
@@ -57,6 +59,48 @@ export const hero = {
   primaryCta: { label: INIT_COMMAND, command: INIT_COMMAND },
   secondaryCta: { label: "GitHub", href: GITHUB_URL },
   fineprint: "Free forever · runs in Claude Code · your repo, your files",
+};
+
+// ── Value props · the two pillars ────────────────────────────────────────────
+
+export const valueProps = {
+  label: "What you get",
+  heading: "Memory for your design system. A loop that learns weekly.",
+  items: [
+    {
+      title: "Engineered memory",
+      body: "Every component and semantic part of your design system is an MDX doc — design rationale, tokens, decisions, drift status. The rationale becomes the center point your team and your agents operate from.",
+    },
+    {
+      title: "Automated reviews + weekly learning",
+      body: "Skills review the system and update weekly from a synthesis of your signals — Figma, live site, PostHog experiments, your repo, sprint data, Linear. The system learns while you ship.",
+    },
+  ],
+};
+
+// ── Signals · the wiring wall ────────────────────────────────────────────────
+
+export type Signal = {
+  id: string;
+  name: string;
+  /** Honest wiring status: PostHog ships wired; the rest is the service. */
+  status: "wired" | "wire-on-request";
+};
+
+export const signals = {
+  label: "The signals",
+  heading: "One synthesis, many sources.",
+  body: "Systemix turns what your tools already know into weekly learning. PostHog is wired out of the box — the rest is exactly what I wire for you.",
+  note: "I provide the wiring as a service — book a call, I wire yours.",
+  cta: { label: "Book a wiring call →", href: "mailto:boyan.works@gmail.com?subject=Systemix%20wiring%20call" },
+  items: [
+    { id: "posthog", name: "PostHog experiments", status: "wired" },
+    { id: "live-site", name: "Live site", status: "wire-on-request" },
+    { id: "figma", name: "Figma", status: "wire-on-request" },
+    { id: "repo", name: "Repo activity", status: "wire-on-request" },
+    { id: "linear", name: "Linear", status: "wire-on-request" },
+    { id: "sprint", name: "Weekly sprint data", status: "wire-on-request" },
+  ] satisfies Signal[],
 };
 
 // ── Problem ───────────────────────────────────────────────────────────────────
@@ -202,8 +246,8 @@ export const brandClone = {
 
 export const nav = {
   links: [
-    { label: "How it works", href: "#loop" },
-    { label: "Sprint", href: "#services" },
+    { label: "How it works", href: "/#loop" },
+    { label: "Sprint", href: "/#services" },
     { label: "Docs", href: "/docs" },
   ],
   cta: { label: "Book a call →", href: "mailto:boyan.works@gmail.com?subject=Systemix%20scoping%20call" },
@@ -214,7 +258,14 @@ export const footer = {
   links: [
     { label: "GitHub", href: GITHUB_URL },
     { label: "Docs", href: "/docs" },
-    { label: "Sprint", href: "#services" },
+    { label: "Sprint", href: "/#services" },
+  ],
+  personaLinks: [
+    { label: "For business", href: "/for/business" },
+    { label: "For engineers", href: "/for/engineers" },
+    { label: "For designers", href: "/for/designers" },
+    { label: "For marketers", href: "/for/marketers" },
+    { label: "For AI agents", href: "/for/agents" },
   ],
   badge: "Open source",
 };
