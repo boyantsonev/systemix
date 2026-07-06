@@ -88,6 +88,7 @@ function createExperiment(root, id, fields = {}) {
     section: fields.section ?? "landing",
     icp: fields.icp ?? null,
     jtbd: fields.jtbd ?? null,
+    goal: fields.goal ?? null,
     hypothesis: fields.hypothesis ?? "Replace with the assumption you are testing.",
     given: fields.given ?? null,
     conclusion: fields.conclusion ?? null,
@@ -107,7 +108,7 @@ function createExperiment(root, id, fields = {}) {
     "evidence-posthog": null,
     "evidence-social": null,
     created: fields.created ?? isoDay(fields.now ?? new Date()),
-    "review-by": null,
+    "review-by": fields.reviewBy ?? null,
   };
   const body = `\n# ${id}\n\n${fields.rationale ?? "Why this hypothesis — the ICP + job-to-be-done, the given (prompt/context), the AI workflow you are testing, the conclusion (win-state), and the metric that proves it."}\n`;
   fs.writeFileSync(file, stringifyMdx(body, data), "utf8");
