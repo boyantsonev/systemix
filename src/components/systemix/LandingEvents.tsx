@@ -3,15 +3,15 @@
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useRef, useState } from "react";
 import { useVariant } from "@/lib/useVariant";
+import { AUDIT_COMMAND } from "@/lib/landing/content";
 
 // ── Install command with copy button ──────────────────────────────────────────
 
-export function InstallCommand() {
+export function InstallCommand({ cmd = AUDIT_COMMAND }: { cmd?: string } = {}) {
   const ph = usePostHog();
   // A/B seam: create a `landing-hero` multivariate flag in PostHog to split this.
   const variant = useVariant("landing-hero");
   const [copied, setCopied] = useState(false);
-  const cmd = "npx systemix init";
 
   function copy() {
     navigator.clipboard.writeText(cmd).then(() => {

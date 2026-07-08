@@ -8,8 +8,8 @@ import {
   LandingNav,
   Services,
   TheLoop,
-  ThreeDoors,
   Trust,
+  TwoDoors,
 } from "@/components/landing/sections";
 import {
   PersonaGuideCta,
@@ -44,7 +44,7 @@ export async function generateMetadata({
 
 const SHARED_SECTIONS: Record<SectionKey, React.ComponentType> = {
   loop: TheLoop,
-  doors: ThreeDoors,
+  doors: TwoDoors,
   trust: Trust,
   services: Services,
   brandClone: BrandCloneHook,
