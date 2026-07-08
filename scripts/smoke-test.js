@@ -107,9 +107,9 @@ check("CLI tokens command exists", () =>
   fs.existsSync(path.join(ROOT, "packages/cli/src/commands/tokens.js"))
 );
 
-check("CLI init.js has sync-docs in ALL_SKILLS", () => {
+check("CLI init.js installs pipeline skills into .claude/skills/", () => {
   const src = fs.readFileSync(path.join(ROOT, "packages/cli/src/init.js"), "utf8");
-  return src.includes('"sync-docs"');
+  return src.includes("function installPipeline") && src.includes(".claude/skills/");
 });
 
 check("CLI registrar uses getServerConfig()", () => {

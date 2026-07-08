@@ -19,6 +19,8 @@ const { goal } = require("../src/commands/goal");
 const { loop } = require("../src/commands/loop");
 const { skills } = require("../src/commands/skills");
 const { mcp } = require("../src/commands/mcp");
+const { audit } = require("../src/commands/audit");
+const { design } = require("../src/commands/design");
 
 const [, , command, ...args] = process.argv;
 
@@ -26,6 +28,8 @@ const HELP = `
   systemix — agentic design system ops for Claude Code
 
   Usage:
+    npx systemix audit                   Install the zero-setup design-system audit skill
+    npx systemix design [show|feed|init] Read the design system + HITL feed; init = greenfield interview
     npx systemix init                    Interactive setup wizard (run once per project)
     npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
     npx systemix init --global-mcp       Also register systemix-mcp in the global Claude Desktop config
@@ -82,6 +86,12 @@ const HELP = `
 
 async function main() {
   switch (command) {
+    case "audit":
+      await audit(args);
+      break;
+    case "design":
+      await design(args);
+      break;
     case "init":
       await init({
         reconfigure: args.includes("--reconfigure"),

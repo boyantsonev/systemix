@@ -1,33 +1,36 @@
-# Systemix — the validation loop
+# Systemix — your design system, in this repo
 
-The core is a **learning loop**: hypothesis → prototype → measure → validate →
-learn. It lives in **`experiments/`** and is general — not design-bound. A design
-system is an optional substrate in `design/`.
+This repo has a **design system you own**: tokens in `design/tokens.css`, the rules
+in `design/guardrails.mdx`. Your job as the agent is to **follow the rules and keep
+the interface consistent** — no drift, no duplicate components, no slop.
 
-## The loop (run in Claude Code)
-- **Set up:** `/init-experiment` (an assumption) → `/write-variants` (a prototype)
-  → `/measure` (wire PostHog).
-- **Capture:** `/close-experiment` records the decision + reason and appends the
-  learning to `experiments/LEARNINGS.md` at the moment it's resolved.
-- **Sync + improve:** `/drift-report` keeps code true to the design substrate
-  (`design/tokens.css` + `design/guardrails.mdx`); Hermes proposes new/updated
-  skills and guardrails as HITL cards.
-- **Scale up:** `/atlas` interviews the instance topology (ICP, surfaces,
-  signal) and generates a multi-agent loop workflow that wraps `systemix loop`
-  — propose-only, regenerated via `/atlas update`, HITL like all
-  self-modification.
+## Follow the rules (every change)
+- **Read `design/guardrails.mdx` before you write UI**, and check your change
+  against it. Tokens are code-first: reference the custom properties in
+  `design/tokens.css`. **No raw hex/px, no ad-hoc font sizes** — add a token first,
+  then use it. Reuse existing components; don't rebuild a primitive inline.
+- **Ask before doing something new.** If a change needs a value, component, or rule
+  that isn't in the system yet, **stop and propose it — with the rationale — and
+  wait for the human.** Nothing about the system self-modifies silently.
+- `/design-audit` (zero-setup) finds drift + duplicates and proposes a `design/`
+  starter; `/drift-report` holds the line against `design/guardrails.mdx` on every
+  change.
 
-## Guardrails
+## Guardrails (the covenant)
 - **Autonomy dial** (`systemix.config.yaml`): ghost / assisted / autonomous.
   Instances start at **ghost** (propose-only); raising the dial is itself a
   decision. **Self-modification (skills + guardrails) is always HITL**, even in
   autonomous mode.
-- If you use the design substrate: tokens are code-first in `design/tokens.css`;
-  the rules live in `design/guardrails.mdx`. No raw hex/px in component code.
 - Skills live in `.claude/skills/` (Claude Code discovers them automatically).
 
+## Where it grows (the loop, optional)
+Once the system holds, close a learning loop in `experiments/`:
+`/init-experiment` → `/write-variants` → `/measure` → `/close-experiment` appends the
+decision to `experiments/LEARNINGS.md`. General, not design-bound.
+`/atlas` interviews the instance topology and generates a multi-agent loop workflow
+that wraps `systemix loop` (propose-only, HITL like all self-modification).
+
 ## Where things are
-- `experiments/` — the loop: `<id>.mdx` experiments + `goals/`
-- `experiments/LEARNINGS.md` — the synthesized memory (earned, cited, newest-first)
-- `design/DESIGN.md` — the optional design substrate (tokens + guardrails)
-- `.systemix/queue.json` — the HITL decision queue
+- `design/DESIGN.md` — the design system: `tokens.css` (canonical) + `guardrails.mdx` (rules)
+- `.systemix/queue.json` — the HITL decision queue (proposals wait here for a human)
+- `experiments/` — the optional learning loop: `<id>.mdx` + `goals/` + `LEARNINGS.md`
