@@ -26,6 +26,9 @@ const EXCLUDE = [
   /src[\/\\]app[\/\\]globals\.css$/,
   /DeepDiveMockups\.tsx$/,
   /brand-nodes\.tsx$/,
+  /figma-logo\.tsx$/,          // brand mark — official colors
+  /lib[\/\\]data[\/\\]system-graph\.ts$/, // the graph's primitive palette (like globals.css)
+  /lib[\/\\]data[\/\\]brands\.ts$/, // client-brand palettes are data, not drift
   /\.test\.(ts|tsx)$/,
   /\.d\.ts$/,
 ];

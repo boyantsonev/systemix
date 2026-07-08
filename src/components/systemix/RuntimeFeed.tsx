@@ -16,9 +16,9 @@ export type RunManifest = {
 };
 
 const STATUS_DOT: Record<string, string> = {
-  running: "bg-amber-500 animate-pulse",
-  success: "bg-emerald-500",
-  error: "bg-red-500",
+  running: "bg-warning animate-pulse",
+  success: "bg-success",
+  error: "bg-destructive",
 };
 
 function duration(r: RunManifest): string {

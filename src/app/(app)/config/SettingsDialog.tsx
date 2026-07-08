@@ -133,14 +133,14 @@ export function SettingsDialog({
                     </div>
                     <div className="ml-auto flex items-center gap-3">
                       {enabled && wired === true && (
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-500">
-                          <span className="size-1.5 rounded-full bg-emerald-500" />
+                        <span className="flex items-center gap-1.5 text-xs font-medium text-success">
+                          <span className="size-1.5 rounded-full bg-success" />
                           connected
                         </span>
                       )}
                       {enabled && wired === false && (
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-500">
-                          <span className="size-1.5 rounded-full bg-amber-500" />
+                        <span className="flex items-center gap-1.5 text-xs font-medium text-warning">
+                          <span className="size-1.5 rounded-full bg-warning" />
                           not connected
                         </span>
                       )}
@@ -246,9 +246,9 @@ export function SettingsDialog({
           <Button onClick={save} disabled={!dirty || saving} size="sm" className="w-full sm:w-auto">
             {saving ? "Saving…" : "Save config"}
           </Button>
-          {saved && <span className="text-xs text-emerald-600">✓ written</span>}
+          {saved && <span className="text-xs text-success">✓ written</span>}
           {dirty && !saved && <span className="text-xs text-muted-foreground">unsaved changes</span>}
-          {error && <span className="text-xs text-rose-500">{error}</span>}
+          {error && <span className="text-xs text-destructive">{error}</span>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

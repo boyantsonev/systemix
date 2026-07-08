@@ -14,6 +14,51 @@
         "src/lib/data/variables.ts",
         "src/components/systemix/HitlQueue.tsx"
       ]
+    },
+    {
+      "runAt": "2026-07-08T19:21:18.468Z",
+      "triggeredBy": "manual",
+      "score": 0,
+      "critical": 167,
+      "warnings": 58,
+      "componentsAudited": 185,
+      "topOffenders": [
+        "src/lib/data/tokens.ts",
+        "src/lib/data/system-graph.ts",
+        "src/lib/data/brands.ts",
+        "src/lib/data/variables.ts",
+        "src/components/ui/figma-logo.tsx"
+      ]
+    },
+    {
+      "runAt": "2026-07-08T19:22:30.012Z",
+      "triggeredBy": "manual",
+      "score": 0,
+      "critical": 125,
+      "warnings": 56,
+      "componentsAudited": 183,
+      "topOffenders": [
+        "src/lib/data/tokens.ts",
+        "src/lib/data/system-graph.ts",
+        "src/lib/data/variables.ts",
+        "src/components/graph/SystemGraph3D.tsx",
+        "src/components/ui/animated-beam.tsx"
+      ]
+    },
+    {
+      "runAt": "2026-07-08T19:24:43.430Z",
+      "triggeredBy": "manual",
+      "score": 0,
+      "critical": 83,
+      "warnings": 56,
+      "componentsAudited": 182,
+      "topOffenders": [
+        "src/lib/data/tokens.ts",
+        "src/lib/data/variables.ts",
+        "src/components/graph/SystemGraph3D.tsx",
+        "src/components/ui/animated-beam.tsx",
+        "src/components/landing/sections.tsx"
+      ]
     }
   ]
 }

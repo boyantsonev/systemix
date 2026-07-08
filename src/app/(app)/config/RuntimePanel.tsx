@@ -36,8 +36,8 @@ export function RuntimeContent({
   return (
     <div className="flex flex-col gap-6 p-4">
       {unwiredSignals.length > 0 && (
-        <div className="flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-2.5">
-          <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber-500" />
+        <div className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/5 p-2.5">
+          <span className="mt-1 size-1.5 shrink-0 rounded-full bg-warning" />
           <p className="text-xs text-muted-foreground">
             {unwiredSignals.join(", ")} not connected — run{" "}
             <code className=" text-foreground">/connect-signal</code> to gather live evidence.
