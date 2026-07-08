@@ -6,6 +6,7 @@
 // the orbiting loop carry the weight.
 
 export const GITHUB_URL = "https://github.com/boyantsonev/systemix-poc";
+export const AUDIT_COMMAND = "npx systemix audit";
 export const INIT_COMMAND = "npx systemix init";
 export const BRAND_CLONE_MAILTO =
   "mailto:boyan.works@gmail.com?subject=Brand%20clone%20request";
@@ -56,7 +57,7 @@ export const hero = {
   } satisfies Record<"control" | "variant_b", HeroVariant>,
   spine: ["ship", "measure", "learn", "decide"],
   brandCloneCta: { label: "Send your site URL →", href: BRAND_CLONE_MAILTO },
-  primaryCta: { label: INIT_COMMAND, command: INIT_COMMAND },
+  primaryCta: { label: AUDIT_COMMAND, command: AUDIT_COMMAND },
   secondaryCta: { label: "GitHub", href: GITHUB_URL },
   fineprint: "Free forever · runs in Claude Code · your repo, your files",
 };
@@ -141,17 +142,54 @@ export const loop = {
   ],
 };
 
-// ── Solution · three interfaces ───────────────────────────────────────────────
+// ── Two doors · where you start ───────────────────────────────────────────────
+
+export type Door = {
+  key: string;
+  name: string;
+  code: string;
+  body: string;
+  status: string;
+  span: 1 | 2;
+  media?: string;
+};
 
 export const doors = {
-  label: "How you drive it",
-  heading: "Terminal, agent, or slash command — your call.",
-  body: "Three ways to drive the same design system. Pick the one that fits how you ship.",
+  label: "Two doors, one system",
+  heading: "Already a mess, or starting fresh.",
+  body: "Both roads land in the same place: a design system in your repo — plain MDX and CSS you own — that your agent reads and defends.",
   cta: { label: "Read the docs", href: "/docs" },
   items: [
-    { key: "cli", name: "CLI", code: "systemix experiment new", body: "Scriptable in CI and your terminal.", media: "cli-demo.gif" },
-    { key: "mcp", name: "MCP", code: "experiment_new · close", body: "Any agent or AI tool can call it.", media: "mcp-demo.mp4" },
-    { key: "skills", name: "Claude Code skills", code: "/init-experiment", body: "Slash commands, human-in-the-loop.", media: "skills-demo.gif" },
+    {
+      key: "audit",
+      name: "Already a mess → audit it",
+      code: "npx systemix audit",
+      body: "Zero setup, read-only. Systemix infers your de-facto tokens and components, flags the drift and the duplicates, and hands you a design-system starter to sign off on.",
+      status: "Live",
+      span: 2,
+      media: "audit-report.png",
+    },
+    {
+      key: "interview",
+      name: "Starting fresh → get interviewed",
+      code: "npx systemix design init",
+      body: "A few questions — your product, your people, the associations behind your palette — and Systemix drafts the system from scratch, in your voice.",
+      status: "Live",
+      span: 1,
+    },
+  ] satisfies Door[],
+};
+
+// ── The rule · it follows your system ─────────────────────────────────────────
+
+export const rule = {
+  label: "The point",
+  heading: "It doesn't just diagnose. It follows the rule.",
+  body: "The audit hands you guardrails; your agent reads them on every change. When something new comes up, it asks first — and tells you why.",
+  items: [
+    { title: "Installs the rule", body: "Your colours, spacing, type and components become guardrails in your repo — a system, not a memory." },
+    { title: "Follows it by default", body: "Every change your agent makes is checked against the guardrails before it lands. No raw hex, no rogue component." },
+    { title: "Asks before breaking it", body: "New pattern? It proposes the change with the rationale and waits for you. Nothing self-modifies silently." },
   ],
 };
 

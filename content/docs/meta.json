@@ -2,7 +2,9 @@
   "title": "Docs",
   "pages": [
     "index",
+    "audit",
     "getting-started",
+    "design-system",
     "the-contract",
     "---For you---",
     "guides/business",

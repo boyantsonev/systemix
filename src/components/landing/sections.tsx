@@ -6,7 +6,7 @@ import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
 import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
-import { ThreeDoorsBento } from "@/components/landing/ThreeDoorsBento";
+import { TwoDoorsBento } from "@/components/landing/TwoDoorsBento";
 import { TrustBento } from "@/components/landing/TrustBento";
 import {
   GITHUB_URL,
@@ -19,6 +19,7 @@ import {
   gap,
   loop,
   nav,
+  rule,
   services,
   signals,
   trust,
@@ -296,18 +297,40 @@ export function TheLoop() {
   );
 }
 
-// ── Solution · three doors ────────────────────────────────────────────────────
+// ── Solution · two doors ──────────────────────────────────────────────────────
 
-export function ThreeDoors() {
+export function TwoDoors() {
   return (
-    <Section>
+    <Section id="doors">
       <div className="max-w-3xl">
         <Eyebrow>{doors.label}</Eyebrow>
         <SectionHeading>{doors.heading}</SectionHeading>
         <Lead>{doors.body}</Lead>
       </div>
       <div className="mt-14">
-        <ThreeDoorsBento />
+        <TwoDoorsBento />
+      </div>
+    </Section>
+  );
+}
+
+// ── The rule · it follows your system ─────────────────────────────────────────
+
+export function Rule() {
+  return (
+    <Section>
+      <div className="max-w-3xl">
+        <Eyebrow>{rule.label}</Eyebrow>
+        <SectionHeading>{rule.heading}</SectionHeading>
+        <Lead>{rule.body}</Lead>
+      </div>
+      <div className="mt-14 grid gap-4 sm:grid-cols-3 sm:gap-5">
+        {rule.items.map((it) => (
+          <div key={it.title} className="rounded-xl border border-border/40 bg-card p-6">
+            <p className="mb-2 text-[15px] font-bold text-foreground">{it.title}</p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">{it.body}</p>
+          </div>
+        ))}
       </div>
     </Section>
   );

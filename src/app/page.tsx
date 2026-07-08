@@ -10,11 +10,12 @@ import {
   LandingFooter,
   LandingNav,
   Problem,
+  Rule,
   Services,
   SignalsWall,
   TheLoop,
-  ThreeDoors,
   Trust,
+  TwoDoors,
   ValueProps,
 } from "@/components/landing/sections";
 
@@ -51,8 +52,11 @@ export default function LandingPage() {
         <SectionTrack name="loop">
           <TheLoop />
         </SectionTrack>
-        <SectionTrack name="three-doors">
-          <ThreeDoors />
+        <SectionTrack name="two-doors">
+          <TwoDoors />
+        </SectionTrack>
+        <SectionTrack name="rule">
+          <Rule />
         </SectionTrack>
         <SectionTrack name="services">
           <Services />
