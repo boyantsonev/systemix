@@ -1,6 +1,6 @@
 ---
 name: design-audit
-description: Zero-setup design-system audit for any repo. Read-only. Infers the de-facto tokens, colors, and components straight from the code, classifies drift (Critical/Warning/Info), flags AI-slop inconsistency (duplicate components, mixed libraries, one-off screens), and scores design-system health. Outputs a report plus a proposed design/guardrails.mdx + design/tokens.css starter — nothing is written without approval. No Figma, no prior design system required.
+description: Zero-setup design-system audit for any repo. Read-only. Infers the de-facto tokens, colors, and components straight from the code, classifies drift (Critical/Warning/Info), flags AI-slop inconsistency (duplicate components, mixed libraries, one-off screens), and scores design-system health. Outputs a report plus a proposed design/guardrails.mdx + design/tokens.css starter, and recommends the setup path (scaffold fresh / adopt existing / consolidate) that pre-answers `systemix init` — nothing is written without approval. No Figma, no prior design system required.
 argument-hint: [path]
 ---
 
@@ -81,6 +81,34 @@ Report each as a finding with the offending paths and the consolidation to make.
   ```
   On approval, write `design/tokens.css` + `design/guardrails.mdx` and resolve the card.
 
+### 5. Recommend the setup path (bridge to `systemix init`)
+Discovery should end in a **recommendation, not just a report**. Classify what you
+found, map it to the one decision `systemix init` opens with, and pre-answer its four
+questions so the operator accepts or overrides — never starts from a blank slate.
+This is **additive**: `systemix init`'s questions are unchanged (ADR-008); you are only
+pre-filling them with a rationale.
+
+**Classify → recommend the design source** (init **Q1/4**, which writes `design.source`
+in `systemix.config.yaml`):
+
+| What the audit found | Class | Recommend (init Q1) | `design.source` |
+|---|---|---|---|
+| No token source; raw values scattered everywhere | **fresh** | **scaffold** a fresh code-first `design/` | `design` |
+| A partial system — some tokens, but real drift + duplicate components | **partial** | **scaffold**, *seeded from the inferred tokens above*, then consolidate | `design` |
+| A mature, consistent token source already drives the UI | **mature** | **existing** — adopt it, wire drift-only | `<path to that source>` |
+
+**Pre-fill the other three** (the operator confirms each):
+- **Signals (Q2/4)** — recommend wiring **PostHog** if you saw `posthog` in deps; else "wire later".
+- **Autonomy (Q3/4)** — recommend **ghost** (propose-only) to start; raising the dial is its own decision.
+- **Self-improvement (Q4/4)** — recommend **on**, so the meta-audit loop is scaffolded.
+
+Print it as one ready-to-act line and say plainly the wizard will let them change any of it:
+```
+→ Recommended setup: npx systemix init
+   design: scaffold (seed from this audit) · signals: PostHog · autonomy: ghost · self-improve: on
+```
+For a **mature** repo, recommend `design: existing` and name the path to point `design.source` at.
+
 ## Output format
 ```
 # Design-System Audit — <repo/path>
@@ -103,6 +131,9 @@ Files scanned: X · with issues: Y · raw values: Z · component clusters: N
 ## Proposed next step
 → design/tokens.css starter (N tokens)   [awaiting approval]
 → design/guardrails.mdx starter (M rules) [awaiting approval]
+
+## Recommended setup   (class: partial → systemix init — you confirm each)
+→ design: scaffold (seed from this audit) · signals: PostHog · autonomy: ghost · self-improve: on
 ```
 
 ## Notes
@@ -119,3 +150,6 @@ Files scanned: X · with issues: Y · raw values: Z · component clusters: N
   the optional Figma adapter (`/sync-to-figma`), not this skill.
 - After the operator has a design system, the two doors converge: greenfield builds
   from the interview, messy repos build from this audit — both land in `design/`.
+- **Recommend, don't just diagnose.** Stage 5 turns the findings into a concrete
+  `systemix init` recommendation (scaffold / adopt / consolidate). It never runs the
+  wizard for the operator — it pre-answers it, and the wizard still asks.
