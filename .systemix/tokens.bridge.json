@@ -2,7 +2,7 @@
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "_meta": {
     "source": "src/app/globals.css",
-    "generatedAt": "2026-07-08T18:13:47.005Z",
+    "generatedAt": "2026-07-08T19:36:11.187Z",
     "converter": "scripts/token-converter.ts",
     "note": "DTCG-compatible bridge file. figma.hex/rgba are pre-converted for Figma Plugin API (RGB 0-1 floats)."
   },
@@ -50,12 +50,12 @@
         "cssVar": "--foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#F5B857",
-          "hex": "#f5b857",
+          "$value": "#EFE5D3",
+          "hex": "#efe5d3",
           "rgba": {
-            "r": 0.9608,
-            "g": 0.7216,
-            "b": 0.3412,
+            "r": 0.9373,
+            "g": 0.898,
+            "b": 0.8275,
             "a": 1
           }
         }
@@ -104,12 +104,12 @@
         "cssVar": "--card-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#F5B857",
-          "hex": "#f5b857",
+          "$value": "#EFE5D3",
+          "hex": "#efe5d3",
           "rgba": {
-            "r": 0.9608,
-            "g": 0.7216,
-            "b": 0.3412,
+            "r": 0.9373,
+            "g": 0.898,
+            "b": 0.8275,
             "a": 1
           }
         }
@@ -158,12 +158,12 @@
         "cssVar": "--popover-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#F5B857",
-          "hex": "#f5b857",
+          "$value": "#EFE5D3",
+          "hex": "#efe5d3",
           "rgba": {
-            "r": 0.9608,
-            "g": 0.7216,
-            "b": 0.3412,
+            "r": 0.9373,
+            "g": 0.898,
+            "b": 0.8275,
             "a": 1
           }
         }
@@ -266,12 +266,12 @@
         "cssVar": "--secondary-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#F5B857",
-          "hex": "#f5b857",
+          "$value": "#EFE5D3",
+          "hex": "#efe5d3",
           "rgba": {
-            "r": 0.9608,
-            "g": 0.7216,
-            "b": 0.3412,
+            "r": 0.9373,
+            "g": 0.898,
+            "b": 0.8275,
             "a": 1
           }
         }
@@ -320,12 +320,12 @@
         "cssVar": "--muted-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#8A6320",
-          "hex": "#8a6320",
+          "$value": "#B39B6E",
+          "hex": "#b39b6e",
           "rgba": {
-            "r": 0.5412,
-            "g": 0.3882,
-            "b": 0.1255,
+            "r": 0.702,
+            "g": 0.6078,
+            "b": 0.4314,
             "a": 1
           }
         }
@@ -374,12 +374,12 @@
         "cssVar": "--accent-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#FFDA9E",
-          "hex": "#ffda9e",
+          "$value": "#F5EDDD",
+          "hex": "#f5eddd",
           "rgba": {
-            "r": 1,
-            "g": 0.8549,
-            "b": 0.6196,
+            "r": 0.9608,
+            "g": 0.9294,
+            "b": 0.8667,
             "a": 1
           }
         }
@@ -538,12 +538,12 @@
         "cssVar": "--sidebar-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#F5B857",
-          "hex": "#f5b857",
+          "$value": "#EFE5D3",
+          "hex": "#efe5d3",
           "rgba": {
-            "r": 0.9608,
-            "g": 0.7216,
-            "b": 0.3412,
+            "r": 0.9373,
+            "g": 0.898,
+            "b": 0.8275,
             "a": 1
           }
         }
@@ -646,12 +646,12 @@
         "cssVar": "--sidebar-accent-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "#FFDA9E",
-          "hex": "#ffda9e",
+          "$value": "#F5EDDD",
+          "hex": "#f5eddd",
           "rgba": {
-            "r": 1,
-            "g": 0.8549,
-            "b": 0.6196,
+            "r": 0.9608,
+            "g": 0.9294,
+            "b": 0.8667,
             "a": 1
           }
         }
