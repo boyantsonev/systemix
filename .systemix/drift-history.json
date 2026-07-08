@@ -1,1 +1,19 @@
-{ "snapshots": [] }
+{
+  "snapshots": [
+    {
+      "runAt": "2026-07-08T18:47:17.145Z",
+      "triggeredBy": "manual",
+      "score": 0,
+      "critical": 167,
+      "warnings": 288,
+      "componentsAudited": 178,
+      "topOffenders": [
+        "src/lib/data/tokens.ts",
+        "src/lib/data/system-graph.ts",
+        "src/lib/data/brands.ts",
+        "src/lib/data/variables.ts",
+        "src/components/systemix/HitlQueue.tsx"
+      ]
+    }
+  ]
+}
