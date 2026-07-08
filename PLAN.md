@@ -134,6 +134,15 @@ The engine's evolution from central multi-tenant SaaS to **embedded-per-client**
 
 ---
 
+## Related tracks (not yet merged into this iteration)
+
+Productization/GTM planning, 2026-07-07 — separate from the Connecta engagement above, tracks the
+self-serve offer ladder (audit report → kit → sprint) and how Atlas/Config get packaged:
+- `docs/systemix-productization-benchmark-2026-07.md` — getdesign.md/LaunchKit benchmark, the offer-ladder gap, ESG/regtech as design partner #2
+- `docs/systemix-atlas-config-packaging-2026-07.md` — Atlas + Config 3D graph: skills vs. plugin pros/cons
+- `docs/systemix-productization-execution-plan-2026-07.md` — resolved build plan: Atlas-as-live-artifact, the refined 5-rung ladder, the `/audit` + `/kit` pages
+- `docs/systemix-client-setup-journey-2026-07.md` — the 8-stage client setup/operating loop, gap-mapped against what's already built (built vs. net-new per stage)
+
 ## Research index
 | File | Track |
 |---|---|
