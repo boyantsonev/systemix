@@ -214,7 +214,7 @@ function Body({
   cmdNote?: string;
   link?: { href: string; label: string };
 }) {
-  const dotColor = { ok: "#059669", warn: "#d97706", muted: "var(--muted-foreground)", manual: "#7c3aed" }[tone];
+  const dotColor = { ok: "var(--success)", warn: "var(--warning)", muted: "var(--muted-foreground)", manual: "var(--highlight)" }[tone];
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">

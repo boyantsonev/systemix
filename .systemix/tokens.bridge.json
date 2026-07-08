@@ -2,72 +2,20 @@
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "_meta": {
     "source": "src/app/globals.css",
-    "generatedAt": "2026-06-08T09:06:48.768Z",
+    "generatedAt": "2026-07-08T18:13:47.005Z",
     "converter": "scripts/token-converter.ts",
     "note": "DTCG-compatible bridge file. figma.hex/rgba are pre-converted for Figma Plugin API (RGB 0-1 floats)."
-  },
-  "radius": {
-    "base": {
-      "$type": "dimension",
-      "$value": "0.5rem",
-      "figma": {
-        "variableName": "radius/base",
-        "collection": "Spacing & Radius",
-        "cssVar": "--radius",
-        "syncStatus": "pending"
-      }
-    },
-    "sm": {
-      "$type": "dimension",
-      "$value": "0.25rem",
-      "figma": {
-        "variableName": "radius/sm",
-        "collection": "Spacing & Radius",
-        "cssVar": "--radius-sm",
-        "syncStatus": "pending"
-      }
-    },
-    "md": {
-      "$type": "dimension",
-      "$value": "0.375rem",
-      "figma": {
-        "variableName": "radius/md",
-        "collection": "Spacing & Radius",
-        "cssVar": "--radius-md",
-        "syncStatus": "pending"
-      }
-    },
-    "lg": {
-      "$type": "dimension",
-      "$value": "0.5rem",
-      "figma": {
-        "variableName": "radius/lg",
-        "collection": "Spacing & Radius",
-        "cssVar": "--radius-lg",
-        "syncStatus": "pending"
-      }
-    },
-    "xl": {
-      "$type": "dimension",
-      "$value": "0.75rem",
-      "figma": {
-        "variableName": "radius/xl",
-        "collection": "Spacing & Radius",
-        "cssVar": "--radius-xl",
-        "syncStatus": "pending"
-      }
-    }
   },
   "color": {
     "background": {
       "$type": "color",
-      "$value": "oklch(98% 0.002 250)",
+      "$value": "#ECE3CB",
       "figma": {
-        "hex": "#f7f8fa",
+        "hex": "#ece3cb",
         "rgba": {
-          "r": 0.97,
-          "g": 0.9744,
-          "b": 0.9791,
+          "r": 0.9255,
+          "g": 0.8902,
+          "b": 0.7961,
           "a": 1
         },
         "variableName": "color/background",
@@ -75,12 +23,12 @@
         "cssVar": "--background",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(12% 0.005 250)",
-          "hex": "#050607",
+          "$value": "#16100A",
+          "hex": "#16100a",
           "rgba": {
-            "r": 0.0185,
-            "g": 0.023,
-            "b": 0.0284,
+            "r": 0.0863,
+            "g": 0.0627,
+            "b": 0.0392,
             "a": 1
           }
         }
@@ -88,13 +36,13 @@
     },
     "foreground": {
       "$type": "color",
-      "$value": "oklch(0.145 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#0a0a0a",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0394,
-          "g": 0.0394,
-          "b": 0.0394,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "color/foreground",
@@ -102,12 +50,12 @@
         "cssVar": "--foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#F5B857",
+          "hex": "#f5b857",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 0.9608,
+            "g": 0.7216,
+            "b": 0.3412,
             "a": 1
           }
         }
@@ -115,13 +63,13 @@
     },
     "card": {
       "$type": "color",
-      "$value": "oklch(100% 0 0)",
+      "$value": "#F4ECD6",
       "figma": {
-        "hex": "#ffffff",
+        "hex": "#f4ecd6",
         "rgba": {
-          "r": 1,
-          "g": 1,
-          "b": 1,
+          "r": 0.9569,
+          "g": 0.9255,
+          "b": 0.8392,
           "a": 1
         },
         "variableName": "color/card",
@@ -129,12 +77,12 @@
         "cssVar": "--card",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(15% 0.006 250)",
-          "hex": "#090b0e",
+          "$value": "#1E1710",
+          "hex": "#1e1710",
           "rgba": {
-            "r": 0.0364,
-            "g": 0.0446,
-            "b": 0.0534,
+            "r": 0.1176,
+            "g": 0.0902,
+            "b": 0.0627,
             "a": 1
           }
         }
@@ -142,13 +90,13 @@
     },
     "card-foreground": {
       "$type": "color",
-      "$value": "oklch(0.145 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#0a0a0a",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0394,
-          "g": 0.0394,
-          "b": 0.0394,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "color/card-foreground",
@@ -156,12 +104,12 @@
         "cssVar": "--card-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#F5B857",
+          "hex": "#f5b857",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 0.9608,
+            "g": 0.7216,
+            "b": 0.3412,
             "a": 1
           }
         }
@@ -169,13 +117,13 @@
     },
     "popover": {
       "$type": "color",
-      "$value": "oklch(1 0 0)",
+      "$value": "#F9F2E2",
       "figma": {
-        "hex": "#ffffff",
+        "hex": "#f9f2e2",
         "rgba": {
-          "r": 1,
-          "g": 1,
-          "b": 1,
+          "r": 0.9765,
+          "g": 0.949,
+          "b": 0.8863,
           "a": 1
         },
         "variableName": "color/popover",
@@ -183,12 +131,12 @@
         "cssVar": "--popover",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(17% 0.006 250)",
-          "hex": "#0d1012",
+          "$value": "#0D0905",
+          "hex": "#0d0905",
           "rgba": {
-            "r": 0.0528,
-            "g": 0.0613,
-            "b": 0.0705,
+            "r": 0.051,
+            "g": 0.0353,
+            "b": 0.0196,
             "a": 1
           }
         }
@@ -196,13 +144,13 @@
     },
     "popover-foreground": {
       "$type": "color",
-      "$value": "oklch(0.145 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#0a0a0a",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0394,
-          "g": 0.0394,
-          "b": 0.0394,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "color/popover-foreground",
@@ -210,12 +158,12 @@
         "cssVar": "--popover-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#F5B857",
+          "hex": "#f5b857",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 0.9608,
+            "g": 0.7216,
+            "b": 0.3412,
             "a": 1
           }
         }
@@ -223,13 +171,13 @@
     },
     "primary": {
       "$type": "color",
-      "$value": "oklch(0.205 0 0)",
+      "$value": "#A8511A",
       "figma": {
-        "hex": "#171717",
+        "hex": "#a8511a",
         "rgba": {
-          "r": 0.0905,
-          "g": 0.0905,
-          "b": 0.0905,
+          "r": 0.6588,
+          "g": 0.3176,
+          "b": 0.102,
           "a": 1
         },
         "variableName": "color/primary",
@@ -237,12 +185,12 @@
         "cssVar": "--primary",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.922 0 0)",
-          "hex": "#e5e5e5",
+          "$value": "#FF9E3D",
+          "hex": "#ff9e3d",
           "rgba": {
-            "r": 0.8982,
-            "g": 0.8982,
-            "b": 0.8982,
+            "r": 1,
+            "g": 0.6196,
+            "b": 0.2392,
             "a": 1
           }
         }
@@ -250,13 +198,13 @@
     },
     "primary-foreground": {
       "$type": "color",
-      "$value": "oklch(0.985 0 0)",
+      "$value": "#FBF3E2",
       "figma": {
-        "hex": "#fafafa",
+        "hex": "#fbf3e2",
         "rgba": {
-          "r": 0.9803,
-          "g": 0.9803,
-          "b": 0.9803,
+          "r": 0.9843,
+          "g": 0.9529,
+          "b": 0.8863,
           "a": 1
         },
         "variableName": "color/primary-foreground",
@@ -264,12 +212,12 @@
         "cssVar": "--primary-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.205 0 0)",
-          "hex": "#171717",
+          "$value": "#1A1206",
+          "hex": "#1a1206",
           "rgba": {
-            "r": 0.0905,
-            "g": 0.0905,
-            "b": 0.0905,
+            "r": 0.102,
+            "g": 0.0706,
+            "b": 0.0235,
             "a": 1
           }
         }
@@ -277,13 +225,13 @@
     },
     "secondary": {
       "$type": "color",
-      "$value": "oklch(0.97 0 0)",
+      "$value": "#DFD3B4",
       "figma": {
-        "hex": "#f5f5f5",
+        "hex": "#dfd3b4",
         "rgba": {
-          "r": 0.9606,
-          "g": 0.9606,
-          "b": 0.9606,
+          "r": 0.8745,
+          "g": 0.8275,
+          "b": 0.7059,
           "a": 1
         },
         "variableName": "color/secondary",
@@ -291,12 +239,12 @@
         "cssVar": "--secondary",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.269 0 0)",
-          "hex": "#262626",
+          "$value": "#271E14",
+          "hex": "#271e14",
           "rgba": {
-            "r": 0.1494,
-            "g": 0.1494,
-            "b": 0.1494,
+            "r": 0.1529,
+            "g": 0.1176,
+            "b": 0.0784,
             "a": 1
           }
         }
@@ -304,13 +252,13 @@
     },
     "secondary-foreground": {
       "$type": "color",
-      "$value": "oklch(0.205 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#171717",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0905,
-          "g": 0.0905,
-          "b": 0.0905,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "color/secondary-foreground",
@@ -318,12 +266,12 @@
         "cssVar": "--secondary-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#F5B857",
+          "hex": "#f5b857",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 0.9608,
+            "g": 0.7216,
+            "b": 0.3412,
             "a": 1
           }
         }
@@ -331,13 +279,13 @@
     },
     "muted": {
       "$type": "color",
-      "$value": "oklch(96% 0.003 250)",
+      "$value": "#E4DED0",
       "figma": {
-        "hex": "#f0f2f4",
+        "hex": "#e4ded0",
         "rgba": {
-          "r": 0.942,
-          "g": 0.9485,
-          "b": 0.9556,
+          "r": 0.8941,
+          "g": 0.8706,
+          "b": 0.8157,
           "a": 1
         },
         "variableName": "color/muted",
@@ -345,12 +293,12 @@
         "cssVar": "--muted",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(18% 0.007 250)",
-          "hex": "#0f1215",
+          "$value": "#271E14",
+          "hex": "#271e14",
           "rgba": {
-            "r": 0.06,
-            "g": 0.0701,
-            "b": 0.0808,
+            "r": 0.1529,
+            "g": 0.1176,
+            "b": 0.0784,
             "a": 1
           }
         }
@@ -358,13 +306,13 @@
     },
     "muted-foreground": {
       "$type": "color",
-      "$value": "oklch(0.40 0 0)",
+      "$value": "#7A6A48",
       "figma": {
-        "hex": "#484848",
+        "hex": "#7a6a48",
         "rgba": {
-          "r": 0.2806,
-          "g": 0.2806,
-          "b": 0.2806,
+          "r": 0.4784,
+          "g": 0.4157,
+          "b": 0.2824,
           "a": 1
         },
         "variableName": "color/muted-foreground",
@@ -372,12 +320,12 @@
         "cssVar": "--muted-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.72 0 0)",
-          "hex": "#a4a4a4",
+          "$value": "#8A6320",
+          "hex": "#8a6320",
           "rgba": {
-            "r": 0.6447,
-            "g": 0.6447,
-            "b": 0.6447,
+            "r": 0.5412,
+            "g": 0.3882,
+            "b": 0.1255,
             "a": 1
           }
         }
@@ -385,13 +333,13 @@
     },
     "accent": {
       "$type": "color",
-      "$value": "oklch(0.97 0 0)",
+      "$value": "#EAD9B0",
       "figma": {
-        "hex": "#f5f5f5",
+        "hex": "#ead9b0",
         "rgba": {
-          "r": 0.9606,
-          "g": 0.9606,
-          "b": 0.9606,
+          "r": 0.9176,
+          "g": 0.851,
+          "b": 0.6902,
           "a": 1
         },
         "variableName": "color/accent",
@@ -399,12 +347,12 @@
         "cssVar": "--accent",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.269 0 0)",
-          "hex": "#262626",
+          "$value": "#2B2417",
+          "hex": "#2b2417",
           "rgba": {
-            "r": 0.1494,
-            "g": 0.1494,
-            "b": 0.1494,
+            "r": 0.1686,
+            "g": 0.1412,
+            "b": 0.0902,
             "a": 1
           }
         }
@@ -412,13 +360,13 @@
     },
     "accent-foreground": {
       "$type": "color",
-      "$value": "oklch(0.205 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#171717",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0905,
-          "g": 0.0905,
-          "b": 0.0905,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "color/accent-foreground",
@@ -426,12 +374,12 @@
         "cssVar": "--accent-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#FFDA9E",
+          "hex": "#ffda9e",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 1,
+            "g": 0.8549,
+            "b": 0.6196,
             "a": 1
           }
         }
@@ -439,13 +387,13 @@
     },
     "destructive": {
       "$type": "color",
-      "$value": "oklch(0.577 0.245 27.325)",
+      "$value": "#A8412C",
       "figma": {
-        "hex": "#e7000b",
+        "hex": "#a8412c",
         "rgba": {
-          "r": 0.9065,
-          "g": 0,
-          "b": 0.0422,
+          "r": 0.6588,
+          "g": 0.2549,
+          "b": 0.1725,
           "a": 1
         },
         "variableName": "color/destructive",
@@ -453,12 +401,12 @@
         "cssVar": "--destructive",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.704 0.191 22.216)",
-          "hex": "#ff6467",
+          "$value": "#FF6A4A",
+          "hex": "#ff6a4a",
           "rgba": {
             "r": 1,
-            "g": 0.3912,
-            "b": 0.4039,
+            "g": 0.4157,
+            "b": 0.2902,
             "a": 1
           }
         }
@@ -466,13 +414,13 @@
     },
     "destructive-foreground": {
       "$type": "color",
-      "$value": "oklch(98% 0 0)",
+      "$value": "#FBF3E2",
       "figma": {
-        "hex": "#f8f8f8",
+        "hex": "#fbf3e2",
         "rgba": {
-          "r": 0.9737,
-          "g": 0.9737,
-          "b": 0.9737,
+          "r": 0.9843,
+          "g": 0.9529,
+          "b": 0.8863,
           "a": 1
         },
         "variableName": "color/destructive-foreground",
@@ -480,12 +428,12 @@
         "cssVar": "--destructive-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(98% 0 0)",
-          "hex": "#f8f8f8",
+          "$value": "#1A1206",
+          "hex": "#1a1206",
           "rgba": {
-            "r": 0.9737,
-            "g": 0.9737,
-            "b": 0.9737,
+            "r": 0.102,
+            "g": 0.0706,
+            "b": 0.0235,
             "a": 1
           }
         }
@@ -493,13 +441,13 @@
     },
     "border": {
       "$type": "color",
-      "$value": "oklch(88% 0.005 250)",
+      "$value": "#CFC0A0",
       "figma": {
-        "hex": "#d5d8db",
+        "hex": "#cfc0a0",
         "rgba": {
-          "r": 0.8352,
-          "g": 0.8458,
-          "b": 0.8573,
+          "r": 0.8118,
+          "g": 0.7529,
+          "b": 0.6275,
           "a": 1
         },
         "variableName": "color/border",
@@ -507,12 +455,12 @@
         "cssVar": "--border",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(25% 0.01 250)",
-          "hex": "#1e2226",
+          "$value": "#3A2A12",
+          "hex": "#3a2a12",
           "rgba": {
-            "r": 0.118,
-            "g": 0.1336,
-            "b": 0.1503,
+            "r": 0.2275,
+            "g": 0.1647,
+            "b": 0.0706,
             "a": 1
           }
         }
@@ -520,13 +468,13 @@
     },
     "input": {
       "$type": "color",
-      "$value": "oklch(0.922 0 0)",
+      "$value": "#CFC0A0",
       "figma": {
-        "hex": "#e5e5e5",
+        "hex": "#cfc0a0",
         "rgba": {
-          "r": 0.8982,
-          "g": 0.8982,
-          "b": 0.8982,
+          "r": 0.8118,
+          "g": 0.7529,
+          "b": 0.6275,
           "a": 1
         },
         "variableName": "color/input",
@@ -534,26 +482,26 @@
         "cssVar": "--input",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(1 0 0 / 15%)",
-          "hex": "#ffffff26",
+          "$value": "#3A2A12",
+          "hex": "#3a2a12",
           "rgba": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0.15
+            "r": 0.2275,
+            "g": 0.1647,
+            "b": 0.0706,
+            "a": 1
           }
         }
       }
     },
     "ring": {
       "$type": "color",
-      "$value": "oklch(0.708 0 0)",
+      "$value": "#A8511A",
       "figma": {
-        "hex": "#a1a1a1",
+        "hex": "#a8511a",
         "rgba": {
-          "r": 0.6302,
-          "g": 0.6302,
-          "b": 0.6302,
+          "r": 0.6588,
+          "g": 0.3176,
+          "b": 0.102,
           "a": 1
         },
         "variableName": "color/ring",
@@ -561,12 +509,12 @@
         "cssVar": "--ring",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.556 0 0)",
-          "hex": "#737373",
+          "$value": "#FFC24D",
+          "hex": "#ffc24d",
           "rgba": {
-            "r": 0.4515,
-            "g": 0.4515,
-            "b": 0.4515,
+            "r": 1,
+            "g": 0.7608,
+            "b": 0.302,
             "a": 1
           }
         }
@@ -576,13 +524,13 @@
   "sidebar": {
     "foreground": {
       "$type": "color",
-      "$value": "oklch(0.145 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#0a0a0a",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0394,
-          "g": 0.0394,
-          "b": 0.0394,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "sidebar/foreground",
@@ -590,12 +538,12 @@
         "cssVar": "--sidebar-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#F5B857",
+          "hex": "#f5b857",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 0.9608,
+            "g": 0.7216,
+            "b": 0.3412,
             "a": 1
           }
         }
@@ -603,13 +551,13 @@
     },
     "primary": {
       "$type": "color",
-      "$value": "oklch(0.205 0 0)",
+      "$value": "#A8511A",
       "figma": {
-        "hex": "#171717",
+        "hex": "#a8511a",
         "rgba": {
-          "r": 0.0905,
-          "g": 0.0905,
-          "b": 0.0905,
+          "r": 0.6588,
+          "g": 0.3176,
+          "b": 0.102,
           "a": 1
         },
         "variableName": "sidebar/primary",
@@ -617,12 +565,12 @@
         "cssVar": "--sidebar-primary",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.922 0 0)",
-          "hex": "#e5e5e5",
+          "$value": "#FF9E3D",
+          "hex": "#ff9e3d",
           "rgba": {
-            "r": 0.8982,
-            "g": 0.8982,
-            "b": 0.8982,
+            "r": 1,
+            "g": 0.6196,
+            "b": 0.2392,
             "a": 1
           }
         }
@@ -630,13 +578,13 @@
     },
     "primary-foreground": {
       "$type": "color",
-      "$value": "oklch(0.985 0 0)",
+      "$value": "#FBF3E2",
       "figma": {
-        "hex": "#fafafa",
+        "hex": "#fbf3e2",
         "rgba": {
-          "r": 0.9803,
-          "g": 0.9803,
-          "b": 0.9803,
+          "r": 0.9843,
+          "g": 0.9529,
+          "b": 0.8863,
           "a": 1
         },
         "variableName": "sidebar/primary-foreground",
@@ -644,12 +592,12 @@
         "cssVar": "--sidebar-primary-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.205 0 0)",
-          "hex": "#171717",
+          "$value": "#1A1206",
+          "hex": "#1a1206",
           "rgba": {
-            "r": 0.0905,
-            "g": 0.0905,
-            "b": 0.0905,
+            "r": 0.102,
+            "g": 0.0706,
+            "b": 0.0235,
             "a": 1
           }
         }
@@ -657,13 +605,13 @@
     },
     "accent": {
       "$type": "color",
-      "$value": "oklch(0.97 0 0)",
+      "$value": "#EAD9B0",
       "figma": {
-        "hex": "#f5f5f5",
+        "hex": "#ead9b0",
         "rgba": {
-          "r": 0.9606,
-          "g": 0.9606,
-          "b": 0.9606,
+          "r": 0.9176,
+          "g": 0.851,
+          "b": 0.6902,
           "a": 1
         },
         "variableName": "sidebar/accent",
@@ -671,12 +619,12 @@
         "cssVar": "--sidebar-accent",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.269 0 0)",
-          "hex": "#262626",
+          "$value": "#2B2417",
+          "hex": "#2b2417",
           "rgba": {
-            "r": 0.1494,
-            "g": 0.1494,
-            "b": 0.1494,
+            "r": 0.1686,
+            "g": 0.1412,
+            "b": 0.0902,
             "a": 1
           }
         }
@@ -684,13 +632,13 @@
     },
     "accent-foreground": {
       "$type": "color",
-      "$value": "oklch(0.205 0 0)",
+      "$value": "#332815",
       "figma": {
-        "hex": "#171717",
+        "hex": "#332815",
         "rgba": {
-          "r": 0.0905,
-          "g": 0.0905,
-          "b": 0.0905,
+          "r": 0.2,
+          "g": 0.1569,
+          "b": 0.0824,
           "a": 1
         },
         "variableName": "sidebar/accent-foreground",
@@ -698,12 +646,12 @@
         "cssVar": "--sidebar-accent-foreground",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.985 0 0)",
-          "hex": "#fafafa",
+          "$value": "#FFDA9E",
+          "hex": "#ffda9e",
           "rgba": {
-            "r": 0.9803,
-            "g": 0.9803,
-            "b": 0.9803,
+            "r": 1,
+            "g": 0.8549,
+            "b": 0.6196,
             "a": 1
           }
         }
@@ -711,13 +659,13 @@
     },
     "border": {
       "$type": "color",
-      "$value": "oklch(0.922 0 0)",
+      "$value": "#CFC0A0",
       "figma": {
-        "hex": "#e5e5e5",
+        "hex": "#cfc0a0",
         "rgba": {
-          "r": 0.8982,
-          "g": 0.8982,
-          "b": 0.8982,
+          "r": 0.8118,
+          "g": 0.7529,
+          "b": 0.6275,
           "a": 1
         },
         "variableName": "sidebar/border",
@@ -725,26 +673,26 @@
         "cssVar": "--sidebar-border",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(1 0 0 / 10%)",
-          "hex": "#ffffff1a",
+          "$value": "#3A2A12",
+          "hex": "#3a2a12",
           "rgba": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0.1
+            "r": 0.2275,
+            "g": 0.1647,
+            "b": 0.0706,
+            "a": 1
           }
         }
       }
     },
     "ring": {
       "$type": "color",
-      "$value": "oklch(0.708 0 0)",
+      "$value": "#A8511A",
       "figma": {
-        "hex": "#a1a1a1",
+        "hex": "#a8511a",
         "rgba": {
-          "r": 0.6302,
-          "g": 0.6302,
-          "b": 0.6302,
+          "r": 0.6588,
+          "g": 0.3176,
+          "b": 0.102,
           "a": 1
         },
         "variableName": "sidebar/ring",
@@ -752,122 +700,12 @@
         "cssVar": "--sidebar-ring",
         "syncStatus": "pending",
         "dark": {
-          "$value": "oklch(0.556 0 0)",
-          "hex": "#737373",
-          "rgba": {
-            "r": 0.4515,
-            "g": 0.4515,
-            "b": 0.4515,
-            "a": 1
-          }
-        }
-      }
-    }
-  },
-  "status": {
-    "synced": {
-      "$type": "color",
-      "$value": "oklch(0.52 0.15 162)",
-      "figma": {
-        "hex": "#00824d",
-        "rgba": {
-          "r": 0,
-          "g": 0.509,
-          "b": 0.3019,
-          "a": 1
-        },
-        "variableName": "status/synced",
-        "collection": "Status",
-        "cssVar": "--status-synced",
-        "syncStatus": "pending",
-        "dark": {
-          "$value": "oklch(0.72 0.17 162)",
-          "hex": "#00c483",
-          "rgba": {
-            "r": 0,
-            "g": 0.7692,
-            "b": 0.5135,
-            "a": 1
-          }
-        }
-      }
-    },
-    "drifted": {
-      "$type": "color",
-      "$value": "oklch(0.55 0.22 27)",
-      "figma": {
-        "hex": "#d40c1a",
-        "rgba": {
-          "r": 0.8311,
-          "g": 0.0467,
-          "b": 0.1025,
-          "a": 1
-        },
-        "variableName": "status/drifted",
-        "collection": "Status",
-        "cssVar": "--status-drifted",
-        "syncStatus": "pending",
-        "dark": {
-          "$value": "oklch(0.7 0.22 27)",
-          "hex": "#ff554c",
+          "$value": "#FFC24D",
+          "hex": "#ffc24d",
           "rgba": {
             "r": 1,
-            "g": 0.3315,
-            "b": 0.2996,
-            "a": 1
-          }
-        }
-      }
-    },
-    "stale": {
-      "$type": "color",
-      "$value": "oklch(0.65 0.18 75)",
-      "figma": {
-        "hex": "#cd7a00",
-        "rgba": {
-          "r": 0.803,
-          "g": 0.4768,
-          "b": 0,
-          "a": 1
-        },
-        "variableName": "status/stale",
-        "collection": "Status",
-        "cssVar": "--status-stale",
-        "syncStatus": "pending",
-        "dark": {
-          "$value": "oklch(0.78 0.17 75)",
-          "hex": "#f5a400",
-          "rgba": {
-            "r": 0.9624,
-            "g": 0.6451,
-            "b": 0,
-            "a": 1
-          }
-        }
-      }
-    },
-    "new": {
-      "$type": "color",
-      "$value": "oklch(0.55 0.2 290)",
-      "figma": {
-        "hex": "#7552db",
-        "rgba": {
-          "r": 0.4582,
-          "g": 0.3201,
-          "b": 0.8599,
-          "a": 1
-        },
-        "variableName": "status/new",
-        "collection": "Status",
-        "cssVar": "--status-new",
-        "syncStatus": "pending",
-        "dark": {
-          "$value": "oklch(0.72 0.2 290)",
-          "hex": "#a688ff",
-          "rgba": {
-            "r": 0.6506,
-            "g": 0.5346,
-            "b": 1,
+            "g": 0.7608,
+            "b": 0.302,
             "a": 1
           }
         }

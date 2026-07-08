@@ -2,21 +2,56 @@ import type { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shell/AppSidebar";
 import { SiteHeader } from "@/components/shell/SiteHeader";
-import { pageTreeToElements } from "@/lib/nav.config";
+import { pageTreeToElements, type SurfaceNode } from "@/lib/nav.config";
 import { contractSource } from "@/lib/contract-source";
 import { experimentsSource } from "@/lib/experiments-source";
+import { designSource } from "@/lib/design-source";
+import { loadSkillPacks } from "@/lib/skills-catalog";
 
-// The unified app shell (ADR-022): one sidebar + one header across the three
-// product surfaces (Home / Contract / Experiments). The fumadocs surfaces render
-// their bodies inside this shell with their own chrome disabled (see their
-// layouts); their page trees are fed into the sidebar's file-tree here.
+// The unified app shell (ADR-022): one sidebar + one header across the product
+// surfaces. Every surface the instance has is visible in the sidebar tree —
+// Contract, Experiments, the Design System spine, and the Skills/Workflows
+// catalog. Fumadocs surfaces render inside this shell with their own chrome
+// disabled (see their layouts).
 export default function AppLayout({ children }: { children: ReactNode }) {
-  const contractTree = pageTreeToElements(contractSource.pageTree);
-  const experimentsTree = pageTreeToElements(experimentsSource.pageTree);
+  const packs = loadSkillPacks();
+
+  const surfaces: SurfaceNode[] = [
+    { label: "Contract", href: "/contract", tree: pageTreeToElements(contractSource.pageTree) },
+    {
+      label: "Experiments",
+      href: "/experiments",
+      tree: pageTreeToElements(experimentsSource.pageTree),
+    },
+    { label: "Design System", href: "/design", tree: pageTreeToElements(designSource.pageTree) },
+    {
+      label: "Skills",
+      href: "/skills",
+      tree: packs.map((pack) => ({
+        id: `folder:skills-${pack.name}`,
+        name: pack.displayName,
+        type: "folder" as const,
+        children: pack.skills.map((s) => ({
+          id: `/skills#${s.slug}`,
+          name: `/${s.slug}`,
+          type: "file" as const,
+        })),
+      })),
+    },
+    {
+      label: "Workflows",
+      href: "/skills",
+      tree: packs.map((pack) => ({
+        id: `/skills#pack-${pack.name}`,
+        name: pack.displayName,
+        type: "file" as const,
+      })),
+    },
+  ];
 
   return (
     <SidebarProvider>
-      <AppSidebar contractTree={contractTree} experimentsTree={experimentsTree} />
+      <AppSidebar surfaces={surfaces} />
       {/* min-w-0 lets the inset shrink beside the sidebar instead of overflowing
           the viewport (flexbox min-width:auto default) — keeps the header + panels
           within bounds so Search/theme aren't pushed off-screen. */}

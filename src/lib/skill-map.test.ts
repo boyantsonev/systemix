@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { SKILL_MAP, getSkill, listSkills } from "./skill-map";
 
@@ -19,5 +21,18 @@ describe("SKILL_MAP", () => {
 
   it("listSkills mirrors the map", () => {
     expect(listSkills().map((s) => s.slug).sort()).toEqual(Object.keys(SKILL_MAP).sort());
+  });
+
+  // Regression: SKILL_MAP once pointed at scripts that didn't exist, so the
+  // /config play buttons failed on click. Every file path referenced in args
+  // must exist in the repo.
+  it("every referenced script/file path exists", () => {
+    for (const [slug, def] of Object.entries(SKILL_MAP)) {
+      for (const arg of def.args ?? []) {
+        if (/^(scripts|packages)\/.+\.(ts|js)$/.test(arg)) {
+          expect(fs.existsSync(path.join(process.cwd(), arg)), `${slug}: ${arg}`).toBe(true);
+        }
+      }
+    }
   });
 });

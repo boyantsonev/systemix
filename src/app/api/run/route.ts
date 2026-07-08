@@ -4,7 +4,7 @@
 
 import { NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { writeFileSync, mkdirSync, appendFileSync } from "fs";
+import { existsSync, writeFileSync, mkdirSync, appendFileSync } from "fs";
 import path from "path";
 import { getSkill, SKILL_MAP } from "@/lib/skill-map";
 
@@ -60,6 +60,22 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: `Unknown skill: ${skillSlug}`, available: Object.keys(SKILL_MAP) },
       { status: 404, headers: CORS_HEADERS }
+    );
+  }
+
+  // Preflight: spawned skills resolve bare imports against <cwd>/node_modules.
+  // In a git worktree without its own `npm install`, Node walks UP into the
+  // parent repo's node_modules and fails with ERR_MODULE_NOT_FOUND against a
+  // different checkout. Fail fast with the actual fix instead.
+  if (!existsSync(path.join(process.cwd(), "node_modules", "next"))) {
+    return NextResponse.json(
+      {
+        error:
+          "This workspace has no installed dependencies (git worktree?). Run `npm install` in " +
+          process.cwd() +
+          " first — spawned skills resolve modules against this directory.",
+      },
+      { status: 503, headers: CORS_HEADERS }
     );
   }
 

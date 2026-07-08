@@ -31,7 +31,7 @@ export function InstallStrip() {
           aria-label="Copy install command"
         >
           {copied
-            ? <Check size={13} className="text-teal-500" />
+            ? <Check size={13} className="text-success" />
             : <Copy size={13} />}
         </button>
       </div>

@@ -40,4 +40,11 @@ export const experiments = defineDocs({
   docs: { schema: recordSchema },
 });
 
+// The POC's own design-system-as-object (the instance spine `init` vendors),
+// dogfooded and rendered at /design: DESIGN.md · guardrails · tokens.
+export const design = defineDocs({
+  dir: "design",
+  docs: { schema: recordSchema },
+});
+
 export default defineConfig();

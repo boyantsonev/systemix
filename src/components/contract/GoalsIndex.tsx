@@ -7,10 +7,10 @@ import { experimentsSource } from "@/lib/experiments-source";
 // Rendered from goal frontmatter so the list can never drift from the files —
 // the MDX must not hand-maintain it (contract-model.md: "never hand-edited").
 const TONES: Record<string, string> = {
-  active: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10",
-  validated: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10",
+  active: "text-success border-success/30 bg-success/10",
+  validated: "text-success border-success/30 bg-success/10",
   parked: "text-muted-foreground border-border bg-muted/40",
-  killed: "text-red-500 border-red-500/30 bg-red-500/10",
+  killed: "text-destructive border-destructive/30 bg-destructive/10",
 };
 
 export function GoalsIndex() {

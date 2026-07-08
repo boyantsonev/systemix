@@ -9,9 +9,9 @@ export const dynamic = "force-dynamic";
 // this page never renders sample cards (an unlabeled fake decision on the
 // proof surface would falsify the whole claim).
 const ACTION: Record<string, { glyph: string; cls: string }> = {
-  approved: { glyph: "✓", cls: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10" },
-  rejected: { glyph: "✕", cls: "text-red-500 border-red-500/30 bg-red-500/10" },
-  deferred: { glyph: "→", cls: "text-amber-500 border-amber-500/30 bg-amber-500/10" },
+  approved: { glyph: "✓", cls: "text-success border-success/30 bg-success/10" },
+  rejected: { glyph: "✕", cls: "text-destructive border-destructive/30 bg-destructive/10" },
+  deferred: { glyph: "→", cls: "text-warning border-warning/30 bg-warning/10" },
 };
 
 export default function DecisionsLedger() {
@@ -37,7 +37,7 @@ export default function DecisionsLedger() {
 
         <div className="not-prose mt-8">
           {pending > 0 ? (
-            <p className="mb-4 text-[12px] font-mono text-amber-500">
+            <p className="mb-4 text-[12px] font-mono text-warning">
               {pending} pending decision{pending === 1 ? "" : "s"} awaiting review in{" "}
               <Link href="/config" className="underline underline-offset-2">
                 the ops view

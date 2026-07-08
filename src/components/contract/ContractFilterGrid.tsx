@@ -17,10 +17,10 @@ export type ContractRow = {
 };
 
 const STATUS_COLOURS: Record<string, string> = {
-  clean:              "bg-green-500/15 text-green-400 border-green-500/30",
-  drifted:            "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  "missing-in-figma": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  blocked:            "bg-red-500/15 text-red-400 border-red-500/30",
+  clean:              "bg-success/15 text-success border-success/30",
+  drifted:            "bg-warning/15 text-warning border-warning/30",
+  "missing-in-figma": "bg-highlight/15 text-highlight border-highlight/30",
+  blocked:            "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 function isColor(v?: string | null): boolean {
@@ -93,7 +93,7 @@ export function ContractFilterGrid({ rows, type }: { rows: ContractRow[]; type: 
                   </span>
                 )}
                 {row.resolved === false && row.status === "drifted" && (
-                  <span className="text-[10px] font-mono text-orange-400/80">unresolved</span>
+                  <span className="text-[10px] font-mono text-primary/80">unresolved</span>
                 )}
               </div>
 
@@ -102,7 +102,7 @@ export function ContractFilterGrid({ rows, type }: { rows: ContractRow[]; type: 
                 <div className="mt-1 flex gap-3 flex-wrap text-[11px] font-mono text-muted-foreground">
                   <span>code: {row.value}</span>
                   {row.figmaValue !== undefined && (
-                    <span className={row.status === "drifted" ? "text-yellow-400/70" : ""}>
+                    <span className={row.status === "drifted" ? "text-warning/70" : ""}>
                       figma: {row.figmaValue ?? "—"}
                     </span>
                   )}

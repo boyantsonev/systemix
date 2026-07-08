@@ -1,0 +1,133 @@
+---
+type: experiment
+id: landing-rebrand-hifi-2026-07
+section: hero
+icp: pre-pmf-founder
+jtbd: stop my design system from rotting without hiring a design-ops team
+goal: consultancy-leads
+hypothesis: 'A hi-fidelity rebrand — plain-English rot-first copy in the LaunchKit arc (metrics strip, feature deep-dives with real product mockups, pay-once pricing, build-vs-buy, FAQ) on the TVA amber-CRT theme — converts better than the lo-fi prototype landing: more installs, kit intent, and calls.'
+given: a founder lands on Systemix from a feed and gives the page five seconds
+conclusion: the rebranded page lifts install_command_copied per visitor and produces kit_requested / book_a_call intent the lo-fi page never did
+status: running
+metric: install-copy-rate
+variants:
+  control: 'current lo-fi landing (warm-paper Manrope, AI-native DS positioning)'
+  variant_b: 'TVA amber-CRT rebrand + LaunchKit-arc copy (rot-first hero, deep-dives with terminal mockups, pay-once Kit anchor)'
+workflow:
+  steps:
+    - id: references
+      kind: input
+      label: "the reference decode"
+      note: LaunchKit + getdesign.md arcs
+    - id: copy
+      kind: agent
+      label: "write the copy decks"
+      note: landing · kit · audit + SEO brief
+    - id: theme
+      kind: agent
+      label: "design the theme"
+      note: TVA · Amber Mainframe tokens
+    - id: encode
+      kind: tool
+      label: "encode copy + tokens"
+      note: content.ts · globals.css
+    - id: rebuild
+      kind: tool
+      label: "rebuild the pages"
+      note: deep-dives · pricing · FAQ
+    - id: measure
+      kind: tool
+      label: "measure"
+      note: install_command_copied before/after
+    - id: decide
+      kind: human
+      label: "decide"
+      note: HITL card
+    - id: learn
+      kind: agent
+      label: "write the learning"
+      note: LEARNINGS.md
+      agent: hermes
+  edges:
+    - from: references
+      to: copy
+    - from: copy
+      to: theme
+    - from: theme
+      to: encode
+    - from: encode
+      to: rebuild
+    - from: rebuild
+      to: measure
+    - from: measure
+      to: decide
+    - from: decide
+      to: learn
+posthog-event: install_command_copied
+result: null
+decision: null
+confidence: null
+evidence-posthog: null
+evidence-social: null
+created: '2026-07-08'
+review-by: '2026-08-07'
+---
+
+## Why this hypothesis
+
+The current landing is lo-fi prototype branding: the copy leads with mechanisms
+("evidence layer", "contracts") and the visual identity is a placeholder
+warm-paper theme. The bet has two halves that ship as one variant:
+
+1. **Copy** — clone the LaunchKit / getdesign.md narrative arc (imperative
+   rot-first hero, honest metrics strip, feature deep-dives with *real product
+   mockups*, founder credibility, pay-once pricing anchor ~~$299~~ $249,
+   build-vs-buy hours table, permission-granting FAQ) translated to plain
+   English: *Systemix stops your design system from rotting.*
+2. **Theme** — the TVA · Amber Mainframe design system (warm amber phosphor,
+   soft CRT, light+dark). The terminal aesthetic *is* the product story: the
+   deep-dive mockups render as the loop's own console.
+
+Succeeds `landing-ai-native-ds-2026-07` (same seam, same hero flag). This is
+ship-and-compare, not a split — at current traffic a real A/B cannot resolve,
+so the read is directional per-visitor rates before vs after.
+
+## Given
+
+A pre-PMF founder (or anyone who owns a design system) lands on Systemix from a
+feed and gives the page five seconds. Today they must decode category jargon
+before knowing what Systemix does for them.
+
+## Measurement notes
+
+- Primary: `install_command_copied` per visitor (activation — the cleanest
+  friction-free signal, per the SEO/GTM brief).
+- Secondary intent: `kit_requested` (revenue), `audit_requested` (pipeline),
+  `book_a_call` (team). All existing events survive the rebuild verbatim, with
+  the same `location / variant / persona / section` props.
+- The `landing-hero` flag keeps control / variant_b arms with the new copy pair
+  ("Your design system rots. Systemix fixes that." vs "Your design system, but
+  it learns.").
+
+## Decision criteria
+
+- `promote`: install copies per visitor rise meaningfully over the prior
+  window, or the first `kit_requested` arrives → the rot-first framing becomes
+  the permanent spine; iterate inside it.
+- `iterate`: engagement flat but time-on-page/section depth improves → the
+  structure works, the words don't; tighten the hero pair, keep the arc.
+- `kill`: no lift anywhere → the LaunchKit arc doesn't fit this audience;
+  revisit positioning (rot vs learning-loop lead) before touching layout again.
+
+## Changelog
+
+- **2026-07-08** — Revision round from user testing (same bet, same metric):
+  "the loop" banned from marketing copy (automation / AI-native design system
+  that learns from signals / agentic-feed context-layer framing + the
+  "one architecture, every audience" section); LaunchKit soft-grid layout
+  (hairline frame, 3-col hero, stack strip, statement); CRT scoped to screen
+  surfaces; dark body text warm white (spec v1.1); build-vs-buy rows expandable;
+  Home dogfood made real (drift-report script + feed, runner worktree guard,
+  full sidebar tree incl. design/ spine + skills/workflows catalog); app
+  components swept onto the warm semantic tokens. Evidence read after this
+  date reflects the revised page under the same bet.

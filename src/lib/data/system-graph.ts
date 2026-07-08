@@ -33,24 +33,27 @@ export interface ColorTriplet {
 
 export type ColorSet = Record<NodeType, ColorTriplet>;
 
+// TVA v1.1: the taxonomy renders on the warm ramp — 7 distinct warm hues,
+// no blue/violet/cyan (design/guardrails.mdx). Strokes match the phosphor set
+// in globals.css (.dark) and its light printout equivalents.
 export const TYPE_COLOR_DARK: ColorSet = {
-  source:   { stroke: "#7c3aed", fill: "#1a0f2e", text: "#c4b5fd", glow: "rgba(124,58,237,0.3)" },
-  skill:    { stroke: "#059669", fill: "#0a1f15", text: "#6ee7b7", glow: "rgba(5,150,105,0.3)" },
-  agent:    { stroke: "#d97706", fill: "#1c1407", text: "#fcd34d", glow: "rgba(217,119,6,0.3)" },
-  artifact: { stroke: "#2563eb", fill: "#0c1628", text: "#93c5fd", glow: "rgba(37,99,235,0.5)" },
-  infra:    { stroke: "#e11d48", fill: "#1a080f", text: "#fda4af", glow: "rgba(225,29,72,0.4)" },
-  concept:  { stroke: "#64748b", fill: "#0f1520", text: "#94a3b8", glow: "rgba(71,85,105,0.2)" },
-  tool:     { stroke: "#0891b2", fill: "#031a1f", text: "#67e8f9", glow: "rgba(8,145,178,0.3)" },
+  source:   { stroke: "#FF9E3D", fill: "#241304", text: "#FFC58A", glow: "rgba(255,158,61,0.3)" },
+  skill:    { stroke: "#B7C46A", fill: "#171A0A", text: "#D3DCA0", glow: "rgba(183,196,106,0.3)" },
+  agent:    { stroke: "#FFC24D", fill: "#241A05", text: "#FFD98F", glow: "rgba(255,194,77,0.3)" },
+  artifact: { stroke: "#D9B36A", fill: "#1F1809", text: "#E8CFA0", glow: "rgba(217,179,106,0.4)" },
+  infra:    { stroke: "#FF6A4A", fill: "#240B05", text: "#FFA48F", glow: "rgba(255,106,74,0.35)" },
+  concept:  { stroke: "#A98B4F", fill: "#181206", text: "#C7AE7E", glow: "rgba(169,139,79,0.25)" },
+  tool:     { stroke: "#FFD84D", fill: "#241E05", text: "#FFE694", glow: "rgba(255,216,77,0.3)" },
 };
 
 export const TYPE_COLOR_LIGHT: ColorSet = {
-  source:   { stroke: "#7c3aed", fill: "#f5f0ff", text: "#5b21b6", glow: "rgba(124,58,237,0.12)" },
-  skill:    { stroke: "#059669", fill: "#ecfdf5", text: "#065f46", glow: "rgba(5,150,105,0.12)" },
-  agent:    { stroke: "#d97706", fill: "#fffbeb", text: "#92400e", glow: "rgba(217,119,6,0.12)" },
-  artifact: { stroke: "#2563eb", fill: "#eff6ff", text: "#1e40af", glow: "rgba(37,99,235,0.15)" },
-  infra:    { stroke: "#e11d48", fill: "#fff1f2", text: "#9f1239", glow: "rgba(225,29,72,0.12)" },
-  concept:  { stroke: "#64748b", fill: "#f8fafc", text: "#334155", glow: "rgba(71,85,105,0.08)" },
-  tool:     { stroke: "#0891b2", fill: "#ecfeff", text: "#155e75", glow: "rgba(8,145,178,0.12)" },
+  source:   { stroke: "#A8511A", fill: "#F7EBDC", text: "#7C3B12", glow: "rgba(168,81,26,0.12)" },
+  skill:    { stroke: "#5D6626", fill: "#EFF1DF", text: "#434A1B", glow: "rgba(93,102,38,0.12)" },
+  agent:    { stroke: "#B07A16", fill: "#F7EFDA", text: "#7E5710", glow: "rgba(176,122,22,0.12)" },
+  artifact: { stroke: "#6E5A2A", fill: "#F1ECDE", text: "#4F401E", glow: "rgba(110,90,42,0.12)" },
+  infra:    { stroke: "#A8412C", fill: "#F7E6E0", text: "#7C2F20", glow: "rgba(168,65,44,0.12)" },
+  concept:  { stroke: "#7A6A48", fill: "#F0EBDF", text: "#574B32", glow: "rgba(122,106,72,0.08)" },
+  tool:     { stroke: "#8A5A00", fill: "#F5EDD8", text: "#634100", glow: "rgba(138,90,0,0.12)" },
 };
 
 export const TYPE_LABEL: Record<NodeType, string> = {

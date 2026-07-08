@@ -89,7 +89,7 @@ export function RunProgressSheet({
         {done ? (
           <div className="shrink-0 border-t px-4 py-3">
             <p
-              className={`font-mono text-[12px] ${done.exitCode === 0 ? "text-emerald-500" : "text-red-500"}`}
+              className={`font-mono text-[12px] ${done.exitCode === 0 ? "text-success" : "text-destructive"}`}
             >
               {done.exitCode === 0 ? "✓" : "✕"} exit {done.exitCode}
               {done.summary ? ` · ${done.summary}` : ""}

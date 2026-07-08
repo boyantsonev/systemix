@@ -3,10 +3,10 @@ import { ColorSwatch } from "./ColorSwatch";
 import type { Token } from "@/lib/data/tokens";
 
 const statusConfig = {
-  synced: { label: "Synced", cls: "text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800" },
-  drift:  { label: "Drift",  cls: "text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"                 },
-  stale:  { label: "Stale",  cls: "text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800"         },
-  new:    { label: "New",    cls: "text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800"     },
+  synced: { label: "Synced", cls: "text-success border-success" },
+  drift:  { label: "Drift",  cls: "text-destructive border-destructive"                 },
+  stale:  { label: "Stale",  cls: "text-warning border-warning"         },
+  new:    { label: "New",    cls: "text-highlight border-highlight"     },
 };
 
 type TokenTableProps = { tokens: Token[] };
