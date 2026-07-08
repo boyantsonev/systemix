@@ -9,7 +9,7 @@ Sync all documentation entries in lib/data/docs.ts.
 
 ## Steps
 
-1. Read `lib/data/components.ts`, `lib/data/tokens.ts`, and `lib/data/brands.ts` to get the current design system inventory.
+1. Read `lib/data/components.ts` and `lib/data/brands.ts` to get the current design system inventory. For token data, read `.systemix/tokens.bridge.json` (generated from `globals.css` via `npm run tokens`).
 
 2. For each component or token group, read the relevant source file (e.g. `src/components/ui/<name>.tsx`) to extract:
    - Props interface / TypeScript types
