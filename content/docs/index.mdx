@@ -2,21 +2,31 @@
 title: What is Systemix?
 ---
 
-Systemix is a composable hypothesis→validate→learn loop. You write an experiment — an ICP, a hypothesis, and the AI workflow that tests it — measure it against real signal, and close it with a decision. The learning is written back to `experiments/LEARNINGS.md`, where the next agent or sprint starts from evidence, not a fresh guess.
+Systemix helps you **fix (or build) your design system — in your repo, with your coding agent.** Your agent ships screens fast, and every one is a little different: colours drift, components duplicate, the interface goes to slop. Systemix reads your code, gives you your design system back as tokens and guardrails you own, and makes your agent follow it.
 
-**Three ways to drive the loop:**
-- [Claude Code skills](/docs/slash-commands) — `/systemix-init`, `/measure`, `/close-experiment` and more
-- CLI — `systemix experiment new | list | close | learnings`
-- MCP — `experiment_new`, `experiment_list`, `experiment_close` for any agent that speaks MCP
+It's code-first (Figma is an optional adapter), read-only until you approve a change, and the engine is Claude Code — no extra service to run.
 
-The design system is optional. You bring your own, scaffold one, or skip it entirely.
+## Two doors
+
+- **Already a mess → audit it.** [`npx systemix audit`](/docs/audit) installs a zero-setup, read-only skill. Run `/design-audit` and Systemix infers your de-facto tokens and components, flags the drift and the duplicates, and hands you a `design/` starter to sign off on.
+- **Starting fresh → get interviewed.** [`/design-interview`](/docs/design-system) (install with `npx systemix design init`). A few questions about your product, your people, and the associations behind your palette, and Systemix drafts the system from scratch — in your voice.
+
+Both roads land in the same place: a design system in `design/` — plain MDX and CSS — that your agent reads and defends.
+
+## The point: it follows the rule
+
+The audit hands you `design/guardrails.mdx`. Your agent reads it on every change and checks against it before anything lands. When a new pattern comes up, it **proposes the change with the rationale and waits for you** — nothing self-modifies silently ([the autonomy dial](/docs/the-contract)).
+
+## Where it grows
+
+A defined design system is the floor, not the ceiling. From there Systemix closes a learning loop — ship → measure → learn → decide — so the system earns its next change from evidence, not opinion.
 
 ## Start here
 
-→ [Getting started](/docs/getting-started) — set up the loop in a new or existing repo
+→ [Run the audit](/docs/audit) — the zero-setup front door for an existing repo
 
-→ [The experiment](/docs/concepts/experiment) — what an experiment is and how it progresses
+→ [Getting started](/docs/getting-started) — set up Systemix in a new or existing repo
 
-→ [The loop](/docs/concepts/the-loop) — the five-skill sequence from hypothesis to learning
+→ [The contract](/docs/the-contract) — the files, the guardrails, and the autonomy dial
 
 → [Slash commands](/docs/slash-commands) — the full skill reference

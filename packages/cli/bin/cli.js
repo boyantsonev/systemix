@@ -15,6 +15,8 @@ const { socialSignal } = require("../src/commands/social-signal");
 const { evidence } = require("../src/commands/evidence");
 const { config } = require("../src/commands/config");
 const { experiment } = require("../src/commands/experiment");
+const { audit } = require("../src/commands/audit");
+const { design } = require("../src/commands/design");
 
 const [, , command, ...args] = process.argv;
 
@@ -22,6 +24,8 @@ const HELP = `
   systemix — agentic design system ops for Claude Code
 
   Usage:
+    npx systemix audit                   Install the zero-setup design-system audit skill
+    npx systemix design [show|feed|init] Read the design system + HITL feed; init = greenfield interview
     npx systemix init                    Interactive setup wizard (run once per project)
     npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
     npx systemix config show             Print the active instance topology
@@ -73,6 +77,12 @@ const HELP = `
 
 async function main() {
   switch (command) {
+    case "audit":
+      await audit(args);
+      break;
+    case "design":
+      await design(args);
+      break;
     case "init":
       await init({
         reconfigure: args.includes("--reconfigure"),

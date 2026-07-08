@@ -106,6 +106,13 @@ import {
   experimentLearningsHandler,
 } from "./tools/experiment.js";
 
+import {
+  designGetDefinition,
+  designGetHandler,
+  designListProposalsDefinition,
+  designListProposalsHandler,
+} from "./tools/design.js";
+
 import type { ToolHandler, ToolResult } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -157,6 +164,8 @@ const tools = [
   experimentMeasureDefinition,
   experimentCloseDefinition,
   experimentLearningsDefinition,
+  designGetDefinition,
+  designListProposalsDefinition,
 ];
 
 // Map tool name → handler, bound to projectRoot
@@ -189,6 +198,8 @@ const handlers = new Map<string, (args: Record<string, unknown>) => Promise<Tool
   [experimentMeasureDefinition.name, (a) => experimentMeasureHandler(a as Parameters<typeof experimentMeasureHandler>[0], PROJECT_ROOT)],
   [experimentCloseDefinition.name, (a) => experimentCloseHandler(a as Parameters<typeof experimentCloseHandler>[0], PROJECT_ROOT)],
   [experimentLearningsDefinition.name, (a) => experimentLearningsHandler(a, PROJECT_ROOT)],
+  [designGetDefinition.name, (_a) => designGetHandler({}, PROJECT_ROOT)],
+  [designListProposalsDefinition.name, (a) => designListProposalsHandler(a as Parameters<typeof designListProposalsHandler>[0], PROJECT_ROOT)],
 ]);
 
 // ---------------------------------------------------------------------------

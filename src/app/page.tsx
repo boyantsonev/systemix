@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, SectionTrack } from "@/components/systemix/LandingEvents";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
-import { ThreeDoorsBento } from "@/components/landing/ThreeDoorsBento";
+import { TwoDoorsBento } from "@/components/landing/TwoDoorsBento";
 import { TrustBento } from "@/components/landing/TrustBento";
 import {
   GITHUB_URL,
@@ -16,14 +16,15 @@ import {
   gap,
   loop,
   nav,
+  rule,
   services,
   trust,
 } from "@/lib/landing/content";
 
 export const metadata: Metadata = {
-  title: "Systemix — the experiment loop for builders",
+  title: "Systemix — fix your design system, in your repo",
   description:
-    "Your agents ship a variant a day; your learning lags a quarter behind. Systemix closes the loop the day each experiment resolves — the result and the decision written back into your repo, so the next ship starts from evidence, not memory. Open-source, runs in Claude Code.",
+    "Your agent ships screens fast and every one is a little different — colours drift, components duplicate, the interface goes to slop. Systemix audits your code, gives you your design system back as tokens and guardrails in your repo, and makes your agent follow it. Zero-setup, read-only, open-source, runs in Claude Code.",
 };
 
 // ── Shared section primitives ─────────────────────────────────────────────────
@@ -151,7 +152,7 @@ function Effect() {
   );
 }
 
-// ── Solution · the loop ───────────────────────────────────────────────────────
+// ── Where it grows · the loop (demoted) ───────────────────────────────────────
 
 function TheLoop() {
   return (
@@ -161,6 +162,12 @@ function TheLoop() {
           <Eyebrow>{loop.label}</Eyebrow>
           <SectionHeading>{loop.heading}</SectionHeading>
           <Lead>{loop.body}</Lead>
+          <Link
+            href={loop.cta.href}
+            className="mt-6 inline-block font-mono text-[12px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            {loop.cta.label} →
+          </Link>
         </div>
       </div>
 
@@ -183,18 +190,40 @@ function TheLoop() {
   );
 }
 
-// ── Solution · three doors ────────────────────────────────────────────────────
+// ── Two doors · audit / interview ─────────────────────────────────────────────
 
-function ThreeDoors() {
+function TwoDoors() {
   return (
-    <Section>
+    <Section id="doors">
       <div className="max-w-3xl">
         <Eyebrow>{doors.label}</Eyebrow>
         <SectionHeading>{doors.heading}</SectionHeading>
         <Lead>{doors.body}</Lead>
       </div>
       <div className="mt-14">
-        <ThreeDoorsBento />
+        <TwoDoorsBento />
+      </div>
+    </Section>
+  );
+}
+
+// ── The rule (why it matters) ─────────────────────────────────────────────────
+
+function Rule() {
+  return (
+    <Section>
+      <div className="max-w-3xl">
+        <Eyebrow>{rule.label}</Eyebrow>
+        <SectionHeading>{rule.heading}</SectionHeading>
+        <Lead>{rule.body}</Lead>
+      </div>
+      <div className="mt-14 grid gap-4 sm:grid-cols-3 sm:gap-5">
+        {rule.items.map((it) => (
+          <div key={it.title} className="rounded-xl border border-border/40 bg-card p-6">
+            <p className="mb-2 text-[15px] font-bold text-foreground">{it.title}</p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">{it.body}</p>
+          </div>
+        ))}
       </div>
     </Section>
   );
@@ -322,14 +351,17 @@ export default function LandingPage() {
         <SectionTrack name="effect">
           <Effect />
         </SectionTrack>
-        <SectionTrack name="loop">
-          <TheLoop />
+        <SectionTrack name="two-doors">
+          <TwoDoors />
         </SectionTrack>
-        <SectionTrack name="three-doors">
-          <ThreeDoors />
+        <SectionTrack name="rule">
+          <Rule />
         </SectionTrack>
         <SectionTrack name="trust">
           <Trust />
+        </SectionTrack>
+        <SectionTrack name="loop">
+          <TheLoop />
         </SectionTrack>
         <SectionTrack name="bottom-cta">
           <BottomCTA />

@@ -133,6 +133,8 @@ const noopRegister = () => {};
 // ── Skill sets (verified against manifest.json on disk) ───────────────────────
 
 const DESIGN_SYSTEM_SKILLS = [
+  "design-audit",
+  "design-interview",
   "claude-design-sync",
   "scaffold-surface",
   "figma",
@@ -202,7 +204,7 @@ describe("systemix init — acceptance tests", () => {
         console.log = origLog;
       }
 
-      // Then — all 14 skill dirs exist under .claude/skills/
+      // Then — all 16 skill dirs exist under .claude/skills/
       const installed = ws.installedSkills();
       for (const skill of [...DESIGN_SYSTEM_SKILLS, ...HYPOTHESIS_VALIDATION_SKILLS]) {
         expect(installed).toContain(skill);

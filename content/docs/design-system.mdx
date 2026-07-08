@@ -1,0 +1,49 @@
+---
+title: The design system
+---
+
+Your design system lives in `design/` — plain, code-first files you own:
+
+```
+design/
+  DESIGN.md        ← the brief, in your words
+  tokens.css       ← the canonical values (the app imports this)
+  guardrails.mdx   ← the rules your agent follows
+```
+
+## Two doors in
+
+- **Already have UI → [`/design-audit`](/docs/audit).** Read-only. Infers your
+  de-facto tokens and components, flags drift and duplicates, proposes a `design/`
+  starter.
+- **Starting fresh → `/design-interview`.** A short interview — your product, your
+  people, and the associations behind your palette ("what colour is your primary
+  user, what do you associate with it?") — then drafts `design/` in your voice.
+  Install it with `npx systemix design init`.
+
+Both land in the same `design/`. Nothing is written without your approval.
+
+## Anti-AI-slop guardrails
+
+`design/guardrails.mdx` is the customizable artifact that keeps a fast-shipping
+agent from turning the UI into a pile of one-offs: one component per concept, no
+inline primitives, a consistent variant vocabulary, no mixed libraries, and — the
+key rule — **a new pattern means the agent asks first, with a rationale.** Edit the
+file to fit your product; the agent reads whatever you keep there. How strictly it's
+enforced follows the [autonomy dial](/docs/the-contract); changing the rules is
+always human-in-the-loop.
+
+## The HITL feed — digestible by any agent
+
+Audit, interview, and guardrail changes are proposed, not applied — they land in the
+HITL feed (`.systemix/queue.json`), visible in the dashboard and readable through all
+three doors:
+
+| Door | Read the system | Read the feed |
+|------|-----------------|----------------|
+| CLI | `systemix design` | `systemix design feed` |
+| MCP | `design_get` | `design_list_proposals` |
+| Claude Code | `/design-audit`, `/design-interview` | the dashboard at `/config` |
+
+So another agent — yours or a teammate's — can ask "what's the design system, and
+what's waiting on a human?" and get the same answer whichever door it speaks.
