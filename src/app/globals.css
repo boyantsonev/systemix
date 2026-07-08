@@ -51,8 +51,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-manrope);
-  --font-mono: var(--font-jetbrains-mono);
+  /* TVA `launch` type pairing — DM Sans (body/display) + Space Mono (data/labels),
+     loaded via next/font in layout.tsx. The theme's [data-type="square"] dial is
+     not shipped (its fonts aren't loaded); launch is baked as the default. */
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-display: var(--font-dm-sans), ui-sans-serif, sans-serif;
+  --font-label: var(--font-space-mono), ui-monospace, monospace;
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -66,9 +71,21 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -77,8 +94,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --color-screen-background: var(--screen-background);
+  --color-screen-foreground: var(--screen-foreground);
+  --color-screen-border: var(--screen-border);
+  --color-screen-success: var(--screen-success);
+  --color-screen-destructive: var(--screen-destructive);
+  --color-screen-warning: var(--screen-warning);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) - 1px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
@@ -98,84 +121,241 @@
   }
 }
 
-/* ── Nova style — neutral, compact ───────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════
+   TVA · AMBER MAINFRAME — Systemix theme
+   Warm amber phosphor on a dim, lifted base with a soft CRT treatment.
+   Source of truth: docs/feature/rebrand-hifi/design/tva-theme.css (+ design.md).
+   Semantics: shadcn names; --accent = subtle hover surface (NOT brand amber);
+   the vivid amber is --highlight. No blue anywhere. Status tints are DERIVED
+   via color-mix + the --tint-* knobs, never stored.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── LIGHT — a daylight printout: warm paper, glow → soft shadow ── */
 :root {
-  --radius: 0.5rem;
+  /* shadcn core */
+  --background: #ECE3CB;
+  --foreground: #332815;
+  --card: #F4ECD6;
+  --card-foreground: #332815;
+  --popover: #F9F2E2;
+  --popover-foreground: #332815;
+  --primary: #A8511A;
+  --primary-foreground: #FBF3E2;
+  --secondary: #DFD3B4;
+  --secondary-foreground: #332815;
+  --muted: #E4DED0;
+  --muted-foreground: #7A6A48;
+  --accent: #EAD9B0;
+  --accent-foreground: #332815;
+  --destructive: #A8412C;
+  --destructive-foreground: #FBF3E2;
+  --border: #CFC0A0;
+  --input: #CFC0A0;
+  --ring: #A8511A;
+
+  /* status + brand-amber extensions */
+  --success: #5D6626;
+  --success-foreground: #FBF3E2;
+  --warning: #8A5A00;
+  --warning-foreground: #FBF3E2;
+  --highlight: #B07A16;
+  --highlight-foreground: #241C10;
+
+  /* charts / sidebar */
+  --chart-1: #A8511A;
+  --chart-2: #B07A16;
+  --chart-3: #5D6626;
+  --chart-4: #8A5A00;
+  --chart-5: #A8412C;
+  --sidebar: #E4DED0;
+  --sidebar-foreground: #332815;
+  --sidebar-primary: #A8511A;
+  --sidebar-primary-foreground: #FBF3E2;
+  --sidebar-accent: #EAD9B0;
+  --sidebar-accent-foreground: #332815;
+  --sidebar-border: #CFC0A0;
+  --sidebar-ring: #A8511A;
+
+  /* CRT look (glow degrades to soft shadow on paper) */
+  --gradient-page: radial-gradient(130% 120% at 50% 30%, #F4EDD9 0%, var(--background) 60%, #DFD3B4 100%);
+  --gradient-panel: linear-gradient(#F9F2E2, #F4ECD6);
+  --glow-text: none;
+  --glow-head: none;
+  --glow-soft: 0 1px 0 rgba(0, 0, 0, 0.05), 0 4px 14px rgba(60, 45, 20, 0.12);
+  --glow-strong: 0 2px 0 rgba(0, 0, 0, 0.08), 0 6px 18px rgba(60, 45, 20, 0.16);
+  --glow-focus: 0 0 0 3px rgba(168, 81, 26, 0.35);
+  --shadow-panel: var(--glow-soft);
+  --shadow-pop: 0 12px 34px rgba(60, 45, 20, 0.28);
+  --overlay: rgba(50, 40, 20, 0.32);
+  --crt-veil: radial-gradient(120% 120% at 50% 50%, transparent 72%, rgba(120, 100, 60, 0.10) 100%);
+  --crt-scan-max: 0.05;
+  --crt-sweep-color: rgba(160, 120, 50, 0.05);
+  --crt-sweep-display: none;
 
   /* Graph canvas — a distinct dotted surface (CSS-driven so it follows .dark
      instantly, not the lagging JS resolvedTheme). */
-  --canvas-bg: oklch(95.5% 0.007 88);
-  --canvas-dot: oklch(45% 0.02 70 / 0.13);
+  --canvas-bg: #E7DEC2;
+  --canvas-dot: rgba(122, 106, 72, 0.22);
 
-  /* Light mode — warm paper-minimal (hue ~80, low chroma) */
-  --background: oklch(97% 0.005 90);
-  --foreground: oklch(0.17 0.01 70);
-  --card: oklch(99% 0.004 90);
-  --card-foreground: oklch(0.17 0.01 70);
-  --popover: oklch(99.2% 0.004 90);
-  --popover-foreground: oklch(0.17 0.01 70);
-  --primary: oklch(0.21 0.012 70);
-  --primary-foreground: oklch(0.98 0.005 90);
-  --secondary: oklch(95.5% 0.006 88);
-  --secondary-foreground: oklch(0.21 0.012 70);
-  --muted: oklch(95% 0.006 88);
-  --muted-foreground: oklch(0.44 0.012 70);
-  --accent: oklch(95.5% 0.006 88);
-  --accent-foreground: oklch(0.21 0.012 70);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(98% 0 0);
-  --border: oklch(89% 0.008 85);
-  --input: oklch(91% 0.007 85);
-  --ring: oklch(0.70 0.012 75);
+  /* legacy shadow aliases (app surfaces) → TVA elevation model */
+  --shadow-sm: var(--glow-soft);
+  --shadow-md: var(--glow-strong);
+  --shadow-lg: var(--shadow-pop);
+  --shadow-glow-ada: 0 0 20px rgba(168, 81, 26, 0.25);
+  --shadow-glow-flux: 0 0 20px rgba(176, 122, 22, 0.25);
 
-  /* Sidebar light */
-  --sidebar: oklch(98% 0.004 90);
-  --sidebar-foreground: oklch(0.17 0.01 70);
-  --sidebar-primary: oklch(0.21 0.012 70);
-  --sidebar-primary-foreground: oklch(0.98 0.005 90);
-  --sidebar-accent: oklch(95.5% 0.006 88);
-  --sidebar-accent-foreground: oklch(0.21 0.012 70);
-  --sidebar-border: oklch(91% 0.007 85);
-  --sidebar-ring: oklch(0.70 0.012 75);
+  /* ── Status / state semantic palette — warm remap, no blue ── */
+  --status-synced: var(--success);
+  --status-drifted: var(--destructive);
+  --status-stale: var(--warning);
+  --status-new: var(--highlight);
 
-  /* Status semantic colors — used sparingly */
-  --status-synced: oklch(0.52 0.15 162);    /* emerald */
-  --status-drifted: oklch(0.55 0.22 27);    /* red */
-  --status-stale: oklch(0.65 0.18 75);      /* amber */
-  --status-new: oklch(0.55 0.2 290);        /* violet */
+  --color-synced: var(--success);
+  --color-drifted: var(--warning);
+  --color-stale: var(--muted-foreground);
+  --color-new: var(--highlight);
+  --color-error: var(--destructive);
+  --color-warning: var(--warning);
+  --color-info: var(--highlight);
 
-  /* ── Status / state semantic palette ─────────────────────── */
-  --color-synced: oklch(68% 0.16 160);      /* emerald */
-  --color-drifted: oklch(72% 0.18 75);      /* amber */
-  --color-stale: oklch(60% 0.12 30);        /* orange */
-  --color-new: oklch(65% 0.17 240);         /* blue */
-  --color-error: oklch(62% 0.22 25);        /* red */
-  --color-warning: oklch(75% 0.18 80);      /* yellow */
-  --color-info: oklch(65% 0.15 245);        /* blue */
+  /* Status surfaces — derived tints (design.md §4.5) */
+  --color-synced-surface: color-mix(in srgb, var(--success) var(--tint-weak), transparent);
+  --color-drifted-surface: color-mix(in srgb, var(--warning) var(--tint-weak), transparent);
+  --color-stale-surface: color-mix(in srgb, var(--muted-foreground) var(--tint-weak), transparent);
+  --color-error-surface: color-mix(in srgb, var(--destructive) var(--tint-weak), transparent);
 
-  /* Status surfaces */
-  --color-synced-surface: oklch(68% 0.16 160 / 0.10);
-  --color-drifted-surface: oklch(72% 0.18 75 / 0.10);
-  --color-stale-surface: oklch(60% 0.12 30 / 0.10);
-  --color-error-surface: oklch(62% 0.22 25 / 0.10);
+  /* ── Agent color tokens — the warm ramp (no blue survives) ── */
+  --agent-ada: #A8511A;    /* burnt orange — Figma→Code */
+  --agent-flux: #B07A16;   /* amber — Token Sync */
+  --agent-scout: #8A5A00;  /* deep amber — Drift Detector */
+  --agent-prism: #A8412C;  /* red-orange — Component Themer */
+  --agent-echo: #6E5A2A;   /* tan — Doc Sync */
+  --agent-sage: #5D6626;   /* olive — Storybook */
+  --agent-ship: #7A6A48;   /* warm slate — Deploy */
 
-  /* ── Agent color tokens ───────────────────────────────────── */
-  --agent-ada: oklch(68% 0.18 280);         /* violet — Figma→Code */
-  --agent-flux: oklch(70% 0.16 185);        /* teal — Token Sync */
-  --agent-scout: oklch(72% 0.18 75);        /* amber — Drift Detector */
-  --agent-prism: oklch(68% 0.20 350);       /* rose — Component Themer */
-  --agent-echo: oklch(65% 0.17 240);        /* blue — Doc Sync */
-  --agent-sage: oklch(68% 0.16 160);        /* emerald — Storybook */
-  --agent-ship: oklch(60% 0.08 240);        /* slate — Deploy */
+  --agent-ada-surface: color-mix(in srgb, var(--agent-ada) 10%, transparent);
+  --agent-flux-surface: color-mix(in srgb, var(--agent-flux) 10%, transparent);
+  --agent-scout-surface: color-mix(in srgb, var(--agent-scout) 10%, transparent);
+  --agent-prism-surface: color-mix(in srgb, var(--agent-prism) 10%, transparent);
+  --agent-echo-surface: color-mix(in srgb, var(--agent-echo) 10%, transparent);
+  --agent-sage-surface: color-mix(in srgb, var(--agent-sage) 10%, transparent);
+  --agent-ship-surface: color-mix(in srgb, var(--agent-ship) 10%, transparent);
+}
 
-  /* Agent surface tints (10% opacity backgrounds) */
-  --agent-ada-surface: oklch(68% 0.18 280 / 0.10);
-  --agent-flux-surface: oklch(70% 0.16 185 / 0.10);
-  --agent-scout-surface: oklch(72% 0.18 75 / 0.10);
-  --agent-prism-surface: oklch(68% 0.20 350 / 0.10);
-  --agent-echo-surface: oklch(65% 0.17 240 / 0.10);
-  --agent-sage-surface: oklch(68% 0.16 160 / 0.10);
-  --agent-ship-surface: oklch(60% 0.08 240 / 0.10);
+/* ── DARK — the amber-lit control room (default) ── */
+.dark {
+  --background: #16100A;
+  --foreground: #F5B857;
+  --card: #1E1710;
+  --card-foreground: #F5B857;
+  --popover: #0D0905;
+  --popover-foreground: #F5B857;
+  --primary: #FF9E3D;
+  --primary-foreground: #1A1206;
+  --secondary: #271E14;
+  --secondary-foreground: #F5B857;
+  --muted: #271E14;
+  --muted-foreground: #8A6320;
+  --accent: #2B2417;
+  --accent-foreground: #FFDA9E;
+  --destructive: #FF6A4A;
+  --destructive-foreground: #1A1206;
+  --border: #3A2A12;
+  --input: #3A2A12;
+  --ring: #FFC24D;
+
+  --success: #B7C46A;
+  --success-foreground: #1A1206;
+  --warning: #FFD84D;
+  --warning-foreground: #1A1206;
+  --highlight: #FFC24D;
+  --highlight-foreground: #1A1206;
+
+  --chart-1: #FF9E3D;
+  --chart-2: #FFC24D;
+  --chart-3: #B7C46A;
+  --chart-4: #FFD84D;
+  --chart-5: #FF6A4A;
+  --sidebar: #1E1710;
+  --sidebar-foreground: #F5B857;
+  --sidebar-primary: #FF9E3D;
+  --sidebar-primary-foreground: #1A1206;
+  --sidebar-accent: #2B2417;
+  --sidebar-accent-foreground: #FFDA9E;
+  --sidebar-border: #3A2A12;
+  --sidebar-ring: #FFC24D;
+
+  --gradient-page: radial-gradient(130% 120% at 50% 42%, #1d150c 0%, var(--background) 55%, #0D0905 100%);
+  --gradient-panel: linear-gradient(#1E1710, #16100A);
+  --glow-text: 0 0 6px rgba(255, 176, 70, 0.28);
+  --glow-head: 0 0 14px rgba(255, 158, 61, 0.20);
+  --glow-soft: 0 0 14px rgba(255, 158, 61, 0.16);
+  --glow-strong: 0 0 22px rgba(255, 158, 61, 0.28);
+  --glow-focus: 0 0 0 2px rgba(255, 158, 61, 0.35), 0 0 18px rgba(255, 158, 61, 0.30);
+  --shadow-panel: inset 0 0 30px rgba(0, 0, 0, 0.45), var(--glow-soft);
+  --shadow-pop: 0 10px 34px rgba(0, 0, 0, 0.6), var(--glow-soft);
+  --overlay: rgba(6, 3, 0, 0.62);
+  --crt-veil: radial-gradient(120% 120% at 50% 50%, transparent 60%, rgba(6, 3, 0, 0.6) 100%);
+  --crt-scan-max: 0.12;
+  --crt-sweep-color: rgba(255, 190, 90, 0.09);
+  --crt-sweep-display: block;
+
+  --canvas-bg: #0D0905;
+  --canvas-dot: rgba(245, 184, 87, 0.12);
+
+  --shadow-sm: var(--glow-soft);
+  --shadow-md: var(--glow-strong);
+  --shadow-lg: var(--shadow-pop);
+  --shadow-glow-ada: 0 0 20px rgba(255, 158, 61, 0.25);
+  --shadow-glow-flux: 0 0 20px rgba(255, 194, 77, 0.25);
+
+  /* Agent ramp — dark phosphor variants */
+  --agent-ada: #FF9E3D;
+  --agent-flux: #FFC24D;
+  --agent-scout: #FFD84D;
+  --agent-prism: #FF6A4A;
+  --agent-echo: #D9B36A;
+  --agent-sage: #B7C46A;
+  --agent-ship: #A98B4F;
+}
+
+/* ── THEME-INDEPENDENT (both light & dark) ── */
+:root {
+  /* The terminal is a lit CRT in BOTH themes → fixed screen tokens */
+  --screen-background: #0D0905;
+  --screen-foreground: #F5B857;
+  --screen-border: #6E4F1E;
+  --screen-success: #B7C46A;
+  --screen-destructive: #FF6A4A;
+  --screen-warning: #FFD84D;
+  --screen-glow: 0 0 6px rgba(255, 176, 70, 0.28);
+
+  /* Radius (base = soft; the radius dial overrides --radius) */
+  --radius: 0.3125rem; /* 5px */
+  --radius-screen: calc(var(--radius) * 2); /* larger tube-like panels/terminals */
+
+  /* Type roles — launch pairing (DM Sans + Space Mono, next/font vars) */
+  --font-label: var(--font-space-mono), ui-monospace, monospace;
+  --tracking-heading: -0.01em;
+  --tracking-label: 0.18em;
+  --case-heading: none;
+
+  /* CRT dial (base = soft) — strength multiplier × per-theme --crt-scan-max */
+  --crt-scan-strength: 1;
+  --crt-scan-gap: 4px;
+  --crt-sweep-opacity: 1;
+  --crt-breathe: 1;
+
+  /* State, interaction */
+  --disabled-opacity: 0.42;
+  --tint-weak: 12%;
+  --tint-mid: 16%;
+  --tint-line: 42%;
+  --ease: cubic-bezier(0.33, 0, 0.2, 1);
+  --duration: 260ms;
+
+  /* Mono fallback for code surfaces */
+  --font-mono: var(--font-space-mono), ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
 
   /* ── Typography scale — WCAG AA floor: 12px minimum for readable text ── */
   --font-size-2xs: 0.6875rem;   /* 11px — decorative labels only */
@@ -192,9 +372,7 @@
   --line-height-snug: 1.35;
   --line-height-normal: 1.5;
 
-  --font-mono: ui-monospace, "Cascadia Code", "Fira Code", "JetBrains Mono", monospace;
-
-  /* ── Spacing scale — 4px base grid ──────────────────────── */
+  /* ── Spacing scale — 4px base grid (Systemix app scale, kept) ── */
   --space-1: 0.25rem;   /* 4px */
   --space-2: 0.5rem;    /* 8px */
   --space-3: 0.75rem;   /* 12px */
@@ -205,13 +383,6 @@
   --space-10: 2.5rem;   /* 40px */
   --space-12: 3rem;     /* 48px */
   --space-16: 4rem;     /* 64px */
-
-  /* ── Border + shadow tokens ──────────────────────────────── */
-  --shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.07);
-  --shadow-md: 0 2px 8px oklch(0% 0 0 / 0.10);
-  --shadow-lg: 0 4px 16px oklch(0% 0 0 / 0.14);
-  --shadow-glow-ada: 0 0 20px oklch(68% 0.18 280 / 0.25);
-  --shadow-glow-flux: 0 0 20px oklch(70% 0.16 185 / 0.25);
 
   /* ── Animation tokens ────────────────────────────────────── */
   --duration-instant: 50ms;
@@ -224,54 +395,15 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.dark {
-  /* Graph canvas — dark variant */
-  --canvas-bg: oklch(11% 0.006 75);
-  --canvas-dot: rgba(255, 255, 255, 0.10);
+/* ── RADIUS DIAL ── */
+[data-radius="sharp"] { --radius: 0rem; }
+[data-radius="soft"]  { --radius: 0.3125rem; }
+[data-radius="round"] { --radius: 0.625rem; }
 
-  /* ── Dark mode surface hierarchy ─────────────────────────── */
-  --background: oklch(14% 0.006 75);        /* deepest bg — warm */
-  --foreground: oklch(0.97 0.004 90);
-  --card: oklch(16.5% 0.006 75);            /* card bg */
-  --card-foreground: oklch(0.97 0.004 90);
-  --popover: oklch(18.5% 0.006 75);         /* popover/dropdown */
-  --popover-foreground: oklch(0.97 0.004 90);
-  --primary: oklch(0.92 0.005 88);
-  --primary-foreground: oklch(0.21 0.012 70);
-  --secondary: oklch(27% 0.008 75);
-  --secondary-foreground: oklch(0.97 0.004 90);
-  --muted: oklch(20% 0.007 75);             /* muted areas */
-  --muted-foreground: oklch(0.72 0.008 80); /* 4.6:1 contrast on dark bg */
-  --accent: oklch(27% 0.008 75);
-  --accent-foreground: oklch(0.97 0.004 90);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(98% 0 0);
-  --border: oklch(26% 0.009 75);            /* subtle borders */
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0.01 75);
-
-  /* Sidebar dark */
-  --sidebar: oklch(16.5% 0.006 75);
-  --sidebar-foreground: oklch(0.97 0.004 90);
-  --sidebar-primary: oklch(0.92 0.005 88);
-  --sidebar-primary-foreground: oklch(0.21 0.012 70);
-  --sidebar-accent: oklch(27% 0.008 75);
-  --sidebar-accent-foreground: oklch(0.97 0.004 90);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0.01 75);
-
-  /* Shadow tokens — invert strategy: drop shadow stays dark but heavier,
-     plus an inset top highlight for the glass-raised effect */
-  --shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.35), inset 0 0.5px 0 oklch(100% 0 0 / 0.07);
-  --shadow-md: 0 2px 8px oklch(0% 0 0 / 0.45), inset 0 0.5px 0 oklch(100% 0 0 / 0.07);
-  --shadow-lg: 0 4px 16px oklch(0% 0 0 / 0.55), inset 0 0.5px 0 oklch(100% 0 0 / 0.07);
-
-  /* Status semantic — brighter in dark */
-  --status-synced: oklch(0.72 0.17 162);
-  --status-drifted: oklch(0.7 0.22 27);
-  --status-stale: oklch(0.78 0.17 75);
-  --status-new: oklch(0.72 0.2 290);
-}
+/* ── CRT DIAL (off / soft / med) ── */
+[data-crt="off"]  { --crt-scan-strength: 0;   --crt-sweep-opacity: 0;   --crt-breathe: 0; }
+[data-crt="soft"] { --crt-scan-strength: 1;   --crt-scan-gap: 4px;      --crt-sweep-opacity: 1;   --crt-breathe: 1; }
+[data-crt="med"]  { --crt-scan-strength: 1.8; --crt-scan-gap: 3px;      --crt-sweep-opacity: 1.2; --crt-breathe: 1; }
 
 @layer base {
   html {
@@ -281,14 +413,97 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground text-base;
+    @apply text-foreground text-base;
+    background: var(--gradient-page);
+    background-attachment: fixed;
+    text-shadow: var(--glow-text);
     line-height: 1.65;
   }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-transform: var(--case-heading);
+    letter-spacing: var(--tracking-heading);
+    text-shadow: var(--glow-head);
+  }
   /* Code / commands / IDs stay monospace even after UI text is de-mono'd to the
-     sans family (Manrope). Reserve mono for code, not labels (ADR-022 / Phase 4). */
+     sans family. Reserve mono for code and data, not labels (ADR-022 / Phase 4). */
   code, kbd, samp, pre {
     font-family: var(--font-mono);
+    text-shadow: none;
   }
+
+  /* ── CRT overlay layers (fixed, pointer-events:none; divs in layout.tsx) ── */
+  .crt-scan {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, calc(var(--crt-scan-strength) * var(--crt-scan-max))) 0,
+      transparent 1.4px,
+      transparent var(--crt-scan-gap)
+    );
+  }
+  .crt-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: var(--crt-veil);
+    animation: crt-breathe calc(6s * var(--crt-breathe)) ease-in-out infinite;
+  }
+  .crt-sweep {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -40vh;
+    height: 38vh;
+    z-index: 9996;
+    pointer-events: none;
+    display: var(--crt-sweep-display);
+    opacity: var(--crt-sweep-opacity);
+    filter: blur(6px);
+    background: linear-gradient(180deg, transparent, var(--crt-sweep-color) 50%, transparent);
+    animation: crt-sweep 7s linear infinite;
+  }
+  @keyframes crt-breathe {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.98; }
+  }
+  @keyframes crt-sweep {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(180vh); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crt-veil { animation: none; }
+    .crt-sweep { display: none; }
+    .agent-cursor { animation: none; }
+  }
+
+  /* The lit terminal — stays a dark amber CRT in both themes */
+  .terminal {
+    background: var(--screen-background);
+    color: var(--screen-foreground);
+    border: 2px solid var(--screen-border);
+    border-radius: var(--radius-screen);
+    text-shadow: var(--screen-glow);
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), var(--glow-soft);
+  }
+
+  /* Native form controls inherit brand (design.md §6.4) */
+  input[type="checkbox"], input[type="radio"], input[type="range"] {
+    accent-color: var(--primary);
+  }
+}
+
+/* TVA label utility — uppercase-tracked mono (eyebrows, buttons, table heads) */
+@utility tva-label {
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  text-shadow: none;
 }
 
 /* Mobile font size floor — base scale already meets 11px+ floor */

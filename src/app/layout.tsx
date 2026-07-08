@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
-import { Manrope, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, Space_Mono } from "next/font/google";
 import { Providers } from "@/components/systemix/Providers";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Systemix — the AI-native design system",
+  title: "Systemix — Stop your design system from rotting",
   description:
-    "The design system with a learning loop — rationale in MDX, decisions written back, skills that update around your workflow. Lives in Claude Code.",
+    "Systemix watches what you ship, catches design-system drift, and proposes AI fixes your team approves. Open source. Free to start.",
 };
 
 export default function RootLayout({
@@ -25,8 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${manrope.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+    <html lang="en" suppressHydrationWarning data-radius="soft" data-crt="soft">
+      <body className={`${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}>
+        {/* TVA CRT atmosphere — fixed overlays, tokenized via [data-crt] */}
+        <div className="crt-scan" aria-hidden="true" />
+        <div className="crt-veil" aria-hidden="true" />
+        <div className="crt-sweep" aria-hidden="true" />
         <Providers>{children}</Providers>
       </body>
     </html>
