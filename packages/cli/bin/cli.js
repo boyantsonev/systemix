@@ -17,6 +17,7 @@ const { config } = require("../src/commands/config");
 const { experiment } = require("../src/commands/experiment");
 const { goal } = require("../src/commands/goal");
 const { loop } = require("../src/commands/loop");
+const { propose } = require("../src/commands/propose");
 const { skills } = require("../src/commands/skills");
 const { mcp } = require("../src/commands/mcp");
 const { audit } = require("../src/commands/audit");
@@ -54,6 +55,7 @@ const HELP = `
     npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
     npx systemix goal <sub>              Declare what experiments are for: new|list (experiments/goals/)
     npx systemix loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
+    npx systemix propose <sub>           Engine generate stage: context|queue — propose the next bet (HITL approve)
     npx systemix skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
 
   Workflows (install with: npx systemix workflow add <name>):
@@ -159,6 +161,9 @@ async function main() {
       break;
     case "loop":
       await loop(args);
+      break;
+    case "propose":
+      await propose(args);
       break;
     case "skills":
       await skills(args);

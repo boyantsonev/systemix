@@ -11,7 +11,8 @@ type CardType =
   | "instrumentation-approval"
   | "new-token"
   | "experiment-validation"
-  | "engagement-snapshot";
+  | "engagement-snapshot"
+  | "hypothesis-proposal";
 
 type CardStatus = "pending" | "approved" | "rejected" | "deferred";
 
@@ -49,6 +50,7 @@ const CARD_TYPE: Record<CardType, { label: string; icon: string; color: string }
   "new-token":                { label: "New token",  icon: "◆", color: "text-violet-600 dark:text-violet-400"  },
   "experiment-validation":    { label: "Experiment", icon: "◈", color: "text-emerald-600 dark:text-emerald-400" },
   "engagement-snapshot":      { label: "Engagement", icon: "◷", color: "text-cyan-600 dark:text-cyan-400"     },
+  "hypothesis-proposal":      { label: "Hypothesis", icon: "◇", color: "text-fuchsia-600 dark:text-fuchsia-400" },
 };
 
 const STATUS_STYLE: Record<CardStatus, string> = {
@@ -351,7 +353,7 @@ function StandardCard({
               <span className="text-xs text-muted-foreground">{ago(card.requestedAt)}</span>
             </div>
             <p className="text-sm text-foreground truncate">
-              {card.token ?? card.component ?? card.filePath}
+              {card.token ?? card.component ?? card.filePath ?? card.hypothesis}
             </p>
           </div>
           <span className={`text-xs font-bold uppercase tracking-wide shrink-0 ${STATUS_STYLE[card.status]}`}>
