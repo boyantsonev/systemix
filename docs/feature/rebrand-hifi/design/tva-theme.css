@@ -66,14 +66,16 @@
 }
 
 /* ============================ DARK ====================================== */
+/* v1.1: body text is warm WHITE for readability; amber is reserved for
+   labels, values, glows, and actions (--primary/--highlight/--ring). */
 .dark{
-  --background:#16100A;            --foreground:#F5B857;
-  --card:#1E1710;                  --card-foreground:#F5B857;
-  --popover:#0D0905;               --popover-foreground:#F5B857;
+  --background:#16100A;            --foreground:#EFE5D3;
+  --card:#1E1710;                  --card-foreground:#EFE5D3;
+  --popover:#0D0905;               --popover-foreground:#EFE5D3;
   --primary:#FF9E3D;               --primary-foreground:#1A1206;
-  --secondary:#271E14;             --secondary-foreground:#F5B857;
-  --muted:#271E14;                 --muted-foreground:#8A6320;
-  --accent:#2B2417;                --accent-foreground:#FFDA9E;
+  --secondary:#271E14;             --secondary-foreground:#EFE5D3;
+  --muted:#271E14;                 --muted-foreground:#B39B6E;
+  --accent:#2B2417;                --accent-foreground:#F5EDDD;
   --destructive:#FF6A4A;           --destructive-foreground:#1A1206;
   --border:#3A2A12;                --input:#3A2A12;
   --ring:#FFC24D;
@@ -83,9 +85,9 @@
   --highlight:#FFC24D;             --highlight-foreground:#1A1206;
 
   --chart-1:#FF9E3D; --chart-2:#FFC24D; --chart-3:#B7C46A; --chart-4:#FFD84D; --chart-5:#FF6A4A;
-  --sidebar:#1E1710; --sidebar-foreground:#F5B857;
+  --sidebar:#1E1710; --sidebar-foreground:#EFE5D3;
   --sidebar-primary:#FF9E3D; --sidebar-primary-foreground:#1A1206;
-  --sidebar-accent:#2B2417; --sidebar-accent-foreground:#FFDA9E;
+  --sidebar-accent:#2B2417; --sidebar-accent-foreground:#F5EDDD;
   --sidebar-border:#3A2A12; --sidebar-ring:#FFC24D;
 
   --gradient-page:radial-gradient(130% 120% at 50% 42%, #1d150c 0%, var(--background) 55%, #0D0905 100%);

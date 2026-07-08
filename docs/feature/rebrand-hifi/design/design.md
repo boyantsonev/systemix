@@ -63,7 +63,7 @@ The system is fully warm. Neutrals run paper→espresso; the single brand signal
 | Success | `#5D6626` | `#B7C46A` | Nominal / verified |
 | Warning | `#8A5A00` | `#FFD84D` | Attention |
 | Destructive | `#A8412C` | `#FF6A4A` | Prune / delete |
-| Text | `#332815` | `#F5B857` | — |
+| Text | `#332815` | `#EFE5D3` | body is warm white; amber = accents (v1.1) |
 
 **Rule:** primary orange is *earned* — one primary action per view. It is a fill/large-text color, never body text (see contrast in [§7](#7-accessibility)).
 
@@ -109,13 +109,13 @@ Tokens follow a three-tier structure (per the W3C Design Tokens format and Eight
 | Token | Light | Dark | Usage |
 |---|---|---|---|
 | `--background` | `#ECE3CB` | `#16100A` | App background |
-| `--foreground` | `#332815` | `#F5B857` | Body text |
-| `--card` / `--card-foreground` | `#F4ECD6` / `#332815` | `#1E1710` / `#F5B857` | Cards, panels |
-| `--popover` / `-foreground` | `#F9F2E2` / `#332815` | `#0D0905` / `#F5B857` | Menus, tooltips |
+| `--foreground` | `#332815` | `#EFE5D3` | Body text (warm white on dark — v1.1) |
+| `--card` / `--card-foreground` | `#F4ECD6` / `#332815` | `#1E1710` / `#EFE5D3` | Cards, panels |
+| `--popover` / `-foreground` | `#F9F2E2` / `#332815` | `#0D0905` / `#EFE5D3` | Menus, tooltips |
 | `--primary` / `-foreground` | `#A8511A` / `#FBF3E2` | `#FF9E3D` / `#1A1206` | Primary action |
-| `--secondary` / `-foreground` | `#DFD3B4` / `#332815` | `#271E14` / `#F5B857` | Low-emphasis surface/button |
-| `--muted` / `-foreground` | `#E4DED0` / `#7A6A48` | `#271E14` / `#8A6320` | Muted surfaces / secondary text |
-| `--accent` / `-foreground` | `#EAD9B0` / `#332815` | `#2B2417` / `#FFDA9E` | **Subtle** hover surface (not brand amber) |
+| `--secondary` / `-foreground` | `#DFD3B4` / `#332815` | `#271E14` / `#EFE5D3` | Low-emphasis surface/button |
+| `--muted` / `-foreground` | `#E4DED0` / `#7A6A48` | `#271E14` / `#B39B6E` | Muted surfaces / secondary text |
+| `--accent` / `-foreground` | `#EAD9B0` / `#332815` | `#2B2417` / `#F5EDDD` | **Subtle** hover surface (not brand amber) |
 | `--destructive` / `-foreground` | `#A8412C` / `#FBF3E2` | `#FF6A4A` / `#1A1206` | Delete / prune |
 | `--success` / `-foreground` | `#5D6626` / `#FBF3E2` | `#B7C46A` / `#1A1206` | Nominal (extension) |
 | `--warning` / `-foreground` | `#8A5A00` / `#FBF3E2` | `#FFD84D` / `#1A1206` | Attention (extension) |
@@ -241,8 +241,8 @@ Full per-component specs for the entire catalog live in **[`components.md`](comp
 
 | Context | Ratio |
 |---|---|
-| Dark — body text on `#16100A` | 10.7:1 |
-| Dark — headings | 14.2:1 · primary 9.2:1 · highlight 11.8:1 · success 10.0:1 · destructive 6.7:1 |
+| Dark — body text on `#16100A` | 15.1:1 (v1.1 warm white) |
+| Dark — headings 15.1:1 · muted 7.0:1 · primary 9.2:1 · highlight 11.8:1 · success 10.0:1 · destructive 6.7:1 |
 | Light — ink on `#ECE3CB` | 11.3:1 |
 | Light — headings 13.2:1 · success 4.8:1 · destructive 4.8:1 · primary-button ink | 4.9:1 |
 
@@ -293,6 +293,7 @@ Existing shadcn components re-skin automatically. Add `--success` / `--warning` 
 ## 10. Changelog & contribution
 
 ### Changelog
+- **1.1.0** (2026-07-08) — Readability revision: dark body text goes warm white (`#EFE5D3`; muted `#B39B6E`); amber reserved for labels, values, glows, and actions. CRT effect scoped to screen surfaces (`.crt-panel` / `.terminal`) — the three global fixed overlays are removed; the soft-grid (hairline-framed cells) becomes the marketing layout.
 - **1.0.0** (2026-07-08) — First stable release. shadcn-semantic tokens; light/dark; radius (sharp/soft/round); type (launch/square); tokenized CRT (off/soft/med); derived state tints; component catalog; accessibility pass.
 - **0.x** — Exploration: mid-century warm set, green/amber/glitch CRT channels, "console" in-between; converged on soft-amber CRT.
 
