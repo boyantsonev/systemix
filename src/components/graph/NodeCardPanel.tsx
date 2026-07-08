@@ -46,21 +46,67 @@ const TYPE_DESC: Record<NodeType, string> = {
   tool: "Tooling the loop runs on.",
 };
 
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = useCallback(() => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+// Skill node: two ways to walk away with the skill. "copy skill" fetches the full
+// SKILL.md body (via /api/skills/<name>) to reuse it elsewhere; "copy as reference"
+// grabs a short snippet (invocation · one-liner · path) to attach to another
+// project's context — the invocation string alone was never enough.
+function SkillCopy({ node }: { node: TopoNode }) {
+  const name = node.id.replace(/^skill:/, "");
+  const [body, setBody] = useState<"idle" | "loading" | "copied" | "error">("idle");
+  const [ref, setRef] = useState(false);
+
+  const copyBody = useCallback(async () => {
+    setBody("loading");
+    try {
+      const res = await fetch(`/api/skills/${name}`);
+      if (!res.ok) throw new Error("not found");
+      const data = (await res.json()) as { body: string };
+      await navigator.clipboard.writeText(data.body);
+      setBody("copied");
+      setTimeout(() => setBody("idle"), 1500);
+    } catch {
+      setBody("error");
+      setTimeout(() => setBody("idle"), 2000);
+    }
+  }, [name]);
+
+  const copyRef = useCallback(() => {
+    const desc = NODE_DESC[node.id] ?? TYPE_DESC.skill;
+    const snippet = `${node.label} — ${desc}\n.claude/skills/${name}/SKILL.md`;
+    navigator.clipboard.writeText(snippet).then(() => {
+      setRef(true);
+      setTimeout(() => setRef(false), 1500);
     });
-  }, [text]);
+  }, [node.id, node.label, name]);
+
+  const bodyLabel =
+    body === "loading" ? "copying…" : body === "copied" ? "copied ✓" : body === "error" ? "not found" : "copy skill";
+
   return (
-    <button
-      onClick={copy}
-      className="ml-auto shrink-0 rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-    >
-      {copied ? "copied" : "copy"}
-    </button>
+    <div className="flex flex-col gap-2 rounded-lg border bg-muted/40 p-2.5">
+      <div className="flex items-center gap-2">
+        <code className="text-sm text-foreground">{node.label}</code>
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          <button
+            onClick={copyBody}
+            disabled={body === "loading"}
+            className="rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"
+          >
+            {bodyLabel}
+          </button>
+          <button
+            onClick={copyRef}
+            className="rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {ref ? "copied ✓" : "copy as reference"}
+          </button>
+        </div>
+      </div>
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        <span className="font-medium text-foreground/80">copy skill</span> grabs the full SKILL.md to reuse it;{" "}
+        <span className="font-medium text-foreground/80">copy as reference</span> grabs a short snippet for another project&apos;s context.
+      </p>
+    </div>
   );
 }
 
@@ -80,12 +126,7 @@ function GenericBody({ node }: { node: TopoNode }) {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm leading-relaxed text-muted-foreground">{desc}</p>
-      {node.type === "skill" && (
-        <div className="flex items-center gap-2 rounded-lg border bg-muted/40 p-2.5">
-          <code className="text-sm text-foreground">{node.label}</code>
-          <CopyButton text={node.label} />
-        </div>
-      )}
+      {node.type === "skill" && <SkillCopy node={node} />}
       {expSlug && (
         <a
           href={`/experiments/${expSlug}`}
