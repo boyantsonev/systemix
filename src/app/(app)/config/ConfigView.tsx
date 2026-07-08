@@ -175,12 +175,9 @@ export function ConfigView({
             </div>
           </div>
 
-          {/* Hermes queue (top-right) */}
+          {/* Hermes queue (top-right) — HitlQueue renders its own heading + count */}
           <div className={cn(cardCls, "h-[460px] lg:col-start-3 lg:row-start-1 lg:h-auto")}>
-            <div className="flex shrink-0 items-center border-b px-5 py-3">
-              <span className="tva-label text-[10px] text-muted-foreground">Hermes queue</span>
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+            <div className="min-h-0 flex-1 overflow-y-auto p-5">
               <HitlQueue className="w-full" hideDemo />
             </div>
           </div>
