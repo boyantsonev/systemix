@@ -91,10 +91,10 @@ export function AuditRequestForm() {
         type="submit"
         className="mt-1 rounded-full bg-foreground px-5 py-3 text-[14px] font-medium text-background transition-opacity hover:opacity-90"
       >
-        Request the audit →
+        Request the report →
       </button>
       <p className="text-center font-mono text-[11px] text-muted-foreground/50">
-        One-time · $149–249 · your readiness report + the seed of the fix
+        One-time · $149 · your AI-Readiness Report + the seed of the fix
       </p>
     </form>
   );

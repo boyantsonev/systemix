@@ -1,29 +1,14 @@
 ---
-title: Slash commands
+title: Skills reference
 ---
 
-Six Claude Code skills ship with Systemix and are installed project-scoped to `.claude/skills/` when you run `systemix init`. Run them from Claude Code with `/skill-name`.
+The loop ships as Claude Code skills, installed project-scoped to `.claude/skills/` when you run `systemix init`. Run them with `/skill-name`.
 
-## Core loop skills
-
-| Skill | What it does | When to run |
-|---|---|---|
-| `/systemix-init` | Wizard: authors a new experiment (ICP · JTBD · hypothesis · AI workflow · metric) | Starting a new experiment |
-| `/write-variants` | Generates variant B (and optionally C) copy or code for the current hypothesis | After authoring, before launching |
-| `/measure` | Fetches PostHog evidence and writes it into the experiment frontmatter | After the experiment has run for enough time |
-| `/close-experiment` | Writes result · decision · confidence; appends learning to LEARNINGS.md; queues HITL card | When you're ready to decide |
-| `/growth-audit` | Reviews all running experiments; surfaces ones ready to close or stalled | Weekly / before sprint planning |
-| `/hermes` | Synthesizes accumulated learnings; proposes skill or guardrail improvements as HITL cards | After several experiments have closed |
-
-## Signal skills
-
-| Skill | What it does | When to run |
-|---|---|---|
-| `/connect-signal` | Guided PostHog wiring — capture key, reverse-proxy config, GH secrets for the cron | After init, before measuring |
+<SkillsReference />
 
 ## Three-door equivalents
 
-The same operations are available from the CLI and MCP without Claude Code:
+The same operations work from the CLI and MCP, without Claude Code:
 
 ```sh
 # CLI
@@ -32,6 +17,7 @@ systemix experiment list
 systemix experiment measure <id>
 systemix experiment close <id>
 systemix experiment learnings
+systemix loop
 ```
 
 ```
@@ -44,6 +30,6 @@ experiment_close
 experiment_learnings
 ```
 
-## Self-modification
+## Changing the loop itself
 
-`/hermes` can propose changes to skills and guardrails in `.claude/skills/`. These proposals always go through HITL — they are never applied automatically, even when the instance is configured for autonomous mode.
+`/hermes` can propose changes to the loop's own skills and rules. Those proposals always arrive as a card asking for your OK — they are never applied automatically, even when the instance is set to run autonomously.

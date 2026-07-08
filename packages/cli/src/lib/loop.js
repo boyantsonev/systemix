@@ -227,6 +227,7 @@ async function runLoop(root, id, opts = {}) {
         fetched_at: today,
         window_days: days,
         source: pulled.source ?? "live",
+        event,
         samples: Object.values(pulled.variants ?? {}).reduce((s, n) => s + (Number(n) || 0), 0),
         variants: pulled.variants ?? {},
         ...(pulled.prev_total != null ? { prev_total: pulled.prev_total } : {}),

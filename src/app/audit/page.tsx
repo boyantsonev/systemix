@@ -11,9 +11,9 @@ import { SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
 
 export const metadata: Metadata = {
-  title: "Readiness Audit — is your design system AI-ready? · Systemix",
+  title: "AI-Readiness Report — is your design system AI-ready? · Systemix",
   description:
-    "Point Systemix at your repo or site and get back a scored AI-native readiness report: design-system health, the drift + slop map, an ODI opportunity ranking, and the exact setup to make your agent follow a system. One-time, read-only.",
+    "Point Systemix at your repo or site and get back a scored AI-Readiness Report: design-system health, the drift + slop map, an ODI opportunity ranking, and the exact setup to make your agent follow a system. $149, one-time, read-only.",
 };
 
 // Mirrors what /readiness-audit produces (T5) so the page promises exactly what ships.
@@ -44,14 +44,15 @@ export default function AuditPage() {
         <SectionTrack name="audit-hero">
           <section className="border-b border-border/40 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
-              <Eyebrow>Readiness Audit · $149–249 · one-time</Eyebrow>
+              <Eyebrow>AI-Readiness Report · $149 · one-time</Eyebrow>
               <h1 className="mx-auto max-w-3xl text-[2.5rem] font-black leading-[1.1] tracking-tight sm:text-[3rem]">
                 Is your design system AI-ready?
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
-                Point us at your repo or site. You get back a scored readiness report — drift, slop,
+                Point us at your repo or site. You get back a scored report — drift, slop,
                 the opportunity ranking, and the exact setup to make your agent follow a system
-                instead of guessing.
+                instead of guessing. (The free <code className="font-mono text-[14px]">npx systemix audit</code>{" "}
+                is the self-serve scan; this is the done-for-you version.)
               </p>
             </div>
           </section>
@@ -90,7 +91,7 @@ export default function AuditPage() {
                 <ul className="mt-6 flex flex-col gap-2 text-[14px] text-muted-foreground">
                   <li>→ Read-only — nothing written to your repo</li>
                   <li>→ Same-day reply with the report</li>
-                  <li>→ Want it fixed for you? It rolls into the sprint.</li>
+                  <li>→ $149 rolls into the AI Kit ($299) or the sprint</li>
                 </ul>
               </div>
               <AuditRequestForm />

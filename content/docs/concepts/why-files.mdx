@@ -22,9 +22,9 @@ Each skill in [the loop](/docs/concepts/the-loop) is a separate agent invocation
 
 The experiment file is the handoff. A skill reads it cold, does one thing, and writes back — so state accumulates in files, not in a session that fills up and loses the thread. One focused, context-clean run beats one long sprawling one. The forgetting between runs is a feature, not a limitation.
 
-## HITL is observability, not just safety
+## The cards are observability, not just safety
 
-You cannot debug context you cannot see. The HITL queue and the autonomy dial aren't only a safety rail — they're the window into what the loop decided and why. Every decision lands as a card you can read; [self-modification](/docs/the-contract) (skills, guardrails) always routes through that window, even in autonomous mode. The dial controls *how often* the loop proposes; it never removes your ability to see what entered a run.
+You cannot debug context you cannot see. The card queue (`.systemix/queue.json`) isn't only a safety rail — it's the window into what the loop decided and why. Every decision lands as a card you can read; [changes to the loop's own skills and rules](/docs/the-contract) always route through that window, even when the instance is set to act on its own. The autonomy setting controls *how often* the loop proposes; it never removes your ability to see what entered a run.
 
 ## What's next
 
@@ -32,4 +32,4 @@ The curation story has further to run. Three increments, deferred until the loop
 
 - **Compaction.** When the ledger passes ~30–50 entries, roll expired learnings (past their `review-by`) into a "Patterns" summary above `## Memory`, preserving provenance — so recall stays cheap as the ledger grows.
 - **Context events.** Emit a record of *what context entered each run* (which learnings a skill pulled in), making the loop's inputs inspectable, not just its outcomes.
-- ~~**Self-advancing autonomy.**~~ Now real, with the line drawn deliberately: `systemix loop` (the runner, cron-able) advances running experiments to **decision-ready** — fresh evidence, evaluated against the dial, a close-proposal card queued. Closing stays human at every tier: the runner proposes, you decide.
+- ~~**Self-advancing autonomy.**~~ Now real, with the line drawn deliberately: `systemix loop` (the runner, cron-able) advances running experiments to **decision-ready** — fresh evidence, evaluated against your thresholds, a close-proposal card queued — and proposes the **next experiment** when the loop is idle or a fresh learning lands. Creating and closing stay human at every tier: the runner proposes, you decide.

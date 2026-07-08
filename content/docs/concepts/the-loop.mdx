@@ -2,90 +2,66 @@
 title: The loop
 ---
 
-Five Claude Code skills carry an experiment from hypothesis to written decision. You run them in order; each one reads and writes the same `experiments/<id>.mdx` file.
+One loop, four steps, two places where it stops and asks you.
 
-```
-/systemix-init
-    ↓
-/write-variants
-    ↓
-/measure
-    ↓
-/close-experiment   →  experiments/LEARNINGS.md
-    ↓
-/growth-audit       (reviews all running experiments)
-```
+<LoopDiagram />
 
-## The skills
+Each step reads and writes plain files in your repo. A daily runner (`systemix loop`, usually on a cron) moves things forward; you make every actual decision.
 
-### `/systemix-init`
+## Propose
 
-Writes the first experiment. Asks for ICP, JTBD, hypothesis, the AI workflow (steps + edges), and the metric. Creates `experiments/<id>.mdx` and stubs `experiments/LEARNINGS.md`.
+When the loop is idle — nothing running — or a fresh learning just landed, the daily runner queues an **experiment-proposal card** in `.systemix/queue.json`. The card carries:
 
-Run once to bootstrap, then again any time you want to author a new experiment.
+- a suggested id and the goal it serves
+- a draft hypothesis built from the newest entries in `LEARNINGS.md` (the notebook seeds the next idea)
+- the learnings it cites, so you can check its reasoning
 
-### `/write-variants`
+The runner **never creates the experiment file**. You accept a proposal by running `/init-experiment` (it reads the card and prefills the wizard) or `systemix experiment new <id>` — or you dismiss it, and the runner won't re-propose the same bet.
 
-Generates variant copy or code for the hypothesis. Reads the `icp`, `hypothesis`, and `given` fields; proposes a variant B (and optionally C) that tests the bet without guessing at the ICP. Writes the variant text into the frontmatter.
+## Build
 
-### `/measure`
+`/init-experiment` (or `/systemix-init` on a fresh repo) writes `experiments/<id>.mdx`: the bet in one sentence, who it's for, what change ships, and the one number that will prove it. `/write-variants` drafts the copy or code for the change; `/measure` wires the event that counts.
 
-Reads PostHog evidence into the experiment. Fetches the `posthog-event` funnel data, calculates significance, and writes the result into `evidence-posthog`. If PostHog is not wired, logs a warning and exits cleanly — the experiment file is unchanged.
+## Measure
 
-### `/close-experiment`
-
-Closes the loop. Reads the evidence, writes `result`, `decision`, and `confidence` into the frontmatter, then **appends a learning to `experiments/LEARNINGS.md`**:
-
-```md
-## Memory
-
-### 2026-06-19 | landing-live-loop-2026-06 | confidence: high
-**Decision:** ship — book-a-call rate lifted 23% in 28 days
-**Learning:** Showing the loop running on itself (self-referential demo) converts founders
-faster than a feature list. The "earned" framing matters: the verdict has to be real.
-```
-
-Also queues a HITL card in `.systemix/queue.json` for human review.
-
-### `/growth-audit`
-
-Reviews all running experiments. Surfaces ones with enough evidence to close, ones that have stalled (no evidence, no activity), and Hermes-level proposals (skill or guardrail improvements). Run weekly to keep the loop moving.
-
-## Why separate skills
-
-Each skill is a separate agent invocation with a clean context window — not one long session. The experiment file is the handoff: the next skill reads it cold, does one thing, and writes back. State accumulates in files, not in a session that fills up and loses the thread. That's deliberate — one focused, context-clean run is more reliable than one sprawling one. See [Why files & loops](/docs/concepts/why-files).
-
-## The runner
-
-`systemix loop [<id>]` is the same idea, automated — a Ralph pass. Each iteration re-reads the experiment file fresh, does exactly one thing (pull PostHog evidence → write it into the frontmatter → evaluate against your `hermes.thresholds`), and stops on an explicit state. Evaluation is variant-lift when an A/B split is live, or the current window vs the prior one when the experiment is single-arm:
+The runner pulls real numbers from PostHog into the experiment file — every day, on its own. Each pass re-reads the file fresh, does exactly one thing, writes it back, and stops on an explicit state:
 
 | Stop | Meaning |
 |---|---|
-| `decision-ready` | A **close-proposal card** is queued — a human closes, never the runner |
+| `decision-ready` | A **close-proposal card** is queued — you close, never the runner |
 | `blocked:not-measured` | No `posthog-event` yet — run `/measure` |
-| `blocked:not-wired` | No PostHog creds — run `/connect-signal` |
-| `waiting:insufficient-evidence` | Signal below the dial — loop again after more traffic |
+| `blocked:not-wired` | No PostHog credentials — run `/connect-signal` |
+| `waiting:insufficient-evidence` | The signal is still too weak — it tries again tomorrow |
 
-With no `<id>` it sweeps every running experiment — that's what the daily cron calls. The runner advances experiments **to** the decision; the decision itself is always yours (`/close-experiment`, at every autonomy tier).
+Evaluation is variant-vs-control when an A/B split is live, or this window vs the previous one when the experiment ships to everyone.
 
-## LEARNINGS.md
+## Learn
 
-The compounding memory. Every closed experiment appends one entry with the decision, the confidence, and the transferable insight. Future experiments — and other agents reading via MCP — start from this ledger.
+When the evidence clears your thresholds, you get a card recommending **promote**, **iterate**, or **kill** — with the numbers that back it. You close it with `/close-experiment`, and one line is appended to `experiments/LEARNINGS.md`:
 
-A `## Memory` heading anchors the entries so Claude Code skills can append atomically.
+```md
+- **2026-07-04 · Bolder CTA lifted calls 24%** — confidence 0.85 · from
+  [hero-cta-2026-06], decision: promote. Review by: 2026-10-02. Used by: —
+```
 
-## HITL
+That file is the loop's memory. The next proposal cites it, and when a new experiment builds on an old learning, the old line gets a `Used by:` backlink — you can see which lessons are actually load-bearing.
 
-Every `/close-experiment` run queues a card. The queue lives at `.systemix/queue.json`. Cards are visible in the `/config` sidebar and via `gh` — one decision per card, no forms. Hermes (`/hermes`) proposes skill and guardrail improvements but never writes them without human approval, even in autonomous mode.
+## Why separate skills
+
+Each skill is a separate agent run with a clean context — not one long session. The experiment file is the handoff: the next skill reads it cold, does one thing, writes back. State lives in files, not in a chat that fills up and forgets. See [Why files & loops](/docs/concepts/why-files).
+
+## The cards
+
+Everything the loop wants from you arrives as a card in `.systemix/queue.json`, visible on [/config](/config): proposals to start, recommendations to close, and any suggested change to the loop's own skills or rules. One decision per card. Skill and rule changes are **never** applied without your approval, whatever the autonomy setting.
 
 ## The three doors
 
-The same `experiments/<id>.mdx` files are readable and writable from three entry points:
+The same files are readable and writable from three entry points:
 
 | Door | How |
 |---|---|
-| Claude Code skills | `/systemix-init`, `/measure`, etc. |
-| CLI | `systemix experiment new \| list \| measure \| close \| learnings` |
+| Claude Code skills | `/init-experiment`, `/measure`, `/close-experiment`, … |
+| CLI | `systemix experiment new \| list \| measure \| close \| learnings` · `systemix loop` |
 | MCP | `experiment_new`, `experiment_list`, `experiment_measure`, `experiment_close` |
 
 Any agent that speaks MCP can drive the loop — not just Claude Code.

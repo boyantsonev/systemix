@@ -1,4 +1,5 @@
 ---
+name: hermes
 description: Trigger Hermes to synthesize evidence from an experiment and queue a HITL decision. Engine = Claude Code (no local model).
 argument-hint: [experiment-id or "all"]
 ---

@@ -6,6 +6,7 @@
 
 const { loadConfig } = require("../config");
 const { runLoop, sweepLoop, DEFAULT_THRESHOLDS } = require("../lib/loop");
+const { proposeNextExperiment } = require("../lib/propose");
 
 const LOOP_HELP = `
   systemix loop — Ralph-drive running experiments to decision-ready (HITL at close)
@@ -72,14 +73,24 @@ async function loop(args = [], opts = {}) {
     report(await runLoop(root, id, runOpts));
   } else {
     const results = await sweepLoop(root, runOpts);
-    if (!results.length) {
-      console.log("\n  (no running experiments — `systemix experiment new <id>` starts one)\n");
-      return;
+    if (results.length) {
+      console.log(`\n  systemix loop — swept ${results.length} running experiment${results.length === 1 ? "" : "s"}\n`);
+      for (const r of results) {
+        console.log(`  ${r.id}: ${r.stop}${r.note ? ` — ${r.note}` : ""}`);
+        report(r);
+      }
+    } else {
+      console.log("\n  systemix loop — no running experiments\n");
     }
-    console.log(`\n  systemix loop — swept ${results.length} running experiment${results.length === 1 ? "" : "s"}\n`);
-    for (const r of results) {
-      console.log(`  ${r.id}: ${r.stop}${r.note ? ` — ${r.note}` : ""}`);
-      report(r);
+
+    // The propose stage: with the sweep done, should the NEXT experiment exist?
+    // Queue-card only — the runner never creates the experiment file (HITL).
+    const proposal = proposeNextExperiment(root, { now: opts.now ?? new Date() });
+    if (proposal.proposed) {
+      console.log(`  proposal queued: ${proposal.card.suggestedId}`);
+      console.log("     next: review the card, then /init-experiment (it prefills from the card)");
+    } else if (proposal.deduped) {
+      console.log(`  proposal pending: ${proposal.card.suggestedId} — review it, then /init-experiment`);
     }
   }
   console.log("");

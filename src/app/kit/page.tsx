@@ -29,7 +29,7 @@ const INCLUDED = [
 
 const BUY_VS_BUILD = [
   { k: "Time", diy: "Weeks stitching the loop, the substrate, and the skills together", kit: "One npx systemix init" },
-  { k: "Cost", diy: "Your own dev hours", kit: "$249–299, one-time" },
+  { k: "Cost", diy: "Your own dev hours", kit: "$299, one-time — includes the AI-Readiness Report" },
   { k: "Upkeep", diy: "You keep it current as your stack shifts", kit: "Curated skills, updated" },
   { k: "Ownership", diy: "—", kit: "Plain MDX + CSS in your repo — yours to keep, no lock-in" },
 ];
@@ -50,13 +50,17 @@ export default function KitPage() {
         <SectionTrack name="kit-hero">
           <section className="border-b border-border/40 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
-              <Eyebrow>The AI Kit · $249–299 · one-time</Eyebrow>
+              <Eyebrow>The AI Kit · $299 · one-time</Eyebrow>
               <h1 className="mx-auto max-w-3xl text-[2.5rem] font-black leading-[1.1] tracking-tight sm:text-[3rem]">
                 Everything to run the loop — in your repo.
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
                 The design system, the growth engine, and the skills your agent drives them with.
-                One command, plain files you own — no platform, no lock-in.
+                One command, plain files you own — no platform, no lock-in. Includes the{" "}
+                <a href="/audit" className="text-foreground underline underline-offset-4">
+                  AI-Readiness Report
+                </a>
+                .
               </p>
               <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <TrackedLink
@@ -146,9 +150,9 @@ export default function KitPage() {
               <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted-foreground">
                 One-time, in your repo, yours to keep. Not ready?{" "}
                 <a href="/audit" className="text-foreground underline underline-offset-4">
-                  Start with the audit
+                  Start with the AI-Readiness Report
                 </a>{" "}
-                — it rolls into the Kit.
+                — the $149 rolls into the Kit.
               </p>
               <TrackedLink
                 href={KIT_MAILTO}

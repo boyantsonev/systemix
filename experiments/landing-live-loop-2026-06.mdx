@@ -60,8 +60,11 @@ evidence-posthog:
   fetched_at: "2026-07-05"
   source: "live"
   window_days: 30
-  visitors: 6
   event: "book_a_call"
+  samples: 1
+  variants:
+    control: 1
+  visitors: 6
   event_count: 1
   event_persons: 1
   rate: 0.1667
@@ -86,3 +89,10 @@ Founders who see the live, dogfooded loop book a call at a meaningfully higher r
 - `promote`: the live-loop variant lifts book-a-call meaningfully over the feature pitch → make it the landing.
 - `iterate`: positive but short → tighten what the founder sees first (which experiment, how much loop).
 - `kill`: no lift → seeing the loop isn't the hook; the magnet is something else (revisit the ICP or the pitch).
+
+## Changelog
+
+- **2026-07-08** — Pricing ladder unified + the loop diagram shipped below the
+  fold (landing Services, /kit, /audit repriced; TheLoop section replaced the
+  orbit visual). This experiment's page-level `book_a_call` signal spans the
+  change — before/after comparisons across this date are directional only.

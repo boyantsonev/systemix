@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
-import { LoopOrbit } from "@/components/landing/LoopOrbit";
+import { LoopDiagram } from "@/components/loop/LoopDiagram";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
 import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
 import { TwoDoorsBento } from "@/components/landing/TwoDoorsBento";
@@ -276,21 +276,8 @@ export function TheLoop() {
         </div>
       </div>
 
-      {/* full-bleed tool constellation */}
-      <LoopOrbit className="mx-auto mt-6 max-w-6xl px-6" />
-
-      <div className="mx-auto mt-4 flex max-w-5xl items-center justify-center gap-2 px-6 font-mono text-[12px] text-muted-foreground/70">
-        {loop.steps.map((s, i) => (
-          <span key={s.title} className="flex items-center gap-2">
-            <span>{s.title}</span>
-            {i < loop.steps.length - 1 && (
-              <span aria-hidden className="text-muted-foreground/30">
-                →
-              </span>
-            )}
-          </span>
-        ))}
-      </div>
+      {/* THE diagram — the same one the docs use */}
+      <LoopDiagram className="mx-auto mt-12 max-w-4xl px-6" />
 
       <LiveLoopProof className="mx-auto mt-12 max-w-3xl px-6" />
     </section>
@@ -428,7 +415,7 @@ export function Services() {
         <Lead className="max-w-2xl">{services.body}</Lead>
       </div>
 
-      <div className="mt-14 grid gap-4 sm:grid-cols-3 sm:gap-5">
+      <div className="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
         {services.tiers.map((t) => (
           <div
             key={t.name}

@@ -90,11 +90,13 @@ test("query rejects an unsafe event name before hitting the network", async () =
   expect(global.fetch).not.toHaveBeenCalled();
 });
 
-test("query computes visitors + event persons + rate from the HogQL row", async () => {
+test("query computes visitors + event persons + rate AND merges the canonical per-variant counts", async () => {
   process.env.POSTHOG_API_KEY = "phx_test";
   process.env.POSTHOG_PROJECT_ID = "123";
   process.env.POSTHOG_HOST = "https://eu.posthog.com";
-  global.fetch.mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[800, 50, 40]] }) });
+  global.fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[800, 50, 40]] }) }) // funnel
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [["control", 25], ["variant_b", 15]] }) }); // per-variant
 
   const { queryPostHogExperiment } = freshModule();
   const ev = await queryPostHogExperiment("book_a_call", 30);
@@ -104,7 +106,10 @@ test("query computes visitors + event persons + rate from the HogQL row", async 
   expect(ev.event_count).toBe(50);
   expect(ev.event_persons).toBe(40);
   expect(ev.rate).toBeCloseTo(40 / 800, 5);
-  expect(global.fetch).toHaveBeenCalledTimes(1);
+  // The canonical shape the loop runner trusts — no more two-crons overwrite.
+  expect(ev.variants).toEqual({ control: 25, variant_b: 15 });
+  expect(ev.samples).toBe(40);
+  expect(global.fetch).toHaveBeenCalledTimes(2);
   expect(global.fetch.mock.calls[0][0]).toBe("https://eu.posthog.com/api/projects/123/query");
   const body = JSON.parse(global.fetch.mock.calls[0][1].body);
   expect(body.query.kind).toBe("HogQLQuery");
@@ -215,14 +220,36 @@ test("pull supersedes a prior pending card for the same experiment", async () =>
   process.env.POSTHOG_API_KEY = "phx_test";
   process.env.POSTHOG_PROJECT_ID = "123";
   global.fetch
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[100, 2, 2]] }) })
-    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[900, 20, 18]] }) });
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[100, 2, 2]] }) }) // funnel #1
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [["control", 1], ["variant_b", 1]] }) }) // variants #1
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[900, 20, 18]] }) }) // funnel #2
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [["control", 10], ["variant_b", 8]] }) }); // variants #2
   const mod = freshModule();
   await mod.experimentPull([]);
   await mod.experimentPull([]);
   const pending = readQueue().cards.filter(c => c.status === "pending");
   expect(pending).toHaveLength(1);
   expect(pending[0].sessions).toBe(900);
+});
+
+test("snapshot written by pull round-trips to the canonical shape the loop runner trusts", async () => {
+  process.env.POSTHOG_API_KEY = "phx_test";
+  process.env.POSTHOG_PROJECT_ID = "123";
+  global.fetch
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [[800, 50, 40]] }) })
+    .mockResolvedValueOnce({ ok: true, json: async () => ({ results: [["control", 25], ["variant_b", 15]] }) });
+
+  const { experimentPull } = freshModule();
+  await experimentPull([]);
+
+  const matter = require("gray-matter");
+  const fm = matter(readExperiment()).data;
+  expect(fm["evidence-posthog"]).toMatchObject({
+    event: "book_a_call",
+    samples: 40,
+    variants: { control: 25, variant_b: 15 },
+  });
+  expect(fm["evidence-posthog"].fetched_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 });
 
 test("pull skips experiments that are not running or have no posthog-event", async () => {

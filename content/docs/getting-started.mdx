@@ -28,8 +28,8 @@ The wizard walks you through:
 ```
 experiments/
   <id>.mdx          ← your first experiment (an _example.mdx if you skipped authoring)
-  LEARNINGS.md      ← the compounding memory ledger (starts blank)
-  goals/            ← KPIs the experiments roll up to
+  LEARNINGS.md      ← the notebook of what closed experiments taught you (starts blank)
+  goals/            ← the outcomes the experiments aim at
 design/
   DESIGN.md         ← the design substrate (optional; scaffold, point, or skip)
   guardrails.mdx    ← the rules drift checks enforce
@@ -46,13 +46,22 @@ instance is reproducible.
 
 ## Next: run the loop
 
-Once an experiment is authored, the [five-skill loop](/docs/concepts/the-loop) carries it from open hypothesis to written decision:
+Once an experiment is authored, [the loop](/docs/concepts/the-loop) carries it from bet to written decision:
 
 ```
 /write-variants → /measure → /close-experiment
 ```
 
-See [The loop](/docs/concepts/the-loop) for the full sequence.
+## What happens daily
+
+Put `systemix loop` on a cron (or run it by hand) and each day it:
+
+1. pulls fresh numbers into every running experiment,
+2. queues a **close-proposal card** when the evidence is strong enough (you decide),
+3. and when the loop is idle — or a new learning just landed — queues an
+   **experiment-proposal card** suggesting the next bet, drafted from `LEARNINGS.md`.
+
+It never creates or closes anything itself. Accept a proposal with `/init-experiment`; close with `/close-experiment`.
 
 ## Connect a signal (optional but recommended)
 

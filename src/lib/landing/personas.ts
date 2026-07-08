@@ -73,7 +73,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     proof: {
       kind: "outcomes",
       heading: "Wired to your stack in a week",
-      body: "The kit is free and open-source. The sprint is me wiring the loop to your signals — brand cloned in session one, experiments live by end of week, the loop yours when we're done.",
+      body: "The open-source kit is free. The sprint (from $2,500) is me wiring the loop to your signals — brand cloned in session one, experiments live by end of week, the loop yours when we're done.",
     },
     sharedSections: ["loop", "trust", "services"],
     guideHref: "/docs/guides/business",

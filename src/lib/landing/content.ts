@@ -133,13 +133,7 @@ export const effect = {
 export const loop = {
   label: "How it works",
   heading: "One loop. Every decision, recorded.",
-  body: "Systemix lives inside your design system. Every component decision and every experiment is an MDX file in your repo — hypothesis, evidence, decision, confidence — written back when the loop closes. The system learns instead of drifting, and its skills update around how you actually work.",
-  steps: [
-    { n: "01", title: "ship" },
-    { n: "02", title: "measure" },
-    { n: "03", title: "learn" },
-    { n: "04", title: "decide" },
-  ],
+  body: "Systemix runs little experiments on your site, writes down what it learned and why, and suggests the next one — you approve every decision. Everything is a plain file in your repo: the bet, the evidence, the learning. That's the whole product.",
 };
 
 // ── Two doors · where you start ───────────────────────────────────────────────
@@ -227,29 +221,36 @@ export type ServiceTier = {
 };
 
 export const services = {
-  label: "Pick your path",
-  heading: "Free kit. Paid build. Design partner.",
-  body: "The kit is open-source and runs in Claude Code. Want an AI-native design system built around your team's workflow? That's the sprint — or apply for the design-partner rung.",
+  label: "Pricing",
+  heading: "Start free. Pay when you want it done for you.",
+  body: "The kit is open-source, forever. The report tells you where you stand, the AI Kit sets you up to run the loop, and the sprint is the whole thing wired to your stack.",
   tiers: [
     {
-      name: "Free kit",
-      price: "Forever free",
-      body: "npx systemix init — the loop scaffolded in MDX, in your repo, with the design-system spine optional. Claude Code skills included.",
+      name: "Open-source kit",
+      price: "Free",
+      body: "npx systemix init — the whole loop in your repo. Plain MDX files you own, Claude Code skills included. No account, no lock-in.",
       cta: { label: "Get the kit", href: GITHUB_URL },
       highlight: false,
     },
     {
-      name: "Design system build",
-      price: "Book a call",
-      body: "A 1-week sprint: Boyan builds your AI-native design system — components with their rationale in MDX, decisions written back by the loop, custom skills tuned to your workflow. Yours when we're done.",
-      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20system%20sprint" },
+      name: "AI-Readiness Report",
+      price: "$149",
+      body: "Point us at your repo or site. You get a scored report — the drift, the slop, and the exact setup to fix it. One-time, read-only.",
+      cta: { label: "Get your report", href: "/audit" },
+      highlight: false,
+    },
+    {
+      name: "AI Kit",
+      price: "$299",
+      body: "The curated bundle, set up for you and running on day one — includes the AI-Readiness Report. One command, files you own.",
+      cta: { label: "See the AI Kit", href: "/kit" },
       highlight: true,
     },
     {
-      name: "Design partner",
-      price: "Free · limited seats",
-      body: "Free Systemix setup plus workflow mapping across your marketing, engineering, business, and design. One or two partners at a time — you get the system, the loop gets its proving ground.",
-      cta: { label: "Apply as a design partner", href: "mailto:boyan.works@gmail.com?subject=Systemix%20design%20partner" },
+      name: "Sprint",
+      price: "from $2,500",
+      body: "A 1-week build: your AI-native design system + the loop wired to your signals, yours when we're done. A couple of design-partner seats are free in exchange for feedback — ask on the call.",
+      cta: { label: "Book a scoping call", href: "mailto:boyan.works@gmail.com?subject=Systemix%20sprint%20scoping%20call" },
       highlight: false,
     },
   ] satisfies ServiceTier[],
@@ -285,7 +286,7 @@ export const brandClone = {
 export const nav = {
   links: [
     { label: "How it works", href: "/#loop" },
-    { label: "Sprint", href: "/#services" },
+    { label: "Pricing", href: "/#services" },
     { label: "Docs", href: "/docs" },
   ],
   cta: { label: "Book a call →", href: "mailto:boyan.works@gmail.com?subject=Systemix%20scoping%20call" },
@@ -296,7 +297,7 @@ export const footer = {
   links: [
     { label: "GitHub", href: GITHUB_URL },
     { label: "Docs", href: "/docs" },
-    { label: "Sprint", href: "/#services" },
+    { label: "Pricing", href: "/#services" },
   ],
   personaLinks: [
     { label: "For business", href: "/for/business" },
