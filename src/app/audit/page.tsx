@@ -7,7 +7,7 @@ import {
   SectionHeading,
   Lead,
 } from "@/components/landing/sections";
-import { SectionTrack } from "@/components/systemix/LandingEvents";
+import { SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
 
 export const metadata: Metadata = {
@@ -97,6 +97,28 @@ export default function AuditPage() {
             </div>
           </Section>
         </SectionTrack>
+
+        <Section>
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 rounded-2xl border border-border/50 bg-card p-8 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <p className="text-[16px] font-bold text-foreground">
+                Want the full loop, not just the report?
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-muted-foreground">
+                The AI Kit ships the whole thing in your repo — the loop, the design system, and
+                the skills your agent drives them with.
+              </p>
+            </div>
+            <TrackedLink
+              href="/kit"
+              event="cross_promo_click"
+              location="audit-to-kit"
+              className="shrink-0 rounded-full bg-foreground px-5 py-2.5 text-[13px] font-medium text-background transition-opacity hover:opacity-90"
+            >
+              The AI Kit →
+            </TrackedLink>
+          </div>
+        </Section>
       </main>
       <LandingFooter />
     </div>
