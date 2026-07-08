@@ -20,6 +20,13 @@ type ExperimentFM = {
   created?: string;
 };
 
+/** gray-matter parses unquoted YAML dates as Date objects — normalize to ISO
+    so the newest-first sort compares like with like. */
+function createdIso(v: unknown): string {
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  return String(v ?? "");
+}
+
 /** Newest running experiment in experiments/ (fallback: newest overall). */
 function readExperiment(): ExperimentFM | null {
   try {
@@ -29,7 +36,7 @@ function readExperiment(): ExperimentFM | null {
       .filter((f) => f.endsWith(".mdx"))
       .map((f) => matter(fs.readFileSync(path.join(dir, f), "utf8")).data as ExperimentFM)
       .filter((fm) => fm.id)
-      .sort((a, b) => String(b.created ?? "").localeCompare(String(a.created ?? "")));
+      .sort((a, b) => createdIso(b.created).localeCompare(createdIso(a.created)));
     return all.find((fm) => fm.status === "running") ?? all[0] ?? null;
   } catch {
     return null;

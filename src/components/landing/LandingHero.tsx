@@ -2,9 +2,8 @@
 
 import { usePostHog } from "posthog-js/react";
 import { useVariant } from "@/lib/useVariant";
-import { hero, GITHUB_URL } from "@/lib/landing/content";
+import { hero, GITHUB_URL, INIT_COMMAND } from "@/lib/landing/content";
 import { InstallCommand } from "@/components/systemix/LandingEvents";
-import { RotatingWord } from "./RotatingWord";
 import { HeroGrid } from "./HeroGrid";
 
 export function LandingHero() {
@@ -15,7 +14,7 @@ export function LandingHero() {
 
   return (
     <section className="relative overflow-hidden">
-      {/* magicui FlickeringGrid — theme-aware ambient dots behind the copy */}
+      {/* magicui FlickeringGrid — amber CRT noise behind the copy */}
       <div className="pointer-events-none absolute inset-0">
         <HeroGrid className="absolute inset-0 h-full w-full" />
         <div
@@ -27,48 +26,30 @@ export function LandingHero() {
         />
       </div>
 
-      <div className="relative max-w-3xl mx-auto px-6 pt-28 pb-24 text-center">
-        <p className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-[0.18em] mb-6">
-          {v.eyebrow}
-        </p>
-
-        <h1 className="text-[2.75rem] sm:text-[3.75rem] font-black tracking-tight leading-[1.05] mb-7">
-          <span className="block">{v.lead}</span>
-          <RotatingWord phrases={v.phrases} className="text-foreground" />
+      <div className="relative mx-auto max-w-3xl px-6 pt-28 pb-24 text-center">
+        {/* SEO: "design system" stays in the H1 (seo-gtm-brief §3) */}
+        <h1 className="mb-7 text-[2.6rem] font-bold leading-[1.06] sm:text-[3.5rem] [text-shadow:var(--glow-head)]">
+          {v.h1}
         </h1>
 
-        {/* the spine */}
-        <div className="flex items-center justify-center gap-2 font-mono text-[12px] text-muted-foreground/70 mb-7">
-          {hero.spine.map((s, i) => (
-            <span key={s} className="flex items-center gap-2">
-              <span>{s}</span>
-              {i < hero.spine.length - 1 && (
-                <span aria-hidden className="text-muted-foreground/30">
-                  →
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-
-        <p className="text-[17px] text-muted-foreground leading-relaxed max-w-xl mx-auto mb-10">
+        <p className="mx-auto mb-10 max-w-xl text-[17px] leading-relaxed text-muted-foreground">
           {v.body}
         </p>
 
         <div className="flex flex-col items-center gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <InstallCommand />
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <InstallCommand cmd={INIT_COMMAND} />
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => ph.capture("hero_cta_click", { cta: "github", variant: variantKey })}
-              className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+              className="tva-label rounded-md border border-border px-4 py-2.5 text-[11px] text-foreground transition-colors hover:border-primary"
             >
-              or star on GitHub →
+              View on GitHub
             </a>
           </div>
-          <p className="text-[12px] font-mono text-muted-foreground/50">{hero.fineprint}</p>
+          <p className="font-mono text-[12px] text-muted-foreground/70">{hero.fineprint}</p>
         </div>
       </div>
     </section>
