@@ -107,9 +107,22 @@ check("CLI tokens command exists", () =>
   fs.existsSync(path.join(ROOT, "packages/cli/src/commands/tokens.js"))
 );
 
-check("CLI init.js has sync-docs in ALL_SKILLS", () => {
+check("CLI audit command exists", () =>
+  fs.existsSync(path.join(ROOT, "packages/cli/src/commands/audit.js"))
+);
+
+check("CLI design command exists", () =>
+  fs.existsSync(path.join(ROOT, "packages/cli/src/commands/design.js"))
+);
+
+check("CLI routes audit + design command branches", () => {
+  const src = fs.readFileSync(path.join(ROOT, "packages/cli/bin/cli.js"), "utf8");
+  return src.includes('"audit"') && src.includes('"design"');
+});
+
+check("CLI init.js installs pipeline skills into .claude/skills/", () => {
   const src = fs.readFileSync(path.join(ROOT, "packages/cli/src/init.js"), "utf8");
-  return src.includes('"sync-docs"');
+  return src.includes("function installPipeline") && src.includes(".claude/skills/");
 });
 
 check("CLI registrar uses getServerConfig()", () => {

@@ -35,3 +35,29 @@ tighter guardrail here as a HITL card — guardrails are never self-modified sil
 
 - A component variant is added only with a stated reason (link the experiment in
   `experiments/`). Unused variants are pruned.
+
+## No AI slop
+
+The rules that keep a fast-shipping agent from turning the UI into a pile of
+one-offs. These are the anti-slop guardrails — the reason this file exists.
+
+- **One component per concept.** There is exactly one Button, one Card, one Modal.
+  If one exists, reuse it — never rebuild a primitive inline in a screen.
+- **No mixed component libraries.** Pick one source (e.g. shadcn) and stay in it.
+  Don't introduce a second UI kit alongside it.
+- **Screens compose, they don't re-implement.** A page imports shared components;
+  it doesn't hand-roll its own buttons, inputs, or cards.
+- **Consistent variant vocabulary.** The same concept is spelled the same way
+  everywhere (`variant="primary"`, not `type="main"` in one place and `isPrimary`
+  in another).
+- **New pattern → ask first.** If a screen needs something the system doesn't have
+  yet, propose the component or token with a rationale and wait — don't invent a
+  local variant to move faster.
+
+## Autonomy
+
+How strictly these rules are enforced follows the **autonomy dial** in
+`systemix.config.yaml` (ghost / assisted / autonomous). At every level, **changing
+this file is always human-in-the-loop** — the engine proposes a tighter or looser
+guardrail as a HITL card and never edits the rules silently. Customise the rules
+here to fit your product; the agent reads whatever you keep in this file.
