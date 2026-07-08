@@ -2,7 +2,7 @@
   "name": "hypothesis-validation",
   "displayName": "Hypothesis Validation",
   "description": "The validation loop: create an experiment, build + measure a prototype (PostHog), audit the evidence, and close the loop — the decision + learning is written back to experiments/LEARNINGS.md. File-first; engine = Claude Code.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "systemix",
   "skills": [
     "systemix-init",
@@ -15,7 +15,8 @@
     "close-experiment",
     "hermes",
     "atlas",
-    "build-workflow"
+    "build-workflow",
+    "workflow-artifact"
   ],
   "requires": {
     "mcp": [
