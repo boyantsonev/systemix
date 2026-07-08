@@ -1,0 +1,38 @@
+---
+type: engagement
+id: kit
+surface: kit
+window_days: 30
+status: tracking
+evidence-posthog:
+  fetched_at: null
+  source: "not-yet-synced"
+  window_days: 30
+  unique_visitors: 0
+  pageviews: 0
+  kit_requests: 0
+  request_conversion: 0
+last-synced: null
+---
+
+# Kit page engagement
+
+Ongoing engagement snapshot for the AI Kit page (`/kit`), synced from PostHog. Not a
+hypothesis — a standing record of the kit funnel: unique visitors, the `section_viewed`
+funnel (`kit-hero` → `kit-cta`), and the `kit_requested` conversion event (the
+"Get the kit" CTA, broken down by `location`).
+
+`systemix evidence engagement pull` writes the latest numbers into the
+`evidence-posthog` block above and appends a dated entry below. A human reviews the
+queued card and acknowledges it (or flags it for an experiment).
+
+Rolls up into the **consultancy-leads** goal (`experiments/goals/consultancy-leads.mdx`):
+`/kit` is the deepest self-serve funnel step — the offer ladder is free audit → paid
+audit → **kit** → sprint.
+
+## Engagement Log
+
+
+### not yet synced
+
+No evidence pulled yet. Run `systemix evidence engagement pull` once `/kit` has traffic.

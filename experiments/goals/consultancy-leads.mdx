@@ -15,3 +15,13 @@ created: 2026-06-18
 # Attract consultancy leads
 
 The north-star goal for this instance: the dogfooded loop is the lead magnet. Experiments under this goal test what actually converts the daily-shipping, agent-heavy founder into a consultancy conversation.
+
+## The funnel
+
+The offer ladder is the funnel toward this goal: **free audit → paid audit → kit → sprint**. Each self-serve surface has a standing engagement contract (a PostHog-synced record, not a hypothesis), and each is a step deeper toward a booked call:
+
+- [`contract/engagement/landing.mdx`](../../contract/engagement/landing.mdx) — the marketing landing (`/`): `section_viewed` + `npx systemix init` install conversion.
+- [`contract/engagement/audit.mdx`](../../contract/engagement/audit.mdx) — the Readiness Audit page (`/audit`): `audit_requested` (paid Rung 1).
+- [`contract/engagement/kit.mdx`](../../contract/engagement/kit.mdx) — the AI Kit page (`/kit`): `kit_requested` (paid Rung 2).
+
+Reciprocal cross-promo links `/audit ↔ /kit`, so the two paid surfaces feed each other. `systemix evidence engagement pull` keeps each contract current; a human acknowledges the queued card or flags it for an experiment under this goal.
