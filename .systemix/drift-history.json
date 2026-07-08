@@ -59,6 +59,35 @@
         "src/components/ui/animated-beam.tsx",
         "src/components/landing/sections.tsx"
       ]
+    },
+    {
+      "runAt": "2026-07-08T19:32:18.890Z",
+      "triggeredBy": "manual",
+      "score": 0,
+      "critical": 83,
+      "warnings": 56,
+      "componentsAudited": 182,
+      "topOffenders": [
+        "src/lib/data/tokens.ts",
+        "src/lib/data/variables.ts",
+        "src/components/graph/SystemGraph3D.tsx",
+        "src/components/ui/animated-beam.tsx",
+        "src/components/landing/sections.tsx"
+      ]
+    },
+    {
+      "runAt": "2026-07-08T19:37:32.078Z",
+      "triggeredBy": "manual",
+      "score": 68,
+      "critical": 7,
+      "warnings": 4,
+      "componentsAudited": 182,
+      "topOffenders": [
+        "src/components/graph/SystemGraph3D.tsx",
+        "src/components/ui/animated-beam.tsx",
+        "src/components/landing/sections.tsx",
+        "src/lib/utils/color.ts"
+      ]
     }
   ]
 }
