@@ -1,0 +1,36 @@
+---
+title: Tokens
+description: Where the tokens live and how they flow — code-first, CSS canonical.
+---
+
+Tokens are **code-first**: CSS is the source of truth, everything else is
+derived.
+
+| Artifact | Role |
+|---|---|
+| `src/app/globals.css` | canonical values — `:root` (light) / `.dark`, `@theme inline` maps them to Tailwind utilities |
+| `docs/feature/rebrand-hifi/design/tva-theme.css` | the versioned spec the live file tracks (v1.1) |
+| `.systemix/tokens.bridge.json` | generated bridge (`npm run tokens` / the **Sync Tokens** skill) for external consumers |
+| Figma variables | optional adapter — deferred; push via the design-engineer pipeline only if a team uses Figma |
+
+## The dials
+
+All configuration is attribute-driven on `<html>` — token swaps, no forks:
+
+| Attribute | Values | Default |
+|---|---|---|
+| `class` | `dark` present/absent | dark |
+| `data-radius` | `sharp` · `soft` · `round` | soft |
+| `data-crt` | `off` · `soft` · `med` (panel-scoped strength) | soft |
+
+## Reading tokens
+
+- Semantic color: `bg-background`, `text-foreground`, `text-highlight`,
+  `bg-primary`, `text-success` / `text-warning` / `text-destructive`.
+- Screen set (theme-independent lit terminal): `--screen-background`,
+  `--screen-foreground`, `--screen-success/destructive/warning`.
+- Elevation: `--shadow-panel` (resting) / `--shadow-pop` (floating) /
+  `--glow-*` (bloom).
+- Tints: derive with `color-mix` + `--tint-weak/mid/line` — never new tokens.
+
+Drift between these rules and the code is what the **Drift Report** measures.

@@ -3,7 +3,16 @@
 // scattered in AppTopBar / the /config header. Consumed by the shell sidebar,
 // header breadcrumb, and command palette.
 
-import { LayoutDashboard, ScrollText, FlaskConical, BookOpen, Github, type LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  ScrollText,
+  FlaskConical,
+  Palette,
+  Wand2,
+  BookOpen,
+  Github,
+  type LucideIcon,
+} from "lucide-react";
 import type { TreeViewElement } from "@/components/ui/file-tree";
 
 export type NavItem = {
@@ -13,11 +22,23 @@ export type NavItem = {
   external?: boolean;
 };
 
-// The three product surfaces.
+/** A sidebar surface: a labelled folder over a navigable tree. */
+export type SurfaceNode = {
+  label: string;
+  /** Route prefix used for active/expanded detection. */
+  href: string;
+  tree: TreeViewElement[];
+};
+
+// The product surfaces.
 export const PRIMARY_NAV: NavItem[] = [
   { label: "Home", href: "/config", icon: LayoutDashboard },
   { label: "Contract", href: "/contract", icon: ScrollText },
   { label: "Experiments", href: "/experiments", icon: FlaskConical },
+  { label: "Design System", href: "/design", icon: Palette },
+  // Workflows share the /skills surface (the packs ARE the workflows) — one
+  // route, two sidebar folders.
+  { label: "Skills", href: "/skills", icon: Wand2 },
 ];
 
 export const SECONDARY_NAV: NavItem[] = [

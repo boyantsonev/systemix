@@ -1,0 +1,17 @@
+---
+title: Design system
+description: The POC's own design-system-as-object — the instance spine Systemix scaffolds for every repo, dogfooded here.
+---
+
+This folder is the **design-system-as-object** for the Systemix site itself —
+the same `design/` spine `npx systemix init` vendors into any repo, running on
+its own product.
+
+- **[DESIGN.md](/design/DESIGN)** — the source of truth: identity, principles,
+  and the token model (TVA · Amber Mainframe).
+- **[Guardrails](/design/guardrails)** — the rules the automation defends;
+  the Drift Report skill audits the codebase against exactly these.
+- **[Tokens](/design/tokens)** — where the tokens live and how they flow.
+
+Everything here is plain files in the repo. The agentic feed reads this folder
+as context before proposing any visual change.
