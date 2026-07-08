@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 // empty states say exactly what will fill them.
 
 const DECISION: Record<string, string> = {
-  promote: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10",
-  kill: "text-red-500 border-red-500/30 bg-red-500/10",
-  iterate: "text-amber-500 border-amber-500/30 bg-amber-500/10",
+  promote: "text-success border-success/30 bg-success/10",
+  kill: "text-destructive border-destructive/30 bg-destructive/10",
+  iterate: "text-warning border-warning/30 bg-warning/10",
 };
 
 /** Tiny inline SVG sparkline over drift scores — no chart lib. */

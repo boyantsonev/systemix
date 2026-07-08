@@ -21,9 +21,9 @@ export type ContractData = {
 
 function Badge({ label }: { label: string }) {
   const tones: Record<string, string> = {
-    clean: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10",
-    drifted: "text-amber-500 border-amber-500/30 bg-amber-500/10",
-    missing: "text-violet-500 border-violet-500/30 bg-violet-500/10",
+    clean: "text-success border-success/30 bg-success/10",
+    drifted: "text-warning border-warning/30 bg-warning/10",
+    missing: "text-highlight border-highlight/30 bg-highlight/10",
     muted: "text-muted-foreground border-border bg-muted/40",
   };
   const key = /drift/i.test(label)

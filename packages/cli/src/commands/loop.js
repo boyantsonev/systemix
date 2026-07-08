@@ -21,8 +21,13 @@ const LOOP_HELP = `
   /close-experiment or \`systemix experiment close\`.
 `;
 
+// Flags whose next arg is a value, not the positional <id> (the cron calls
+// `loop --days 30` — "30" must not be read as an experiment id).
+const VALUE_FLAGS = new Set(["--days", "--max-iterations"]);
+
 const NEXT_HINT = {
   "decision-ready": (id) => `review the card, then: /close-experiment ${id}`,
+  "skipped:not-found": () => "check the id — `systemix experiment list` shows what exists",
   "blocked:not-measured": (id) => `run /measure ${id} to wire the posthog-event`,
   "blocked:not-wired": () => "run /connect-signal (or set POSTHOG_API_KEY + POSTHOG_PROJECT_ID)",
   "blocked:posthog-error": () => "check POSTHOG_HOST / POSTHOG_PROJECT_ID",
@@ -43,7 +48,7 @@ async function loop(args = [], opts = {}) {
     return;
   }
   const root = opts.projectRoot ?? process.cwd();
-  const id = args.find((a) => !a.startsWith("--"));
+  const id = args.find((a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]));
   const days = num(args, "--days", 30);
   const maxIterations = num(args, "--max-iterations", 5);
 

@@ -18,17 +18,14 @@ export const SKILL_MAP: Record<string, SkillDef> = {
     args: ["run", "tokens"],
     description: "Regenerate tokens.bridge.json from globals.css",
   },
-  "sync-to-figma": {
-    label: "Push Tokens to Figma",
-    command: "npx",
-    args: ["tsx", "scripts/sync-to-figma.ts"],
-    description: "Push bridge.json → Figma Variables via Console MCP",
-  },
+  // sync-to-figma was removed: its script never existed and Figma is an
+  // optional/deferred adapter under code-first v5 — a play button that always
+  // fails is worse than no button.
   "drift-report": {
     label: "Drift Report",
     command: "npx",
     args: ["tsx", "scripts/drift-report.ts"],
-    description: "Compare Figma variables vs globals.css — surface drifted tokens",
+    description: "Scan src/ for raw hex + off-token styles — appends a drift snapshot",
   },
   "deploy": {
     label: "Build & Deploy",

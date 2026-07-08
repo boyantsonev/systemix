@@ -215,6 +215,23 @@ describe("systemix loop — the Ralph runner", () => {
     expect(cards[0].experimentId).toBe("x");
   });
 
+  it("CLI door: `loop --days 30` (no id) sweeps — the flag value is NOT an experiment id", async () => {
+    // Regression: the daily cron calls `systemix loop --days 30`; "30" was
+    // misparsed as a positional id → "experiment not found: experiments/30.mdx".
+    exp.setMeasurement(root, "x", { event: "book_call_clicked" });
+    await loop(["--days", "30"], { projectRoot: root, now: NOW, fetchEvidence: fetcher({ control: 100, variant_b: 130 }) });
+    const cards = readQueue(root).cards;
+    expect(cards).toHaveLength(1);
+    expect(cards[0].experimentId).toBe("x");
+  });
+
+  it("a missing experiment file skips with a warning instead of throwing", async () => {
+    const r = await runLoop(root, "nope", { now: NOW, fetchEvidence: fetcher({}) });
+    expect(r.stop).toBe("skipped:not-found");
+    expect(r.note).toContain("experiments/nope.mdx");
+    expect(readQueue(root).cards).toHaveLength(0);
+  });
+
   it("sweepLoop returns one explicit stop per running experiment", async () => {
     exp.createExperiment(root, "y", { now: NOW });
     exp.setMeasurement(root, "x", { event: "book_call_clicked" });

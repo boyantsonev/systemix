@@ -94,7 +94,7 @@ export function AuditRequestForm() {
         Request the report →
       </button>
       <p className="text-center font-mono text-[11px] text-muted-foreground/50">
-        One-time · $149 · your AI-Readiness Report + the seed of the fix
+        Free · one-time · no spam
       </p>
     </form>
   );

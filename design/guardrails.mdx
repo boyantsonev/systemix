@@ -1,0 +1,50 @@
+---
+title: Guardrails
+description: The rules the automation defends — the Drift Report audits the codebase against exactly these.
+---
+
+The agent reads these before any visual change. The **Drift Report** skill
+(`scripts/drift-report.ts`) audits the codebase against the starred rules and
+appends a snapshot to `.systemix/drift-history.json` — the Drift feed on Home
+renders whatever it finds.
+
+## Color
+
+- ★ **No raw hex in components or styles.** Reference a semantic token
+  (`bg-primary`, `text-success`, `var(--highlight)`). Exceptions: the token
+  source (`globals.css`), brand marks (`brand-nodes.tsx`), and product mockups
+  (`DeepDiveMockups.tsx`).
+- ★ **No raw Tailwind palette classes** (`text-blue-500`, `bg-emerald-400`, …).
+  The system has no blue — and even warm palette classes bypass the theme.
+  Status is `--success` / `--warning` / `--destructive`; brand amber is
+  `--highlight`.
+- **Derive state tints, never store them:**
+  `color-mix(in srgb, var(--destructive) var(--tint-weak), transparent)`.
+
+## Type & shape
+
+- Role fonts only: `--font-sans` (body), `--font-display` (headings),
+  `--font-mono` (data), `--font-label` (uppercase-tracked labels — use the
+  `tva-label` utility).
+- Radius from the dial: `rounded-md` / `rounded-lg` / `--radius-screen` for
+  large panels. No hardcoded pixel radii.
+- One `solid` primary action per view. Buttons are rectangles, not pills.
+
+## Effects
+
+- CRT is **scoped**: `.terminal` (the lit tube) and `.crt-panel` only. Never
+  reintroduce global overlays; never put scanlines over long-form text.
+- Floating things use `--shadow-pop`; resting panels use `--shadow-panel`.
+
+## Accessibility
+
+- Body text ≥ 4.5:1 (dark body is `#EFE5D3` at 15.1:1; muted `#B39B6E` at
+  7.0:1 — muted is for secondary text only).
+- Visible `:focus-visible` ring (`--ring` / `--glow-focus`) on every control.
+- `prefers-reduced-motion` disables ambient motion.
+- Status is icon + text, never color alone.
+
+## Change protocol
+
+Self-modification of these guardrails is **always human-in-the-loop**, at any
+autonomy tier. Propose the change with rationale; a human approves.

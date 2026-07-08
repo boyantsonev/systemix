@@ -1,0 +1,252 @@
+/* ============================================================================
+   TVA · AMBER MAINFRAME — shadcn theme
+   The soft-CRT amber look, renamed to shadcn/Radix semantics and structured
+   for Tailwind v4 + shadcn/ui. Same exact colours & feel as the demo.
+
+   STRUCTURE
+     :root            → LIGHT theme (shadcn semantic tokens + extensions)
+     .dark            → DARK theme  (use <html class="dark"> — shadcn default)
+     [data-radius=…]  → sharp | soft(default) | round
+     [data-type=…]    → square | launch(default)
+     [data-crt=…]     → off | soft(default) | med   (screen-effect tokens)
+     @theme inline    → maps tokens to Tailwind v4 utilities
+
+   NAMING NOTES (semantic decisions)
+     • shadcn --accent is the *subtle hover surface* (warm neutral), NOT the
+       brand amber. The vivid amber lives in extension --highlight (seal,
+       readouts, decorative) and drives --ring on dark.
+     • --success / --warning are non-standard extensions kept for status.
+     • --screen-* are fixed (theme-independent): the terminal stays a lit CRT
+       in both light and dark. --glow-* / --crt-* / gradients are extensions
+       that recreate the CRT look on top of the flat shadcn surfaces.
+   ========================================================================== */
+
+/* ============================ LIGHT ====================================== */
+:root{
+  /* ---- shadcn core ---- */
+  --background:#ECE3CB;            --foreground:#332815;
+  --card:#F4ECD6;                  --card-foreground:#332815;
+  --popover:#F9F2E2;               --popover-foreground:#332815;
+  --primary:#A8511A;               --primary-foreground:#FBF3E2;
+  --secondary:#DFD3B4;             --secondary-foreground:#332815;
+  --muted:#E4DED0;                 --muted-foreground:#7A6A48;
+  --accent:#EAD9B0;               /* subtle warm hover surface */
+  --accent-foreground:#332815;
+  --destructive:#A8412C;           --destructive-foreground:#FBF3E2;
+  --border:#CFC0A0;                --input:#CFC0A0;
+  --ring:#A8511A;
+
+  /* ---- extensions: status ---- */
+  --success:#5D6626;               --success-foreground:#FBF3E2;
+  --warning:#8A5A00;               --warning-foreground:#FBF3E2;
+  --highlight:#B07A16;             --highlight-foreground:#241C10;  /* the brand amber */
+
+  /* ---- extensions: charts / sidebar (shadcn optional sets) ---- */
+  --chart-1:#A8511A; --chart-2:#B07A16; --chart-3:#5D6626; --chart-4:#8A5A00; --chart-5:#A8412C;
+  --sidebar:#E4DED0; --sidebar-foreground:#332815;
+  --sidebar-primary:#A8511A; --sidebar-primary-foreground:#FBF3E2;
+  --sidebar-accent:#EAD9B0; --sidebar-accent-foreground:#332815;
+  --sidebar-border:#CFC0A0; --sidebar-ring:#A8511A;
+
+  /* ---- extensions: CRT look (recreates the demo on flat shadcn surfaces) ---- */
+  --gradient-page:radial-gradient(130% 120% at 50% 30%, #F4EDD9 0%, var(--background) 60%, #DFD3B4 100%);
+  --gradient-panel:linear-gradient(#F9F2E2, #F4ECD6);
+  --glow-text:none;
+  --glow-head:none;
+  --glow-soft:0 1px 0 rgba(0,0,0,.05),0 4px 14px rgba(60,45,20,.12);
+  --glow-strong:0 2px 0 rgba(0,0,0,.08),0 6px 18px rgba(60,45,20,.16);
+  --glow-focus:0 0 0 3px rgba(168,81,26,.35);
+  --shadow-panel:var(--glow-soft);
+  --shadow-pop:0 12px 34px rgba(60,45,20,.28);
+  --overlay:rgba(50,40,20,.32);
+  --crt-veil:radial-gradient(120% 120% at 50% 50%,transparent 72%,rgba(120,100,60,.10) 100%);
+  --crt-scan-max:.05;                       /* per-theme scanline ceiling */
+  --crt-sweep-color:rgba(160,120,50,.05);
+  --crt-sweep-display:none;                 /* no room-wide sweep on paper */
+}
+
+/* ============================ DARK ====================================== */
+/* v1.1: body text is warm WHITE for readability; amber is reserved for
+   labels, values, glows, and actions (--primary/--highlight/--ring). */
+.dark{
+  --background:#16100A;            --foreground:#EFE5D3;
+  --card:#1E1710;                  --card-foreground:#EFE5D3;
+  --popover:#0D0905;               --popover-foreground:#EFE5D3;
+  --primary:#FF9E3D;               --primary-foreground:#1A1206;
+  --secondary:#271E14;             --secondary-foreground:#EFE5D3;
+  --muted:#271E14;                 --muted-foreground:#B39B6E;
+  --accent:#2B2417;                --accent-foreground:#F5EDDD;
+  --destructive:#FF6A4A;           --destructive-foreground:#1A1206;
+  --border:#3A2A12;                --input:#3A2A12;
+  --ring:#FFC24D;
+
+  --success:#B7C46A;               --success-foreground:#1A1206;
+  --warning:#FFD84D;               --warning-foreground:#1A1206;
+  --highlight:#FFC24D;             --highlight-foreground:#1A1206;
+
+  --chart-1:#FF9E3D; --chart-2:#FFC24D; --chart-3:#B7C46A; --chart-4:#FFD84D; --chart-5:#FF6A4A;
+  --sidebar:#1E1710; --sidebar-foreground:#EFE5D3;
+  --sidebar-primary:#FF9E3D; --sidebar-primary-foreground:#1A1206;
+  --sidebar-accent:#2B2417; --sidebar-accent-foreground:#F5EDDD;
+  --sidebar-border:#3A2A12; --sidebar-ring:#FFC24D;
+
+  --gradient-page:radial-gradient(130% 120% at 50% 42%, #1d150c 0%, var(--background) 55%, #0D0905 100%);
+  --gradient-panel:linear-gradient(#1E1710, #16100A);
+  --glow-text:0 0 6px rgba(255,176,70,.28);
+  --glow-head:0 0 14px rgba(255,158,61,.20);
+  --glow-soft:0 0 14px rgba(255,158,61,.16);
+  --glow-strong:0 0 22px rgba(255,158,61,.28);
+  --glow-focus:0 0 0 2px rgba(255,158,61,.35),0 0 18px rgba(255,158,61,.30);
+  --shadow-panel:inset 0 0 30px rgba(0,0,0,.45), var(--glow-soft);
+  --shadow-pop:0 10px 34px rgba(0,0,0,.6), var(--glow-soft);
+  --overlay:rgba(6,3,0,.62);
+  --crt-veil:radial-gradient(120% 120% at 50% 50%,transparent 60%,rgba(6,3,0,.6) 100%);
+  --crt-scan-max:.12;
+  --crt-sweep-color:rgba(255,190,90,.09);
+  --crt-sweep-display:block;
+}
+
+/* =================== THEME-INDEPENDENT (both light & dark) ================ */
+:root{
+  /* The terminal is a lit CRT in BOTH themes → fixed screen tokens */
+  --screen-background:#0D0905; --screen-foreground:#F5B857; --screen-border:#6E4F1E;
+  --screen-success:#B7C46A;    --screen-destructive:#FF6A4A; --screen-warning:#FFD84D;
+  --screen-glow:0 0 6px rgba(255,176,70,.28);
+
+  /* Radius (base = soft; the radius dial overrides --radius) */
+  --radius:0.3125rem;                       /* 5px — current look */
+  --radius-sm:calc(var(--radius) - 2px);
+  --radius-md:calc(var(--radius) - 1px);
+  --radius-lg:var(--radius);
+  --radius-xl:calc(var(--radius) + 4px);
+  --radius-screen:calc(var(--radius) * 2);  /* larger tube-like panels/terminals */
+
+  /* Type (base = launch; the type dial overrides) */
+  --font-sans:"DM Sans", ui-sans-serif, system-ui, sans-serif;      /* body / UI  */
+  --font-display:"DM Sans", ui-sans-serif, sans-serif;              /* headings   */
+  --font-mono:"Space Mono", ui-monospace, monospace;               /* data/term  */
+  --font-label:"Space Mono", ui-monospace, monospace;              /* labels     */
+  --tracking-heading:-0.01em; --tracking-label:0.18em;
+  --case-heading:none;                       /* headings sentence-case            */
+
+  /* CRT dial (base = soft) — strength multiplier × per-theme --crt-scan-max */
+  --crt-scan-strength:1;                      /* 0 off · 1 soft · 1.8 med         */
+  --crt-scan-gap:4px;
+  --crt-sweep-opacity:1;
+  --crt-breathe:1;
+  /* effective scanline alpha, use in the overlay:
+     rgba(0,0,0, calc(var(--crt-scan-strength) * var(--crt-scan-max))) */
+
+  /* Spacing, state, interaction */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --disabled-opacity:.42;
+  --tint-weak:12%; --tint-mid:16%; --tint-line:42%;   /* color-mix strengths for
+     status tints, e.g. background:color-mix(in srgb,var(--destructive) var(--tint-weak),transparent) */
+
+  --ease:cubic-bezier(.33,0,.2,1);
+  --duration:260ms;
+}
+
+/* ---- RADIUS DIAL (keeps 'sharp' & 'round'; 'soft' is the default look) ---- */
+[data-radius="sharp"]{ --radius:0rem; }
+[data-radius="soft"] { --radius:0.3125rem; }
+[data-radius="round"]{ --radius:0.625rem; }
+
+/* ---- TYPE DIAL (Square & Launch) ---- */
+[data-type="launch"]{           /* modern neutral sans + complementary square mono */
+  --font-sans:"DM Sans",ui-sans-serif,sans-serif;   --font-display:"DM Sans",ui-sans-serif,sans-serif;
+  --font-mono:"Space Mono",ui-monospace,monospace;  --font-label:"Space Mono",ui-monospace,monospace;
+  --tracking-heading:-0.01em; --tracking-label:0.18em; --case-heading:none;
+}
+[data-type="square"]{           /* squared techno + JetBrains Mono */
+  --font-sans:"Chakra Petch",ui-sans-serif,sans-serif; --font-display:"Chakra Petch",ui-sans-serif,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,monospace; --font-label:"Chakra Petch",ui-sans-serif,sans-serif;
+  --tracking-heading:0.01em; --tracking-label:0.14em; --case-heading:none;
+}
+
+/* ---- CRT DIAL (tokenized off / soft / med) ---- */
+[data-crt="off"] { --crt-scan-strength:0;   --crt-sweep-opacity:0;   --crt-breathe:0; }
+[data-crt="soft"]{ --crt-scan-strength:1;   --crt-scan-gap:4px;      --crt-sweep-opacity:1;   --crt-breathe:1; }
+[data-crt="med"] { --crt-scan-strength:1.8; --crt-scan-gap:3px;      --crt-sweep-opacity:1.2; --crt-breathe:1; }
+
+/* ============================================================================
+   TAILWIND v4 BRIDGE — expose tokens as utilities (bg-background, text-primary,
+   rounded-lg, font-display, text-highlight, etc.). Requires Tailwind v4.
+   ========================================================================== */
+@theme inline{
+  --color-background:var(--background);
+  --color-foreground:var(--foreground);
+  --color-card:var(--card);
+  --color-card-foreground:var(--card-foreground);
+  --color-popover:var(--popover);
+  --color-popover-foreground:var(--popover-foreground);
+  --color-primary:var(--primary);
+  --color-primary-foreground:var(--primary-foreground);
+  --color-secondary:var(--secondary);
+  --color-secondary-foreground:var(--secondary-foreground);
+  --color-muted:var(--muted);
+  --color-muted-foreground:var(--muted-foreground);
+  --color-accent:var(--accent);
+  --color-accent-foreground:var(--accent-foreground);
+  --color-destructive:var(--destructive);
+  --color-destructive-foreground:var(--destructive-foreground);
+  --color-border:var(--border);
+  --color-input:var(--input);
+  --color-ring:var(--ring);
+  --color-success:var(--success);
+  --color-success-foreground:var(--success-foreground);
+  --color-warning:var(--warning);
+  --color-warning-foreground:var(--warning-foreground);
+  --color-highlight:var(--highlight);
+  --color-highlight-foreground:var(--highlight-foreground);
+  --color-chart-1:var(--chart-1); --color-chart-2:var(--chart-2); --color-chart-3:var(--chart-3);
+  --color-chart-4:var(--chart-4); --color-chart-5:var(--chart-5);
+  --color-sidebar:var(--sidebar);
+  --color-sidebar-foreground:var(--sidebar-foreground);
+  --color-sidebar-primary:var(--sidebar-primary);
+  --color-sidebar-primary-foreground:var(--sidebar-primary-foreground);
+  --color-sidebar-accent:var(--sidebar-accent);
+  --color-sidebar-accent-foreground:var(--sidebar-accent-foreground);
+  --color-sidebar-border:var(--sidebar-border);
+  --color-sidebar-ring:var(--sidebar-ring);
+
+  --radius-sm:var(--radius-sm);
+  --radius-md:var(--radius-md);
+  --radius-lg:var(--radius-lg);
+  --radius-xl:var(--radius-xl);
+
+  --font-sans:var(--font-sans);
+  --font-mono:var(--font-mono);
+  --font-display:var(--font-display);
+}
+
+/* ============================================================================
+   BASE — recreate the CRT surfaces on top of shadcn tokens. Optional but this
+   is what preserves the exact look. Put in @layer base in a real project.
+   ========================================================================== */
+/*
+body{ background:var(--gradient-page); color:var(--foreground); font-family:var(--font-sans);
+      text-shadow:var(--glow-text); }
+h1,h2,h3{ font-family:var(--font-display); text-transform:var(--case-heading);
+      letter-spacing:var(--tracking-heading); text-shadow:var(--glow-head); }
+
+.crt-scan{ position:fixed; inset:0; z-index:9997; pointer-events:none; mix-blend-mode:multiply;
+  background:repeating-linear-gradient(0deg,
+    rgba(0,0,0,calc(var(--crt-scan-strength) * var(--crt-scan-max))) 0,
+    transparent 1.4px, transparent var(--crt-scan-gap)); }
+.crt-veil{ position:fixed; inset:0; z-index:9998; pointer-events:none; background:var(--crt-veil);
+  animation:crt-breathe calc(6s * var(--crt-breathe)) ease-in-out infinite; }
+.crt-sweep{ position:fixed; left:0; right:0; top:-40vh; height:38vh; z-index:9996; pointer-events:none;
+  display:var(--crt-sweep-display); opacity:var(--crt-sweep-opacity); filter:blur(6px);
+  background:linear-gradient(180deg,transparent,var(--crt-sweep-color) 50%,transparent);
+  animation:crt-sweep 7s linear infinite; }
+@keyframes crt-breathe{0%,100%{opacity:.9}50%{opacity:.98}}
+@keyframes crt-sweep{0%{transform:translateY(0)}100%{transform:translateY(180vh)}}
+@media (prefers-reduced-motion:reduce){ .crt-veil{animation:none} .crt-sweep{display:none} }
+
+.terminal{ background:var(--screen-background); color:var(--screen-foreground);
+  border:2px solid var(--screen-border); border-radius:var(--radius-screen); text-shadow:var(--screen-glow); }
+*/
+
+/* Contrast (WCAG AA): light fg 11.3:1 · dark fg 10.7:1 · primary buttons ≥4.9:1.
+   --muted-foreground is muted/large-text only. */

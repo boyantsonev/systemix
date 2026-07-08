@@ -1,76 +1,74 @@
 import type { Metadata } from "next";
 import { SectionTrack } from "@/components/systemix/LandingEvents";
-import { LandingHero } from "@/components/landing/LandingHero";
-import { PersonaSwitcher } from "@/components/landing/PersonaSwitcher";
 import {
-  About,
+  Audiences,
   BottomCTA,
-  BrandCloneHook,
-  Effect,
+  BuildVsBuyTable,
+  FaqJsonLd,
+  FaqSection,
+  FeatureDeepDives,
+  GridFrame,
+  HeroRow,
   LandingFooter,
   LandingNav,
-  Problem,
-  Rule,
   Services,
-  SignalsWall,
+  StackStrip,
+  Statement,
   TheLoop,
   Trust,
-  TwoDoors,
-  ValueProps,
 } from "@/components/landing/sections";
+import { faq } from "@/lib/landing/content";
 
+// Title + meta per the SEO brief (docs/feature/rebrand-hifi/seo-gtm-brief.md §3):
+// head term = design-system rot/drift, mechanisms below the fold.
 export const metadata: Metadata = {
-  title: "Systemix — the AI-native design system + growth engine that remembers why",
+  title: "Systemix — Stop your design system from rotting",
   description:
-    "AI can generate a design system in an afternoon — Systemix keeps it from turning to slop: rationale in MDX, a learning loop for every decision, and skills that review and learn weekly from your signals. Free kit in Claude Code, or Boyan wires it to your stack.",
+    "Systemix watches what you ship, catches design-system drift, and proposes AI fixes your team approves. Open source. Free to start.",
 };
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
+      <FaqJsonLd items={faq.items} />
       <LandingNav />
-      <main>
-        <SectionTrack name="hero" experimentId="landing-ai-native-ds-2026-07">
-          <LandingHero />
-        </SectionTrack>
-        <PersonaSwitcher className="pb-14" />
-        <SectionTrack name="value-props">
-          <ValueProps />
-        </SectionTrack>
-        <SectionTrack name="signals">
-          <SignalsWall />
-        </SectionTrack>
-        <SectionTrack name="problem">
-          <Problem />
-        </SectionTrack>
-        <SectionTrack name="effect">
-          <Effect />
-        </SectionTrack>
-        <SectionTrack name="brand-clone">
-          <BrandCloneHook />
-        </SectionTrack>
-        <SectionTrack name="loop">
-          <TheLoop />
-        </SectionTrack>
-        <SectionTrack name="two-doors">
-          <TwoDoors />
-        </SectionTrack>
-        <SectionTrack name="rule">
-          <Rule />
-        </SectionTrack>
-        <SectionTrack name="services">
-          <Services />
-        </SectionTrack>
-        <SectionTrack name="trust">
-          <Trust />
-        </SectionTrack>
-        <SectionTrack name="about">
-          <About />
-        </SectionTrack>
-        <SectionTrack name="bottom-cta">
-          <BottomCTA />
-        </SectionTrack>
-      </main>
+      <GridFrame>
+        <main>
+          <SectionTrack name="hero" experimentId="landing-rebrand-hifi-2026-07">
+            <HeroRow />
+          </SectionTrack>
+          <SectionTrack name="stack">
+            <StackStrip />
+          </SectionTrack>
+          <SectionTrack name="statement">
+            <Statement />
+          </SectionTrack>
+          <SectionTrack name="deep-dives">
+            <FeatureDeepDives />
+          </SectionTrack>
+          <SectionTrack name="audiences">
+            <Audiences />
+          </SectionTrack>
+          <SectionTrack name="loop">
+            <TheLoop />
+          </SectionTrack>
+          <SectionTrack name="credibility">
+            <Trust />
+          </SectionTrack>
+          <SectionTrack name="pricing">
+            <Services />
+          </SectionTrack>
+          <SectionTrack name="build-vs-buy">
+            <BuildVsBuyTable />
+          </SectionTrack>
+          <SectionTrack name="faq">
+            <FaqSection />
+          </SectionTrack>
+          <SectionTrack name="bottom-cta">
+            <BottomCTA />
+          </SectionTrack>
+        </main>
+      </GridFrame>
       <LandingFooter />
     </div>
   );
