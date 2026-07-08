@@ -1,11 +1,14 @@
 // Landing copy registry — the single place to edit the narrative, and the seam
 // the hero A/B test reads from (useVariant("landing-hero")). Engine = Claude Code.
 //
-// Rebrand (landing-rebrand-hifi-2026-07): the LaunchKit arc in plain English —
-// announcement → hero → metrics → logos → deep-dives → loop proof → credibility
-// → pricing → build-vs-buy → FAQ. Voice: outcome first, mechanism below the fold.
-// North star: "Systemix stops your design system from rotting." Copy deck:
-// docs/feature/rebrand-hifi/copy-landing.md · SEO: seo-gtm-brief.md
+// Rebrand (landing-rebrand-hifi-2026-07), revision 2: LaunchKit soft-grid arc —
+// announcement → hero row (copy | facts | tools) → stack strip → statement →
+// deep-dives → audiences → proof → credibility → pricing → build-vs-buy → FAQ.
+// Voice: outcome first, mechanism below the fold. "The loop" is BANNED in
+// marketing copy — say "the automation", "an AI-native design system that
+// learns from your signals", "the agentic feed / context layer". Product
+// surfaces keep the concrete nouns (experiments, learnings, decisions).
+// Copy decks: docs/feature/rebrand-hifi/ · SEO: seo-gtm-brief.md
 
 export const GITHUB_URL = "https://github.com/boyantsonev/systemix-poc";
 export const AUDIT_COMMAND = "npx systemix audit";
@@ -45,37 +48,45 @@ export const hero = {
     },
     variant_b: {
       h1: "Your design system, but it learns.",
-      body: "Every release, Systemix catches what drifted, proposes the fix, and remembers why — so the system compounds instead of decaying.",
+      body: "An AI-native design system that learns from the signals it gets: every release it catches what drifted, proposes the fix, and remembers why.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,
   fineprint: "Open source · ghost mode by default · your files, your repo",
 };
 
-// ── Metrics strip — honest, no vanity ────────────────────────────────────────
+// ── Hero facts — the "what you get" table cell (LaunchKit pattern) ───────────
 
-export type Metric = { value: string; label: string };
+export type HeroFact = { label: string; value: string };
 
-export const metrics = {
+export const heroFacts = {
+  label: "What you get",
   items: [
-    { value: "$0/mo", label: "runs on the AI coding tool you already pay for" },
-    { value: "Day 1", label: "ghost mode — it suggests, never touches your code" },
-    { value: "3 ways in", label: "skills, CLI, or MCP" },
-    // 4th stat is dynamic: MetricsStrip derives it from experiments/ + LEARNINGS.md
-    // at build time (LiveLoopProof pattern) — honest by construction.
-  ] satisfies Metric[],
+    { label: "Monthly fee", value: "$0" },
+    { label: "Runs on", value: "your AI coding tool" },
+    { label: "Touches your code", value: "never uninvited" },
+    { label: "Ways in", value: "skills · CLI · MCP" },
+    // + a dynamic row derived at build time from experiments/ + LEARNINGS.md
+  ] satisfies HeroFact[],
 };
 
 // ── Logo rows ─────────────────────────────────────────────────────────────────
 
 export const logoRows = {
   tools: {
-    label: "Works with your AI tool",
+    label: "Use it with your AI coding tool",
     items: ["Claude Code", "Cursor", "Codex"],
   },
   stack: {
     label: "Plugs into your stack",
     items: ["GitHub", "PostHog", "Vercel", "shadcn", "Tailwind", "Figma (optional)"],
   },
+};
+
+// ── Statement block — the two-tone problem/resolution (LaunchKit pattern) ────
+
+export const statement = {
+  strong: "AI can generate a design system in an afternoon. Keeping it true is the hard part.",
+  dim: "Nothing writes down why decisions were made — so by week two it drifts, and by week six it's slop. Systemix is the automation that keeps the system learning from what you ship.",
 };
 
 // ── Feature deep-dives — negative→positive headline + mockup key ─────────────
@@ -89,9 +100,9 @@ export type DeepDive = {
 
 export const deepDives: DeepDive[] = [
   {
-    key: "loop",
-    headline: "Don't let your design system forget why.",
-    body: "Every ship is a signal. Systemix spots what drifted, proposes a decision, and — once you approve — records the reason. Solved problems stay solved.",
+    key: "autopilot",
+    headline: "Your design system, on autopilot.",
+    body: "Every ship is a signal. Systemix watches what changed, proposes the decision, and — once you approve — records the reason. Solved problems stay solved.",
     mockup: "experiment-card",
   },
   {
@@ -103,13 +114,13 @@ export const deepDives: DeepDive[] = [
   {
     key: "doors",
     headline: "Three doors. Pick yours.",
-    body: "Run it as slash-command skills, a CLI, or an MCP connector. Same loop, whichever way your team already works.",
+    body: "Run it as slash-command skills, a CLI, or an MCP connector. The same automation, whichever way your team already works.",
     mockup: "doors-code",
   },
   {
     key: "signals",
     headline: "Measure when you're ready.",
-    body: "Wire PostHog and every headline, CTA, and flow becomes evidence. No analytics yet? The loop still runs without it.",
+    body: "Wire PostHog and every headline, CTA, and flow becomes evidence. No analytics yet? The automation runs without it.",
     mockup: "signals-card",
   },
   {
@@ -126,12 +137,28 @@ export const deepDives: DeepDive[] = [
   },
 ];
 
-// ── The loop (shared with /for/* pages) ──────────────────────────────────────
+// ── Audiences — the design system as an architecture ─────────────────────────
 
-export const loop = {
+export const audiences = {
+  label: "The architecture",
+  heading: "One architecture, every audience.",
+  body: "Your design system stops being a component library and becomes a context layer — an agentic feed of decisions, tokens, and evidence that everyone who touches the product reads from the same source.",
+  items: [
+    { name: "Engineers", href: "/for/engineers", line: "tokens and guardrails, canonical in code" },
+    { name: "Designers", href: "/for/designers", line: "rationale that survives every handoff" },
+    { name: "Marketing", href: "/for/marketers", line: "headlines and flows become evidence" },
+    { name: "Business", href: "/for/business", line: "decisions with receipts, not meetings" },
+    { name: "AI agents", href: "/for/agents", line: "the context layer your agents read first" },
+  ],
+  note: "Even clients read it — the system explains its own choices.",
+};
+
+// ── Proof — running on itself (shared with /for/* pages) ─────────────────────
+
+export const proof = {
   label: "The proof",
-  heading: "One loop. Every decision, recorded.",
-  body: "Systemix lives inside your design system. Every decision and every experiment is an MDX file in your repo — hypothesis, evidence, decision, confidence — written back when the loop closes.",
+  heading: "Running on itself.",
+  body: "This site is a Systemix instance. The agentic feed below is live — every experiment, decision, and learning is a file in this repo, written by the automation and approved by a human.",
   steps: [
     { n: "01", title: "ship" },
     { n: "02", title: "measure" },
@@ -145,8 +172,8 @@ export const loop = {
 export const credibility = {
   label: "Who's behind it",
   heading: "Built by a two-person studio that got tired of watching design systems rot.",
-  body: "Systemix runs its own site. Every headline you're reading was chosen by the loop, measured, and kept because it won. We ship what we sell.",
-  cta: { label: "See the loop running →", href: "/experiments" },
+  body: "Systemix runs its own site. Every headline you're reading was proposed by the automation, measured, and kept because it won. We ship what we sell.",
+  cta: { label: "See it running →", href: "/experiments" },
   links: [
     { label: "Book a call →", href: CALL_MAILTO },
     { label: "LinkedIn →", href: "https://www.linkedin.com/in/boyantsonev/" },
@@ -176,7 +203,7 @@ export const pricing = {
       name: "Start free",
       price: "$0",
       priceNote: INIT_COMMAND,
-      body: "The full loop in ghost mode. Your files, your repo.",
+      body: "The full automation in ghost mode. Your files, your repo.",
       cta: { label: INIT_COMMAND, command: INIT_COMMAND },
       highlight: false,
     },
@@ -186,15 +213,15 @@ export const pricing = {
       price: "$249",
       priceAnchor: "$299",
       priceNote: "pay once",
-      body: "Everything to run the loop for real. Yours to keep, no subscription.",
+      body: "The AI-native design system setup, complete. Yours to keep, no subscription.",
       cta: { label: "Get the Kit →", href: "/kit", event: "kit_requested" },
       highlight: true,
     },
     {
       key: "loop",
-      name: "Scheduled Loop",
+      name: "Scheduled runs",
       price: "Monthly",
-      body: "We run the loop on a schedule so you don't have to remember to.",
+      body: "We run the automation on a schedule so you don't have to remember to.",
       cta: { label: "Book a call →", href: CALL_MAILTO, event: "book_a_call" },
       highlight: false,
     },
@@ -209,20 +236,47 @@ export const pricing = {
   ] satisfies PricingTier[],
 };
 
-// ── Build-vs-buy table — the rational close ──────────────────────────────────
+// ── Build-vs-buy table — the rational close (expandable rows) ────────────────
+
+export type BuildVsBuyRow = { item: string; time: string; detail: string };
 
 export const buildVsBuy = {
   label: "Build vs buy",
   heading: "Build this yourself, or turn it on today.",
-  columns: { diy: "Build the loop yourself", time: "Time", kit: "With Systemix" },
+  hint: "Tap a row to see what each piece actually is.",
+  columns: { diy: "Build it yourself", time: "Time", kit: "With Systemix" },
   rows: [
-    { item: "Experiment scaffolding", time: "~8 hrs" },
-    { item: "PostHog wiring", time: "~6 hrs" },
-    { item: "Learnings ledger", time: "~12 hrs" },
-    { item: "Human-approval rail (HITL)", time: "~16 hrs" },
-    { item: "Drift audit", time: "~20 hrs" },
-    { item: "Scheduled runner", time: "~6 hrs" },
-  ],
+    {
+      item: "Experiment scaffolding",
+      time: "~8 hrs",
+      detail: "One consistent file per bet — hypothesis, metric, variants, status — plus the templates and tooling that keep them consistent. Ships as plain MDX files and a CLI that scaffolds them in one command.",
+    },
+    {
+      item: "PostHog wiring",
+      time: "~6 hrs",
+      detail: "Event capture with per-variant breakdowns, and a reverse proxy so ad-blockers don't silently eat your data. Ships pre-wired — you paste one key.",
+    },
+    {
+      item: "Learnings ledger",
+      time: "~12 hrs",
+      detail: "The memory: every closed experiment appends its decision, evidence, and confidence to one auditable file that future work cites. Building it means write-back tooling and a citation format. Ships built in.",
+    },
+    {
+      item: "Human-approval rail (HITL)",
+      time: "~16 hrs",
+      detail: "Approval cards for every proposed change, with an autonomy dial (ghost → assisted → autonomous). Building it means a queue, write-policies, and UI. Ships as the queue and cards on your Home screen.",
+    },
+    {
+      item: "Drift audit",
+      time: "~20 hrs",
+      detail: "A scanner that catches raw hex values, off-token spacing, and design/code splits before they ship — with a history so you can see the trend. Ships as a skill you run on demand or on a schedule.",
+    },
+    {
+      item: "Scheduled runner",
+      time: "~6 hrs",
+      detail: "A cron that advances running experiments to decision-ready and files the paperwork for a human to close. Building it means CI config and idempotent state handling. Ships as a GitHub Action.",
+    },
+  ] satisfies BuildVsBuyRow[],
   total: { item: "You save", time: "~68+ hrs", kit: "$249 once" },
 };
 
@@ -236,11 +290,11 @@ export const faq = {
   items: [
     {
       q: "What exactly do I get?",
-      a: "A CLI and framework that runs the ship→signal→decide→record loop on your design system. Free to start; the AI Kit adds the paid pieces.",
+      a: "A CLI and framework that automates your design system: it watches what you ship, proposes decisions, and records the reasons. Free to start; the AI Kit adds the paid pieces.",
     },
     {
       q: "I don't have a design system yet — can I use this?",
-      a: "Yes. npx systemix init scaffolds one and starts the loop from day one.",
+      a: "Yes. npx systemix init scaffolds one and starts the automation from day one.",
     },
     {
       q: "Why not just prompt my AI tool from scratch each time?",
@@ -260,7 +314,7 @@ export const faq = {
     },
     {
       q: "Do I need PostHog?",
-      a: "No. Wire it when you want evidence; the loop runs without it.",
+      a: "No. Wire it when you want evidence; the automation runs without it.",
     },
     {
       q: "Is it really open source?",
@@ -268,7 +322,7 @@ export const faq = {
     },
     {
       q: "Can I use it for client work?",
-      a: "Yes. Keep the files, hand them off, or run the loop for the client.",
+      a: "Yes. Keep the files, hand them off, or run the automation for the client.",
     },
   ] satisfies FaqItem[],
 };
@@ -287,7 +341,7 @@ export const brandClone = {
 
 export const bottomCta = {
   heading: "Stop the rot.",
-  body: "One command starts the loop in ghost mode — free, in your repo, nothing touched without your sign-off.",
+  body: "One command starts the automation in ghost mode — free, in your repo, nothing touched without your sign-off.",
   fineprint: "Open source · no lock-in · files in your own repo",
 };
 

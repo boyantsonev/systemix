@@ -27,11 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning data-radius="soft" data-crt="soft">
+      {/* CRT is scoped (spec v1.1): no global overlays — the effect lives on
+          .terminal / .crt-panel surfaces only. [data-crt] still dials strength. */}
       <body className={`${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}>
-        {/* TVA CRT atmosphere — fixed overlays, tokenized via [data-crt] */}
-        <div className="crt-scan" aria-hidden="true" />
-        <div className="crt-veil" aria-hidden="true" />
-        <div className="crt-sweep" aria-hidden="true" />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {
   Eyebrow,
+  GridFrame,
   LandingFooter,
   LandingNav,
   Lead,
@@ -16,13 +17,14 @@ import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
 export const metadata: Metadata = {
   title: "Free design system audit — find your drift | Systemix",
   description:
-    "Send your repo. We run the loop once and show you exactly where your design system is drifting. Free, 10 minutes.",
+    "Send your repo. We run the automation once and show you exactly where your design system is drifting. Free, 10 minutes.",
 };
 
 export default function AuditPage() {
   return (
     <div className="min-h-screen text-foreground">
       <LandingNav />
+      <GridFrame>
       <main>
         <SectionTrack name="audit-hero">
           <section className="border-b border-border/60 py-24 sm:py-28">
@@ -32,7 +34,7 @@ export default function AuditPage() {
                 Find out where your design system is rotting.
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
-                Send us your repo. We run the loop once and show you the drift — free.
+                Send us your repo. We run the automation once and show you the drift — free.
               </p>
               <a
                 href="#form"
@@ -48,14 +50,14 @@ export default function AuditPage() {
           <Section>
             <div className="max-w-3xl">
               <Eyebrow>Choose your path</Eyebrow>
-              <SectionHeading>Free report, or run the loop yourself.</SectionHeading>
+              <SectionHeading>Free report, or run it yourself.</SectionHeading>
             </div>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5">
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-primary bg-card p-7 shadow-[var(--shadow-panel)]">
                 <p className="tva-label mb-3 text-[10px] text-muted-foreground">Free Audit</p>
                 <p className="text-[2rem] font-bold leading-none">$0</p>
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-                  one pass of the loop on your repo
+                  one pass of the automation on your repo
                 </p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
                   You get: a drift report + the top 3 decisions we&apos;d propose.
@@ -75,7 +77,7 @@ export default function AuditPage() {
                 </p>
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">pay once</p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
-                  Skip the wait — run the loop yourself, in your repo, files yours to keep.
+                  Skip the wait — run the automation yourself, in your repo, files yours to keep.
                 </p>
                 <TrackedLink
                   href="/kit"
@@ -97,7 +99,7 @@ export default function AuditPage() {
                 <Eyebrow>The form</Eyebrow>
                 <SectionHeading>Send it. Get the report.</SectionHeading>
                 <Lead>
-                  Read-only — nothing written to your repo. A human runs the loop once and replies
+                  Read-only — nothing written to your repo. A human runs the automation once and replies
                   with the drift report and the top three decisions we&apos;d propose.
                 </Lead>
                 <p className="mt-6 font-mono text-[12px] text-muted-foreground">
@@ -114,19 +116,20 @@ export default function AuditPage() {
             <div className="mx-auto max-w-3xl text-center">
               <p className="text-[16px] font-bold text-foreground">Built by a two-person studio.</p>
               <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-muted-foreground">
-                We run this loop on our own site every week. You&apos;ll get a human reading your
+                We run this automation on our own site every week. You&apos;ll get a human reading your
                 report — not a bot.
               </p>
               {/* Proof wall placeholder (copy-audit.md §5) — one honest line until
                   real outcomes/quotes exist. */}
               <p className="tva-label mx-auto mt-8 max-w-2xl border-t border-border/60 pt-6 text-[11px] leading-relaxed text-highlight">
                 &quot;Systemix&apos;s own site is the first case study — every headline here was
-                chosen by the loop.&quot;
+                proposed, measured, and kept by the automation.&quot;
               </p>
             </div>
           </Section>
         </SectionTrack>
       </main>
+      </GridFrame>
       <LandingFooter />
     </div>
   );

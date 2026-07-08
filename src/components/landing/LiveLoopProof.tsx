@@ -142,7 +142,7 @@ export function LiveLoopProof({ className }: { className?: string }) {
             href="/experiments"
             className="text-[13px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
-            Browse the whole loop →
+            See all experiments →
           </Link>
         </div>
       </div>

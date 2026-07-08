@@ -434,64 +434,55 @@
     text-shadow: none;
   }
 
-  /* ── CRT overlay layers (fixed, pointer-events:none; divs in layout.tsx) ── */
-  .crt-scan {
-    position: fixed;
+  /* ── CRT, scoped (spec v1.1): no global overlays — the effect lives only on
+     "screen" surfaces. `.crt-panel` overlays scanlines + a veil on any panel;
+     `.terminal` is the lit amber tube (scanlines built in). Text sections sit
+     on clean paper/ink. ── */
+  .crt-panel {
+    position: relative;
+  }
+  .crt-panel::after {
+    content: "";
+    position: absolute;
     inset: 0;
-    z-index: 9997;
     pointer-events: none;
+    border-radius: inherit;
     mix-blend-mode: multiply;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, calc(var(--crt-scan-strength) * var(--crt-scan-max))) 0,
-      transparent 1.4px,
-      transparent var(--crt-scan-gap)
-    );
-  }
-  .crt-veil {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    pointer-events: none;
-    background: var(--crt-veil);
-    animation: crt-breathe calc(6s * var(--crt-breathe)) ease-in-out infinite;
-  }
-  .crt-sweep {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: -40vh;
-    height: 38vh;
-    z-index: 9996;
-    pointer-events: none;
-    display: var(--crt-sweep-display);
-    opacity: var(--crt-sweep-opacity);
-    filter: blur(6px);
-    background: linear-gradient(180deg, transparent, var(--crt-sweep-color) 50%, transparent);
-    animation: crt-sweep 7s linear infinite;
-  }
-  @keyframes crt-breathe {
-    0%, 100% { opacity: 0.9; }
-    50% { opacity: 0.98; }
-  }
-  @keyframes crt-sweep {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(180vh); }
+    background:
+      var(--crt-veil),
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, calc(var(--crt-scan-strength) * var(--crt-scan-max))) 0,
+        transparent 1.4px,
+        transparent var(--crt-scan-gap)
+      );
   }
   @media (prefers-reduced-motion: reduce) {
-    .crt-veil { animation: none; }
-    .crt-sweep { display: none; }
     .agent-cursor { animation: none; }
   }
 
   /* The lit terminal — stays a dark amber CRT in both themes */
   .terminal {
+    position: relative;
+    overflow: hidden;
     background: var(--screen-background);
     color: var(--screen-foreground);
     border: 2px solid var(--screen-border);
     border-radius: var(--radius-screen);
     text-shadow: var(--screen-glow);
     box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), var(--glow-soft);
+  }
+  .terminal::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, calc(var(--crt-scan-strength) * 0.16)) 0,
+      transparent 1.4px,
+      transparent var(--crt-scan-gap)
+    );
   }
 
   /* Native form controls inherit brand (design.md §6.4) */

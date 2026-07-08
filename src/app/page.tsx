@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { SectionTrack } from "@/components/systemix/LandingEvents";
-import { LandingHero } from "@/components/landing/LandingHero";
-import { PersonaSwitcher } from "@/components/landing/PersonaSwitcher";
 import {
+  Audiences,
   BottomCTA,
   BuildVsBuyTable,
   FaqJsonLd,
   FaqSection,
   FeatureDeepDives,
+  GridFrame,
+  HeroRow,
   LandingFooter,
   LandingNav,
-  LogoRows,
-  MetricsStrip,
   Services,
+  StackStrip,
+  Statement,
   TheLoop,
   Trust,
 } from "@/components/landing/sections";
@@ -31,39 +32,43 @@ export default function LandingPage() {
     <div className="min-h-screen text-foreground">
       <FaqJsonLd items={faq.items} />
       <LandingNav />
-      <main>
-        <SectionTrack name="hero" experimentId="landing-rebrand-hifi-2026-07">
-          <LandingHero />
-        </SectionTrack>
-        <PersonaSwitcher className="pb-14" />
-        <SectionTrack name="metrics">
-          <MetricsStrip />
-        </SectionTrack>
-        <SectionTrack name="logos">
-          <LogoRows />
-        </SectionTrack>
-        <SectionTrack name="deep-dives">
-          <FeatureDeepDives />
-        </SectionTrack>
-        <SectionTrack name="loop">
-          <TheLoop />
-        </SectionTrack>
-        <SectionTrack name="credibility">
-          <Trust />
-        </SectionTrack>
-        <SectionTrack name="pricing">
-          <Services />
-        </SectionTrack>
-        <SectionTrack name="build-vs-buy">
-          <BuildVsBuyTable />
-        </SectionTrack>
-        <SectionTrack name="faq">
-          <FaqSection />
-        </SectionTrack>
-        <SectionTrack name="bottom-cta">
-          <BottomCTA />
-        </SectionTrack>
-      </main>
+      <GridFrame>
+        <main>
+          <SectionTrack name="hero" experimentId="landing-rebrand-hifi-2026-07">
+            <HeroRow />
+          </SectionTrack>
+          <SectionTrack name="stack">
+            <StackStrip />
+          </SectionTrack>
+          <SectionTrack name="statement">
+            <Statement />
+          </SectionTrack>
+          <SectionTrack name="deep-dives">
+            <FeatureDeepDives />
+          </SectionTrack>
+          <SectionTrack name="audiences">
+            <Audiences />
+          </SectionTrack>
+          <SectionTrack name="loop">
+            <TheLoop />
+          </SectionTrack>
+          <SectionTrack name="credibility">
+            <Trust />
+          </SectionTrack>
+          <SectionTrack name="pricing">
+            <Services />
+          </SectionTrack>
+          <SectionTrack name="build-vs-buy">
+            <BuildVsBuyTable />
+          </SectionTrack>
+          <SectionTrack name="faq">
+            <FaqSection />
+          </SectionTrack>
+          <SectionTrack name="bottom-cta">
+            <BottomCTA />
+          </SectionTrack>
+        </main>
+      </GridFrame>
       <LandingFooter />
     </div>
   );

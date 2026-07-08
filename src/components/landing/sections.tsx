@@ -18,11 +18,13 @@ import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
 import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
+import { LandingHero } from "@/components/landing/LandingHero";
 import { DeepDiveMockup } from "@/components/landing/DeepDiveMockups";
 import {
   GITHUB_URL,
   INIT_COMMAND,
   announcement,
+  audiences,
   bottomCta,
   brandClone,
   buildVsBuy,
@@ -30,12 +32,26 @@ import {
   deepDives,
   faq,
   footer,
+  heroFacts,
   logoRows,
-  loop,
-  metrics,
   nav,
   pricing,
+  proof,
+  statement,
 } from "@/lib/landing/content";
+
+// ── The soft grid (LaunchKit pattern) ─────────────────────────────────────────
+// A hairline-framed container; sections are bordered cells inside it. Text sits
+// on clean paper/ink — the CRT effect lives only on .terminal/.crt-panel
+// surfaces (spec v1.1).
+
+export function GridFrame({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("mx-auto max-w-[1200px] border-x border-border/60", className)}>
+      {children}
+    </div>
+  );
+}
 
 // ── Shared section primitives ─────────────────────────────────────────────────
 
@@ -49,8 +65,8 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("border-t border-border/60 py-24 sm:py-32", className)}>
-      <div className="mx-auto max-w-5xl px-6">{children}</div>
+    <section id={id} className={cn("border-t border-border/60 py-20 sm:py-28", className)}>
+      <div className="mx-auto px-6 sm:px-10">{children}</div>
     </section>
   );
 }
@@ -73,7 +89,7 @@ export function Lead({ children, className }: { children: React.ReactNode; class
   );
 }
 
-// ── Nav (announcement strip + bar) ────────────────────────────────────────────
+// ── Nav (announcement strip + bar, aligned to the frame) ─────────────────────
 
 export function LandingNav() {
   return (
@@ -87,7 +103,7 @@ export function LandingNav() {
         {announcement.text} <span aria-hidden>→</span>
       </a>
       <div className="border-b border-border/60 bg-background/85 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-5xl items-center gap-6 px-6">
+        <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-6 px-6 sm:px-10">
           <Link href="/" className="transition-opacity hover:opacity-80">
             <span className="text-xl font-bold tracking-tight">systemix</span>
           </Link>
@@ -119,7 +135,7 @@ export function LandingNav() {
   );
 }
 
-// ── Metrics strip — honest numbers; 4th stat derived at build time ────────────
+// ── Hero row — copy | facts table | tool grid (LaunchKit pattern) ────────────
 
 /** Count earned bullets under `## Memory` in LEARNINGS.md (0 while none). */
 function countLearnings(): number {
@@ -132,7 +148,7 @@ function countLearnings(): number {
   }
 }
 
-/** Count experiment MDX files (the loop's caseload). */
+/** Count experiment MDX files (the live caseload). */
 function countExperiments(): number {
   try {
     const dir = path.join(process.cwd(), "experiments");
@@ -146,38 +162,79 @@ function countExperiments(): number {
   }
 }
 
-export function MetricsStrip() {
+function HeroFacts() {
   // Honest by construction: recorded decisions once LEARNINGS has entries,
   // the live caseload until then. Never a hand-written number.
   const learnings = countLearnings();
   const experiments = countExperiments();
-  const liveStat =
+  const liveFact =
     learnings > 0
-      ? { value: String(learnings), label: "decisions recorded — live from LEARNINGS.md" }
-      : { value: String(experiments), label: "experiments running the loop on this site" };
+      ? { label: "Decisions recorded", value: String(learnings) }
+      : { label: "Experiments live on this site", value: String(experiments) };
 
   return (
-    <section className="border-t border-border/60">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 divide-border/60 px-6 py-10 max-sm:gap-y-8 sm:grid-cols-4 sm:divide-x">
-        {[...metrics.items, liveStat].map((m) => (
-          <div key={m.label} className="sm:px-6 sm:first:pl-0 sm:last:pr-0">
-            <p className="text-[1.6rem] font-bold leading-none text-highlight [text-shadow:var(--glow-head)]">
-              {m.value}
-            </p>
-            <p className="mt-2 font-mono text-[11px] leading-relaxed text-muted-foreground">
-              {m.label}
-            </p>
+    <div className="flex flex-col p-6 sm:p-8">
+      <p className="tva-label mb-4 text-[10px] text-muted-foreground">· {heroFacts.label}</p>
+      <dl className="flex flex-1 flex-col justify-center">
+        {[...heroFacts.items, liveFact].map((f) => (
+          <div
+            key={f.label}
+            className="flex items-baseline justify-between gap-4 border-b border-border/50 py-3 last:border-b-0"
+          >
+            <dt className="text-[13px] text-muted-foreground">{f.label}</dt>
+            <dd className="text-right font-mono text-[13px] font-bold text-highlight">{f.value}</dd>
           </div>
         ))}
+      </dl>
+    </div>
+  );
+}
+
+const TOOL_ICONS: Record<string, React.ComponentType<{ size?: number | string; className?: string }> | undefined> = {
+  "Claude Code": SiClaude,
+};
+
+function HeroTools() {
+  return (
+    <div className="crt-panel flex flex-col p-6 sm:p-8">
+      <p className="tva-label mb-4 text-[10px] text-muted-foreground">· {logoRows.tools.label}</p>
+      <div className="grid flex-1 grid-cols-1 content-center gap-2">
+        {logoRows.tools.items.map((name) => {
+          const Icon = TOOL_ICONS[name];
+          return (
+            <div
+              key={name}
+              className="flex items-center gap-3 rounded-md border border-border/60 bg-card/60 px-4 py-3"
+            >
+              {Icon ? (
+                <Icon size={16} aria-hidden className="opacity-80" />
+              ) : (
+                <span aria-hidden className="font-mono text-[13px] text-highlight">
+                  ▸
+                </span>
+              )}
+              <span className="font-mono text-[13px] text-foreground">{name}</span>
+            </div>
+          );
+        })}
       </div>
+    </div>
+  );
+}
+
+export function HeroRow() {
+  return (
+    <section className="grid lg:grid-cols-[1.4fr_1fr_1fr] lg:divide-x divide-border/60 max-lg:divide-y">
+      <LandingHero />
+      <HeroFacts />
+      <HeroTools />
     </section>
   );
 }
 
-// ── Logo rows ─────────────────────────────────────────────────────────────────
+// ── Stack strip — one bordered logo band ─────────────────────────────────────
 
-const LOGO_ICONS: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
-  "Claude Code": SiClaude,
+const STACK_ICONS: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
   GitHub: SiGithub,
   PostHog: SiPosthog,
   Vercel: SiVercel,
@@ -186,32 +243,39 @@ const LOGO_ICONS: Record<string, React.ComponentType<{ size?: number | string; c
   "Figma (optional)": SiFigma,
 };
 
-function LogoRow({ label, items }: { label: string; items: string[] }) {
+export function StackStrip() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="tva-label text-[10px] text-muted-foreground/80">{label}</p>
-      <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
-        {items.map((name) => {
-          const Icon = LOGO_ICONS[name];
+    <section className="flex flex-wrap items-stretch border-t border-border/60">
+      <p className="tva-label flex items-center px-6 py-4 text-[10px] text-muted-foreground sm:px-10">
+        {logoRows.stack.label}
+      </p>
+      <div className="flex flex-1 flex-wrap divide-x divide-border/60 border-l border-border/60">
+        {logoRows.stack.items.map((name) => {
+          const Icon = STACK_ICONS[name];
           return (
-            <span key={name} className="flex items-center gap-2 text-[13px] font-medium text-muted-foreground">
-              {Icon && <Icon size={15} aria-hidden className="opacity-80" />}
+            <span
+              key={name}
+              className="flex flex-1 items-center justify-center gap-2 whitespace-nowrap px-4 py-4 text-[13px] font-medium text-muted-foreground"
+            >
+              {Icon && <Icon size={14} aria-hidden className="opacity-80" />}
               {name}
             </span>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
 
-export function LogoRows() {
+// ── Statement block — two-tone problem/resolution ────────────────────────────
+
+export function Statement() {
   return (
-    <Section className="py-16 sm:py-16">
-      <div className="flex flex-col gap-10">
-        <LogoRow label={logoRows.tools.label} items={logoRows.tools.items} />
-        <LogoRow label={logoRows.stack.label} items={logoRows.stack.items} />
-      </div>
+    <Section>
+      <p className="max-w-3xl text-[1.6rem] font-bold leading-[1.3] sm:text-[1.9rem]">
+        <span className="text-foreground">{statement.strong} </span>
+        <span className="text-muted-foreground">{statement.dim}</span>
+      </p>
     </Section>
   );
 }
@@ -246,27 +310,56 @@ export function FeatureDeepDives() {
   );
 }
 
-// ── The loop (shared with /for/* pages) — orbit + live dogfood proof ─────────
+// ── Audiences — the design system as an architecture ─────────────────────────
+
+export function Audiences() {
+  return (
+    <Section id="audiences">
+      <div className="max-w-3xl">
+        <Eyebrow>{audiences.label}</Eyebrow>
+        <SectionHeading>{audiences.heading}</SectionHeading>
+        <Lead className="max-w-2xl">{audiences.body}</Lead>
+      </div>
+      <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-screen)] border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-5">
+        {audiences.items.map((a) => (
+          <Link
+            key={a.href}
+            href={a.href}
+            className="group flex flex-col gap-2 bg-background p-5 transition-colors hover:bg-accent"
+          >
+            <span className="tva-label text-[10px] text-highlight">{a.name}</span>
+            <span className="text-[13px] leading-relaxed text-muted-foreground group-hover:text-foreground">
+              {a.line}
+            </span>
+          </Link>
+        ))}
+      </div>
+      <p className="mt-4 font-mono text-[12px] text-muted-foreground">{audiences.note}</p>
+    </Section>
+  );
+}
+
+// ── Proof — running on itself (persona shared section, export name TheLoop) ──
 
 export function TheLoop() {
   return (
-    <section id="loop" className="border-t border-border/60 py-24 sm:py-32">
-      <div className="mx-auto max-w-5xl px-6">
+    <section id="loop" className="border-t border-border/60 py-20 sm:py-28">
+      <div className="mx-auto px-6 sm:px-10">
         <div className="max-w-3xl">
-          <Eyebrow>{loop.label}</Eyebrow>
-          <SectionHeading>{loop.heading}</SectionHeading>
-          <Lead>{loop.body}</Lead>
+          <Eyebrow>{proof.label}</Eyebrow>
+          <SectionHeading>{proof.heading}</SectionHeading>
+          <Lead>{proof.body}</Lead>
         </div>
       </div>
 
       {/* full-bleed tool constellation */}
       <LoopOrbit className="mx-auto mt-6 max-w-6xl px-6" />
 
-      <div className="mx-auto mt-4 flex max-w-5xl items-center justify-center gap-2 px-6 font-mono text-[12px] text-muted-foreground">
-        {loop.steps.map((s, i) => (
+      <div className="mx-auto mt-4 flex items-center justify-center gap-2 px-6 font-mono text-[12px] text-muted-foreground">
+        {proof.steps.map((s, i) => (
           <span key={s.title} className="flex items-center gap-2">
             <span>{s.title}</span>
-            {i < loop.steps.length - 1 && (
+            {i < proof.steps.length - 1 && (
               <span aria-hidden className="text-muted-foreground/40">
                 →
               </span>
@@ -449,7 +542,7 @@ export function Services() {
   );
 }
 
-// ── Build-vs-buy table — the rational close ───────────────────────────────────
+// ── Build-vs-buy — expandable rows (tap a row for the explanation) ───────────
 
 export function BuildVsBuyTable() {
   return (
@@ -457,40 +550,40 @@ export function BuildVsBuyTable() {
       <div className="max-w-3xl">
         <Eyebrow>{buildVsBuy.label}</Eyebrow>
         <SectionHeading>{buildVsBuy.heading}</SectionHeading>
+        <p className="mt-3 font-mono text-[12px] text-muted-foreground">{buildVsBuy.hint}</p>
       </div>
-      <div className="mt-12 overflow-x-auto">
-        <table className="w-full min-w-[34rem] border-collapse text-left text-[14px]">
-          <thead>
-            <tr className="border-b-2 border-border">
-              <th className="tva-label py-3 pr-4 text-[10px] font-normal text-muted-foreground">
-                {buildVsBuy.columns.diy}
-              </th>
-              <th className="tva-label py-3 pr-4 text-[10px] font-normal text-muted-foreground">
-                {buildVsBuy.columns.time}
-              </th>
-              <th className="tva-label py-3 text-[10px] font-normal text-muted-foreground">
-                {buildVsBuy.columns.kit}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {buildVsBuy.rows.map((r) => (
-              <tr
-                key={r.item}
-                className="border-b border-border/60 transition-colors hover:bg-[color-mix(in_srgb,var(--primary)_8%,transparent)]"
-              >
-                <td className="py-3 pr-4 text-foreground">{r.item}</td>
-                <td className="py-3 pr-4 font-mono text-muted-foreground">{r.time}</td>
-                <td className="py-3 font-mono text-[13px] text-success">included</td>
-              </tr>
-            ))}
-            <tr>
-              <td className="py-4 pr-4 font-bold text-foreground">{buildVsBuy.total.item}</td>
-              <td className="py-4 pr-4 font-mono font-bold text-highlight">{buildVsBuy.total.time}</td>
-              <td className="py-4 font-mono font-bold text-highlight">{buildVsBuy.total.kit}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="mt-10">
+        {/* header row */}
+        <div className="grid grid-cols-[1fr_5.5rem_6.5rem] gap-4 border-b-2 border-border pb-3 sm:grid-cols-[1fr_8rem_9rem]">
+          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.diy}</span>
+          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.time}</span>
+          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.kit}</span>
+        </div>
+        {buildVsBuy.rows.map((r) => (
+          <details key={r.item} className="group border-b border-border/60">
+            <summary className="grid cursor-pointer list-none grid-cols-[1fr_5.5rem_6.5rem] items-baseline gap-4 py-3 text-[14px] transition-colors hover:bg-accent/40 sm:grid-cols-[1fr_8rem_9rem] [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-2 text-foreground">
+                <span
+                  aria-hidden
+                  className="font-mono text-[12px] text-muted-foreground transition-transform group-open:rotate-90"
+                >
+                  ▸
+                </span>
+                {r.item}
+              </span>
+              <span className="font-mono text-muted-foreground">{r.time}</span>
+              <span className="font-mono text-[13px] text-success">included</span>
+            </summary>
+            <p className="max-w-2xl pb-4 pl-6 pr-4 text-[13px] leading-relaxed text-muted-foreground">
+              {r.detail}
+            </p>
+          </details>
+        ))}
+        <div className="grid grid-cols-[1fr_5.5rem_6.5rem] gap-4 py-4 sm:grid-cols-[1fr_8rem_9rem]">
+          <span className="pl-6 font-bold text-foreground">{buildVsBuy.total.item}</span>
+          <span className="font-mono font-bold text-highlight">{buildVsBuy.total.time}</span>
+          <span className="font-mono font-bold text-highlight">{buildVsBuy.total.kit}</span>
+        </div>
       </div>
     </Section>
   );
@@ -573,7 +666,7 @@ export function BottomCTA() {
 export function LandingFooter() {
   return (
     <footer className="border-t border-border/60">
-      <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-6 px-6 py-10 sm:flex-row sm:items-center">
+      <div className="mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-6 px-6 py-10 sm:flex-row sm:items-center sm:px-10">
         <div className="flex items-center gap-3">
           <span className="font-mono text-[12px] text-muted-foreground/70">{footer.tagline}</span>
           <ThemeToggle />
