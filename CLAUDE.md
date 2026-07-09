@@ -41,6 +41,8 @@ Public-release groundwork (Phase 0) in progress:
 ## The loop (skills)
 Core: `/init-experiment` → `/write-variants` → `/measure` → `/close-experiment` (captures the decision into the contract Memory) · `/growth-audit` + `/hermes` (synthesize evidence; propose skill/guardrail improvements as HITL) · `/drift-report` (code-first drift). The Figma skills (`/figma`, `/tokens`, `/sync-to-figma`, …) are the **optional** design-engineer adapter.
 Runner: `systemix loop [<id>]` (CLI, daily cron `systemix-loop.yml`) Ralph-drives running experiments to **decision-ready** — evidence pull → evaluate vs thresholds → close-proposal HITL card. It never closes; humans close.
+Engine (generate stage): `/propose-experiment` (weekly cron `systemix-engine.yml`, needs `ANTHROPIC_API_KEY` secret) drafts the ONE next bet from LEARNINGS + ODI + goals via `systemix propose context|queue` → hypothesis-proposal HITL card; approving on Home scaffolds the contract. Propose-only.
+**Recall before building**: before product/UI changes run `systemix experiment learnings --recent 5`; don't contradict a high-confidence learning without flagging it; cite learning ids in PRs and backlink with `systemix experiment used <prior-id> --by <id>`.
 
 ## MCP Servers
 - **GitHub** (`mcp__github__*`), **Vercel**, **PostHog** — active.
