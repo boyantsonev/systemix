@@ -10,7 +10,7 @@ export function ColorSwatch({ value, size = "md" }: ColorSwatchProps) {
   return (
     <div
       className={`${dim} rounded border border-border flex-shrink-0`}
-      style={isVar ? { background: "#374151" } : { background: value }}
+      style={isVar ? { background: "var(--muted-foreground)" } : { background: value }}
       title={value}
     />
   );

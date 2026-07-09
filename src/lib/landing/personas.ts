@@ -62,7 +62,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
         },
         {
           title: "Weekly learning, not weekly amnesia",
-          body: "A scheduled loop synthesizes your signals into learnings each week. The system gets smarter while you ship; you read one brief instead of five dashboards.",
+          body: "A scheduled run synthesizes your signals into learnings each week. The system gets smarter while you ship; you read one brief instead of five dashboards.",
         },
         {
           title: "One system, every role",
@@ -73,7 +73,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     proof: {
       kind: "outcomes",
       heading: "Wired to your stack in a week",
-      body: "The kit is free and open-source. The sprint is me wiring the loop to your signals — brand cloned in session one, experiments live by end of week, the loop yours when we're done.",
+      body: "The kit is free and open-source. The sprint is me wiring the automation to your signals — brand cloned in session one, experiments live by end of week, the whole setup yours when we're done.",
     },
     sharedSections: ["loop", "trust", "services"],
     guideHref: "/docs/guides/business",
@@ -97,14 +97,14 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
       items: [
         {
           title: "Docs that can't rot",
-          body: "The contract lives next to the code and the loop writes decisions back into it. Documentation stops being a separate artifact you forget to update.",
+          body: "The contract lives next to the code and the automation writes decisions back into it. Documentation stops being a separate artifact you forget to update.",
         },
         {
           title: "Drift caught before review",
           body: "Hardcoded colors, off-scale spacing, tokens diverging from the contract — the drift report finds them and the history is kept, so you see the trend, not just today's mess.",
         },
         {
-          title: "Three doors, same loop",
+          title: "Three doors, same automation",
           body: "CLI for CI and your terminal, MCP for any agent, Claude Code skills for human-in-the-loop. Same files underneath — pick per task, not per religion.",
         },
       ],
@@ -214,7 +214,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
       items: [
         {
           title: "MCP-native",
-          body: "experiment_*, contract_*, and HITL tools over the same files humans edit. Any MCP-capable agent drives the full loop — no bespoke integration.",
+          body: "experiment_*, contract_*, and HITL tools over the same files humans edit. Any MCP-capable agent drives the full automation — no bespoke integration.",
         },
         {
           title: "Plain files, no platform",

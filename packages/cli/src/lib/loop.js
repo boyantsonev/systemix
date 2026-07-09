@@ -13,6 +13,7 @@
 //     card in .systemix/queue.json for a human — the runner proposes, you decide.
 //
 // Stops:
+//   skipped:not-found               experiments/<id>.mdx missing — warn, change nothing
 //   already-complete                status is not running
 //   blocked:not-measured            no posthog-event — /measure wires it (code + skill)
 //   blocked:not-wired               PostHog creds missing — /connect-signal
@@ -186,6 +187,12 @@ async function runLoop(root, id, opts = {}) {
     log(`  ⏹  ${state}${note ? ` — ${note}` : ""}`);
     return { id, stop: state, note, iterations };
   };
+
+  // A missing file is a skip, not a crash — a scheduled sweep must not die on
+  // a stale id (bad arg, renamed experiment, stale queue reference).
+  if (!fs.existsSync(layout.abs(root).experimentFile(id))) {
+    return stop("skipped:not-found", `${layout.rel.experimentFile(id)} does not exist — nothing changed`);
+  }
 
   for (let i = 1; i <= maxIterations; i++) {
     // Ralph: fresh context every pass — re-read the file, carry nothing over.

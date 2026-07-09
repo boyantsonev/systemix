@@ -44,13 +44,13 @@ export function NowStrip() {
                 !s.enabled
                   ? "bg-muted-foreground/30"
                   : s.wired === false
-                    ? "bg-amber-500"
-                    : "bg-emerald-500"
+                    ? "bg-warning"
+                    : "bg-success"
               }`}
             />
             {s.id}
             {s.enabled && s.wired === false ? (
-              <span className="text-amber-500/80">(no key)</span>
+              <span className="text-warning/80">(no key)</span>
             ) : null}
           </span>
         ))}
@@ -59,7 +59,7 @@ export function NowStrip() {
       <Link href="/config" className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors">
         <span className="text-muted-foreground/50 uppercase tracking-wide text-[10px]">queue</span>
         {d.pending > 0 ? (
-          <span className="text-amber-500">{d.pending} pending</span>
+          <span className="text-warning">{d.pending} pending</span>
         ) : (
           <span>clear</span>
         )}

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Settings, X, ArrowUpRight } from "lucide-react";
 import { SystemGraph3D } from "@/components/graph/SystemGraph3D";
 import { NodeCard } from "@/components/graph/NodeCardPanel";
+import { DriftFeed } from "@/components/systemix/DriftFeed";
 import { HitlQueue } from "@/components/systemix/HitlQueue";
 import { MemoryCard } from "@/components/systemix/MemoryCard";
 import { RuntimeFeed } from "@/components/systemix/RuntimeFeed";
@@ -19,7 +20,8 @@ import type { InstanceTopology } from "@/lib/state/instance-topology";
 import type { DriftSnapshot } from "@/lib/state/drift-history";
 import type { RuntimeState } from "@/lib/state/runtime-state";
 
-const cardCls = "flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm";
+const cardCls =
+  "flex flex-col overflow-hidden rounded-[var(--radius-screen)] border bg-card shadow-[var(--shadow-panel)]";
 
 // Format an ISO timestamp with plain string ops (no Date()/locale → no hydration mismatch).
 function fmt(ts: string | null): string {
@@ -104,8 +106,8 @@ export function ConfigView({
           {/* Runtime — stats + active runs (top-left) */}
           <div className={cn(cardCls, "gap-5 p-5 lg:col-span-2")}>
             {unwiredSignals.length > 0 && (
-              <div className="flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-2.5">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber-500" />
+              <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-[color-mix(in_srgb,var(--warning)_8%,transparent)] p-2.5">
+                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-warning" />
                 <p className="text-xs text-muted-foreground">
                   {unwiredSignals.join(", ")} not connected — run{" "}
                   <code className="text-foreground">/connect-signal</code> to gather live evidence.
@@ -119,15 +121,11 @@ export function ConfigView({
               <Stat label="Status" value={runtime.activeRuns.length ? "running" : "idle"} />
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto">
-              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Runtime feed
-              </h3>
+              <h3 className="tva-label mb-2 text-[10px] text-muted-foreground">Agentic feed</h3>
               <RuntimeFeed refreshKey={feedRefresh} />
             </div>
             <div>
-              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Play a skill
-              </h3>
+              <h3 className="tva-label mb-2 text-[10px] text-muted-foreground">Play a skill</h3>
               <SkillRunner
                 skills={playableSkills}
                 runsEnabled={runsEnabled}
@@ -136,16 +134,21 @@ export function ConfigView({
             </div>
           </div>
 
-          {/* Memory — drift score + last learnings (bottom-left) */}
+          {/* Memory — learnings + drift score (bottom-left) */}
           <div className="lg:col-start-1 lg:row-start-2">
             <MemoryCard learnings={learnings} driftTrend={driftTrend} />
           </div>
 
-          {/* Architecture — calm topology preview, expands to the full graph (bottom-middle) */}
-          <div className={cn(cardCls, "relative h-[340px] lg:col-start-2 lg:row-start-2 lg:h-auto")}>
+          {/* Drift feed — the latest audit + trend (bottom-middle) */}
+          <div className="h-[340px] lg:col-start-2 lg:row-start-2 lg:h-auto">
+            <DriftFeed trend={driftTrend} />
+          </div>
+
+          {/* Architecture — calm topology preview, expands to the full graph (bottom-right) */}
+          <div className={cn(cardCls, "relative h-[340px] lg:col-start-3 lg:row-start-2 lg:h-auto")}>
             <div className="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-2.5">
               <div className="flex min-w-0 items-baseline gap-2">
-                <span className="text-sm font-medium text-foreground">Architecture</span>
+                <span className="tva-label text-[10px] text-muted-foreground">Architecture</span>
                 <span className="truncate text-xs text-muted-foreground">
                   {topology.nodes.length} nodes · {topology.links.length} links
                 </span>
@@ -155,7 +158,7 @@ export function ConfigView({
                 <ArrowUpRight className="size-3.5" />
               </Button>
             </div>
-            <div className="relative min-h-0 flex-1">
+            <div className="crt-panel relative min-h-0 flex-1">
               <SystemGraph3D
                 preview
                 nodes={topology.nodes}
@@ -172,12 +175,9 @@ export function ConfigView({
             </div>
           </div>
 
-          {/* Hermes queue (right column, full height) */}
-          <div className={cn(cardCls, "h-[460px] lg:col-start-3 lg:row-span-2 lg:h-auto")}>
-            <div className="flex shrink-0 items-center border-b px-4 py-2.5">
-              <span className="text-sm font-medium text-foreground">Hermes queue</span>
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          {/* Hermes queue (top-right) — HitlQueue renders its own heading + count */}
+          <div className={cn(cardCls, "h-[460px] lg:col-start-3 lg:row-start-1 lg:h-auto")}>
+            <div className="min-h-0 flex-1 overflow-y-auto p-5">
               <HitlQueue className="w-full" hideDemo />
             </div>
           </div>

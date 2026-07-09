@@ -6,10 +6,10 @@ type Rec = Record<string, unknown>;
 // evidence says, rendered from frontmatter. Grey and honest when nothing has
 // been measured — an unread experiment must not look like a validated one.
 const TONES: Record<string, string> = {
-  VALIDATED: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10",
-  REFUTED: "text-red-500 border-red-500/30 bg-red-500/10",
-  ITERATE: "text-amber-500 border-amber-500/30 bg-amber-500/10",
-  RUNNING: "text-sky-500 border-sky-500/30 bg-sky-500/10",
+  VALIDATED: "text-success border-success/30 bg-success/10",
+  REFUTED: "text-destructive border-destructive/30 bg-destructive/10",
+  ITERATE: "text-warning border-warning/30 bg-warning/10",
+  RUNNING: "text-highlight border-highlight/30 bg-highlight/10",
   RETIRED: "text-muted-foreground border-border bg-muted/40",
 };
 

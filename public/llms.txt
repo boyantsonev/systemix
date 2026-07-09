@@ -1,0 +1,42 @@
+# Systemix
+
+Systemix keeps your design system from rotting. It watches what you ship,
+catches where design and code drift apart, proposes a fix with AI, you approve
+it, and it remembers the reason — so your system gets sharper every release
+instead of decaying.
+
+## What it is
+
+- A CLI and framework that automates your design system through a ship → signal
+  → decide → record cycle. Every decision and experiment is a plain MDX file in
+  your repo (hypothesis, evidence, decision, confidence), written back when a
+  decision closes.
+- Three doors into the same automation: Claude Code slash-command skills, the
+  `systemix` CLI, or an MCP connector (`experiment_*` tools).
+- Engine = your AI coding tool (Claude Code, Cursor, Codex). No extra service,
+  no local model, no platform. The files are yours.
+- Ghost mode by default: it suggests, never touches your code. Autonomy dials
+  up to assisted or autonomous; a human always closes the decision.
+- Evidence via PostHog (optional): wire it and headlines, CTAs, and flows
+  become measurable evidence. The automation runs without it.
+- Code-first tokens: CSS is the source of truth; a drift report shows where
+  design and code split. Figma is an optional adapter.
+
+## Getting started
+
+- Free: `npx systemix init` scaffolds the automation (and optionally a design
+  system) in your repo, ghost mode on.
+- AI Kit ($249, pay once): the AI-native design system setup, pre-wired — signals hookup, drift
+  audit, human-approval rail, scheduled runner. Lifetime updates, no
+  subscription. https://getsystemix.vercel.app/kit
+- Free audit: send a repo URL, get back a drift report + top 3 proposed
+  decisions. https://getsystemix.vercel.app/audit
+
+## Links
+
+- Site: https://getsystemix.vercel.app
+- Docs: https://getsystemix.vercel.app/docs
+- GitHub: https://github.com/boyantsonev/systemix-poc
+- The live feed (dogfood): https://getsystemix.vercel.app/experiments —
+  this site runs on Systemix; its headlines are proposed, measured, and kept
+  by the automation.

@@ -77,7 +77,7 @@ export function SkillRunner({
           </button>
         ))}
       </div>
-      {error ? <p className="mt-2 font-mono text-[11px] text-red-500">{error}</p> : null}
+      {error ? <p className="mt-2 font-mono text-[11px] text-destructive">{error}</p> : null}
       {!runsEnabled ? (
         <p className="mt-2 font-mono text-[11px] text-muted-foreground/60">
           Skill runs execute in the local app — <code>npx systemix init</code>

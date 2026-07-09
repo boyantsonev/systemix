@@ -3,9 +3,9 @@ import { ColorSwatch } from "@/components/tokens/ColorSwatch";
 import type { Brand } from "@/lib/data/brands";
 
 const layerConfig = {
-  semantic:  { cls: "text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800" },
-  primitive: { cls: "text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800"   },
-  component: { cls: "text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800"       },
+  semantic:  { cls: "text-success border-success" },
+  primitive: { cls: "text-highlight border-highlight"   },
+  component: { cls: "text-warning border-warning"       },
 };
 
 type TokenOverridesTableProps = {
@@ -34,7 +34,7 @@ export function TokenOverridesTable({ overrides }: TokenOverridesTableProps) {
             return (
               <tr key={o.token} className="hover:bg-muted/50 transition-colors">
                 <td className="py-3 pr-4">
-                  <code className="text-violet-600 dark:text-violet-400 text-xs font-mono">{o.token}</code>
+                  <code className="text-highlight text-xs font-mono">{o.token}</code>
                 </td>
                 <td className="py-3 pr-4">
                   <div className="flex items-center gap-2">

@@ -45,18 +45,19 @@ type QueueCard = {
 // ── Card type config ──────────────────────────────────────────────────────────
 
 const CARD_TYPE: Record<CardType, { label: string; icon: string; color: string }> = {
-  "drift-resolution":         { label: "Drift",      icon: "◎", color: "text-amber-600 dark:text-amber-400"   },
-  "instrumentation-approval": { label: "Instrument", icon: "▷", color: "text-blue-600 dark:text-blue-400"    },
-  "new-token":                { label: "New token",  icon: "◆", color: "text-violet-600 dark:text-violet-400"  },
-  "experiment-validation":    { label: "Experiment", icon: "◈", color: "text-emerald-600 dark:text-emerald-400" },
-  "engagement-snapshot":      { label: "Engagement", icon: "◷", color: "text-cyan-600 dark:text-cyan-400"     },
-  "hypothesis-proposal":      { label: "Hypothesis", icon: "◇", color: "text-fuchsia-600 dark:text-fuchsia-400" },
+  // Warm set only (design/guardrails.mdx): distinct hue per card type.
+  "drift-resolution":         { label: "Drift",      icon: "◎", color: "text-warning" },
+  "instrumentation-approval": { label: "Instrument", icon: "▷", color: "text-primary" },
+  "new-token":                { label: "New token",  icon: "◆", color: "text-success" },
+  "experiment-validation":    { label: "Experiment", icon: "◈", color: "text-highlight" },
+  "engagement-snapshot":      { label: "Engagement", icon: "◷", color: "text-success" },
+  "hypothesis-proposal":      { label: "Hypothesis", icon: "◇", color: "text-primary" },
 };
 
 const STATUS_STYLE: Record<CardStatus, string> = {
-  pending:  "text-amber-600 dark:text-amber-400",
-  approved: "text-emerald-600 dark:text-emerald-400",
-  rejected: "text-red-600 dark:text-red-400",
+  pending:  "text-warning",
+  approved: "text-success",
+  rejected: "text-destructive",
   deferred: "text-muted-foreground",
 };
 
@@ -103,15 +104,15 @@ function ExperimentCard({
   return (
     <div className={cn(
       "rounded-lg border bg-card",
-      isPending ? "border-emerald-500/20" : "border-border/40 opacity-60",
+      isPending ? "border-success/20" : "border-border/40 opacity-60",
     )}>
-      <div className="px-4 pt-3.5 pb-3">
+      <div className="px-4 py-3.5">
         {/* Header */}
         <div className="flex items-start gap-2.5 mb-3">
-          <span className="text-sm mt-px shrink-0 text-emerald-600 dark:text-emerald-400">◈</span>
+          <span className="text-sm mt-px shrink-0 text-success">◈</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">Experiment</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-success">Experiment</span>
               <span className="text-xs text-muted-foreground">{ago(card.requestedAt)}</span>
               {card.project && (
                 <span className="text-xs text-muted-foreground">{card.project}</span>
@@ -133,13 +134,13 @@ function ExperimentCard({
               <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Baseline</p>
               <p className="text-[14px] font-bold text-foreground">{fmtPct(card.baselineRate)}</p>
             </div>
-            <div className="rounded border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-2">
+            <div className="rounded border border-success/20 bg-success/5 px-2.5 py-2">
               <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Variant</p>
-              <p className="text-[14px] font-bold text-emerald-600 dark:text-emerald-400">{fmtPct(card.variantRate)}</p>
+              <p className="text-[14px] font-bold text-success">{fmtPct(card.variantRate)}</p>
             </div>
             <div className="rounded border border-border/40 px-2.5 py-2">
               <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Delta</p>
-              <p className={`text-[14px] font-bold ${isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
+              <p className={`text-[14px] font-bold ${isPositive ? "text-success" : "text-destructive"}`}>
                 {isPositive ? "+" : ""}{delta}%
               </p>
             </div>
@@ -152,7 +153,7 @@ function ExperimentCard({
             <div className="flex items-center gap-2">
               <div className="w-[60px] h-1.5 rounded-full bg-border overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-emerald-500"
+                  className="h-full rounded-full bg-success"
                   style={{ width: `${card.confidenceLevel * 100}%` }}
                 />
               </div>
@@ -175,9 +176,9 @@ function ExperimentCard({
 
         {/* Proposed action */}
         {card.proposal && (
-          <div className="pl-5 mb-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-3 py-2.5">
-            <p className="text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-1.5">Hermes recommends</p>
-            <p className="text-sm text-emerald-800 dark:text-emerald-300 leading-relaxed">{card.proposal}</p>
+          <div className="pl-5 mb-3 rounded-lg border border-success/20 bg-success/5 px-3 py-2.5">
+            <p className="text-xs text-success uppercase tracking-widest mb-1.5">Hermes recommends</p>
+            <p className="text-sm text-success leading-relaxed">{card.proposal}</p>
           </div>
         )}
 
@@ -187,7 +188,7 @@ function ExperimentCard({
           <div className="pl-5 flex items-center gap-1.5">
             <button
               onClick={() => onAction(card.id, "approved")}
-              className="px-3 py-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/20 transition-colors"
+              className="px-3 py-1.5 rounded bg-success/10 border border-success/20 text-success text-xs font-bold hover:bg-success/20 transition-colors"
             >
               Promote variant
             </button>
@@ -208,7 +209,7 @@ function ExperimentCard({
             <DecideOnHome />
           )
         ) : card.status === "approved" ? (
-          <p className="pl-5 text-xs text-emerald-700 dark:text-emerald-400/70">
+          <p className="pl-5 text-xs text-success/70">
             ✓ evidence written to contract
           </p>
         ) : card.status === "rejected" ? (
@@ -234,14 +235,14 @@ function EngagementCard({
   return (
     <div className={cn(
       "rounded-lg border bg-card",
-      isPending ? "border-cyan-500/20" : "border-border/40 opacity-60",
+      isPending ? "border-highlight/20" : "border-border/40 opacity-60",
     )}>
-      <div className="px-4 pt-3.5 pb-3">
+      <div className="px-4 py-3.5">
         <div className="flex items-start gap-2.5 mb-3">
-          <span className="text-sm mt-px shrink-0 text-cyan-600 dark:text-cyan-400">◷</span>
+          <span className="text-sm mt-px shrink-0 text-highlight">◷</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-wide text-cyan-600 dark:text-cyan-400">Engagement</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-highlight">Engagement</span>
               <span className="text-xs text-muted-foreground">{ago(card.requestedAt)}</span>
               {card.surface && <span className="text-xs text-muted-foreground">{card.surface}</span>}
             </div>
@@ -256,9 +257,9 @@ function EngagementCard({
         {(card.baselineRate != null || card.sessions != null) && (
           <div className="pl-5 mb-3 grid grid-cols-2 gap-2 max-w-xs">
             {card.baselineRate != null && (
-              <div className="rounded border border-cyan-500/20 bg-cyan-500/5 px-2.5 py-2">
+              <div className="rounded border border-highlight/20 bg-highlight/5 px-2.5 py-2">
                 <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">{card.metric ?? "conversion"}</p>
-                <p className="text-[14px] font-bold text-cyan-600 dark:text-cyan-400">{fmtPct(card.baselineRate)}</p>
+                <p className="text-[14px] font-bold text-highlight">{fmtPct(card.baselineRate)}</p>
               </div>
             )}
             {card.sessions != null && (
@@ -273,7 +274,7 @@ function EngagementCard({
         {card.confidenceLevel != null && (
           <div className="pl-5 mb-3 flex items-center gap-2">
             <div className="w-[60px] h-1.5 rounded-full bg-border overflow-hidden">
-              <div className="h-full rounded-full bg-cyan-500" style={{ width: `${card.confidenceLevel * 100}%` }} />
+              <div className="h-full rounded-full bg-highlight" style={{ width: `${card.confidenceLevel * 100}%` }} />
             </div>
             <span className="text-xs text-muted-foreground tabular-nums">
               {Math.round(card.confidenceLevel * 100)}% signal strength
@@ -284,9 +285,9 @@ function EngagementCard({
         <p className="text-sm text-muted-foreground leading-relaxed pl-5 mb-3">{card.context}</p>
 
         {card.proposal && (
-          <div className="pl-5 mb-3 rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-3 py-2.5">
-            <p className="text-xs text-cyan-700 dark:text-cyan-400 uppercase tracking-widest mb-1.5">Read</p>
-            <p className="text-sm text-cyan-800 dark:text-cyan-300 leading-relaxed">{card.proposal}</p>
+          <div className="pl-5 mb-3 rounded-lg border border-highlight/20 bg-highlight/5 px-3 py-2.5">
+            <p className="text-xs text-highlight uppercase tracking-widest mb-1.5">Read</p>
+            <p className="text-sm text-highlight leading-relaxed">{card.proposal}</p>
           </div>
         )}
 
@@ -295,7 +296,7 @@ function EngagementCard({
           <div className="pl-5 flex items-center gap-1.5">
             <button
               onClick={() => onAction(card.id, "approved")}
-              className="px-3 py-1.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-700 dark:text-cyan-400 text-xs font-bold hover:bg-cyan-500/20 transition-colors"
+              className="px-3 py-1.5 rounded bg-highlight/10 border border-highlight/20 text-highlight text-xs font-bold hover:bg-highlight/20 transition-colors"
             >
               Acknowledge
             </button>
@@ -316,7 +317,7 @@ function EngagementCard({
             <DecideOnHome />
           )
         ) : card.status === "approved" ? (
-          <p className="pl-5 text-xs text-cyan-700 dark:text-cyan-400/70">✓ acknowledged in the engagement log</p>
+          <p className="pl-5 text-xs text-highlight/70">✓ acknowledged in the engagement log</p>
         ) : card.status === "deferred" ? (
           <p className="pl-5 text-xs text-muted-foreground">flagged for an experiment</p>
         ) : null}
@@ -342,7 +343,7 @@ function StandardCard({
       "rounded-lg border bg-card transition-colors",
       isPending ? "border-border" : "border-border/40 opacity-60",
     )}>
-      <div className="px-4 pt-3.5 pb-3">
+      <div className="px-4 py-3.5">
         <div className="flex items-start gap-2.5 mb-2.5">
           <span className={`text-sm mt-px shrink-0 ${cfg.color}`}>{cfg.icon}</span>
           <div className="flex-1 min-w-0">
@@ -389,13 +390,13 @@ function StandardCard({
           <div className="pl-5 flex items-center gap-1.5">
             <button
               onClick={() => onAction(card.id, "approved")}
-              className="px-3 py-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/20 transition-colors"
+              className="px-3 py-1.5 rounded bg-success/10 border border-success/20 text-success text-xs font-bold hover:bg-success/20 transition-colors"
             >
               Approve
             </button>
             <button
               onClick={() => onAction(card.id, "rejected")}
-              className="px-3 py-1.5 rounded bg-red-500/10 border border-red-500/20 text-red-700 dark:text-red-400 text-xs font-bold hover:bg-red-500/20 transition-colors"
+              className="px-3 py-1.5 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-bold hover:bg-destructive/20 transition-colors"
             >
               Reject
             </button>
@@ -495,8 +496,8 @@ export function HitlQueue({
           <span className="text-xs text-muted-foreground">demo</span>
         )}
         {pending.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-amber-500">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+          <span className="inline-flex items-center gap-1 text-xs text-warning">
+            <span className="w-1.5 h-1.5 rounded-full bg-warning inline-block" />
             {pending.length} pending
           </span>
         )}

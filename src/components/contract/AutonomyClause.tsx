@@ -35,7 +35,7 @@ function Cell({ value, active }: { value: string; active: boolean }) {
   return (
     <td
       className={`px-3 py-1.5 text-[11px] font-mono ${active ? "bg-muted/40" : ""} ${
-        auto ? "text-emerald-500" : "text-muted-foreground/70"
+        auto ? "text-success" : "text-muted-foreground/70"
       }`}
     >
       {value}
@@ -102,9 +102,9 @@ export function AutonomyClause() {
           Track record
         </span>
         <span>{tr.total} proposed</span>
-        <span className="text-emerald-500">{tr.approved} approved</span>
-        <span className="text-red-500">{tr.rejected} rejected</span>
-        <span className="text-amber-500">{tr.deferred} deferred</span>
+        <span className="text-success">{tr.approved} approved</span>
+        <span className="text-destructive">{tr.rejected} rejected</span>
+        <span className="text-warning">{tr.deferred} deferred</span>
         <span className="text-muted-foreground/60">{tr.pending} pending</span>
       </div>
     </div>

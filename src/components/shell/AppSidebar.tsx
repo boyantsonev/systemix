@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Tree, Folder, File as FileNode, type TreeViewElement } from "@/components/ui/file-tree";
 import { SLogo } from "@/components/systemix/SLogo";
-import { PRIMARY_NAV, SECONDARY_NAV, isActive, collectFolderIds } from "@/lib/nav.config";
+import {
+  PRIMARY_NAV,
+  SECONDARY_NAV,
+  isActive,
+  collectFolderIds,
+  type SurfaceNode,
+} from "@/lib/nav.config";
 
 // The decision-queue depth, shown as a badge on Home. Real data from /api/queue.
 function PendingBadge() {
@@ -75,35 +81,35 @@ function DocTree({
   );
 }
 
-// The app shell sidebar (ADR-022): Home (the dashboard) on top, then Contract +
-// Experiments as always-present, expandable folders over their page trees.
-export function AppSidebar({
-  contractTree = [],
-  experimentsTree = [],
-}: {
-  contractTree?: TreeViewElement[];
-  experimentsTree?: TreeViewElement[];
-}) {
+// The app shell sidebar (ADR-022): Home (the dashboard) on top, then every
+// surface as an always-present, expandable folder over its tree. The surface
+// list is data-driven — the (app) layout decides what exists.
+export function AppSidebar({ surfaces = [] }: { surfaces?: SurfaceNode[] }) {
   const pathname = usePathname();
   const home = PRIMARY_NAV.find((i) => i.href === "/config");
 
   const surfaceTree = useMemo<TreeViewElement[]>(
-    () => [
-      { id: "folder:contract", name: "Contract", type: "folder", children: contractTree },
-      { id: "folder:experiments", name: "Experiments", type: "folder", children: experimentsTree },
-    ],
-    [contractTree, experimentsTree],
+    () =>
+      surfaces.map((s) => ({
+        id: `folder:${s.label}`,
+        name: s.label,
+        type: "folder" as const,
+        children: s.tree,
+      })),
+    [surfaces],
   );
 
-  // Open the folder for the surface you're on (+ its nested folders); the other stays closed.
+  // Open the folder(s) for the surface you're on (+ nested folders); others stay closed.
   const initialExpanded = useMemo(() => {
-    const top = pathname.startsWith("/contract")
-      ? surfaceTree[0]
-      : pathname.startsWith("/experiments")
-        ? surfaceTree[1]
-        : null;
-    return top ? [top.id, ...collectFolderIds(top.children ?? [])] : [];
-  }, [pathname, surfaceTree]);
+    const ids: string[] = [];
+    surfaces.forEach((s, i) => {
+      if (pathname.startsWith(s.href)) {
+        const top = surfaceTree[i];
+        ids.push(top.id, ...collectFolderIds(top.children ?? []));
+      }
+    });
+    return ids;
+  }, [pathname, surfaces, surfaceTree]);
 
   return (
     <Sidebar collapsible="icon">

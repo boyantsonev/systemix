@@ -133,7 +133,7 @@ export function SystemGraph3D({
 
   // Visual accessors are plain closures (recreated each render) so selection / theme /
   // dim changes recolor without re-heating the force simulation.
-  const dimGray = isDark ? "#64748b" : "#9ba3c0";
+  const dimGray = isDark ? "#8A6320" : "#A9986F"; // warm muted (TVA), not slate
 
   const nodeColor = (node: any): string => {
     const pal = palette[node.type as NodeType];
@@ -232,7 +232,7 @@ export function SystemGraph3D({
             `<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;background:${
               isDark ? "rgba(8,8,22,0.95)" : "rgba(255,255,255,0.96)"
             };border:1px solid ${isDark ? "rgba(255,255,255,0.12)" : "rgba(200,205,225,0.8)"};padding:4px 8px;border-radius:5px;color:${
-              isDark ? "#e2e8f0" : "#1a1c28"
+              isDark ? "#EFE5D3" : "#241C10" // warm ink, both themes
             };pointer-events:none;">${n.label}${n.sub ? `<span style="opacity:0.5"> · ${n.sub}</span>` : ""}</div>`
           }
           linkColor={linkColor}

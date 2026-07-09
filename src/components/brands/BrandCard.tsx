@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import type { Brand } from "@/lib/data/brands";
 
 const statusConfig: Record<Brand["status"], { cls: string; label: string }> = {
-  "production":  { cls: "text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800", label: "Production"  },
-  "staging":     { cls: "text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",         label: "Staging"     },
-  "in-progress": { cls: "text-violet-600 dark:text-violet-400 border-violet-200 dark:border-violet-800",     label: "In Progress" },
+  "production":  { cls: "text-success border-success", label: "Production"  },
+  "staging":     { cls: "text-warning border-warning",         label: "Staging"     },
+  "in-progress": { cls: "text-highlight border-highlight",     label: "In Progress" },
   "archived":    { cls: "text-muted-foreground border-border",                                                label: "Archived"    },
 };
 
@@ -35,13 +35,13 @@ export function BrandCard({ brand }: BrandCardProps) {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Token coverage</span>
-              <span className={brand.tokenCoverage >= 90 ? "text-emerald-600 dark:text-emerald-400 font-semibold" : brand.tokenCoverage >= 70 ? "text-amber-600 dark:text-amber-400 font-semibold" : "text-red-600 dark:text-red-400 font-semibold"}>
+              <span className={brand.tokenCoverage >= 90 ? "text-success font-semibold" : brand.tokenCoverage >= 70 ? "text-warning font-semibold" : "text-destructive font-semibold"}>
                 {brand.tokenCoverage}%
               </span>
             </div>
             <div className="w-full bg-muted rounded-full h-1">
               <div
-                className={`h-1 rounded-full ${brand.tokenCoverage >= 90 ? "bg-emerald-500" : brand.tokenCoverage >= 70 ? "bg-amber-500" : "bg-red-500"}`}
+                className={`h-1 rounded-full ${brand.tokenCoverage >= 90 ? "bg-success" : brand.tokenCoverage >= 70 ? "bg-warning" : "bg-destructive"}`}
                 style={{ width: `${brand.tokenCoverage}%` }}
               />
             </div>

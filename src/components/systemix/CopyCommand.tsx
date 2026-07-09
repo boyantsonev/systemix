@@ -22,7 +22,7 @@ export function CopyCommand({ command }: { command: string }) {
       <span className="text-foreground">{command}</span>
       <span className="ml-1 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors">
         {copied
-          ? <Check size={12} className="text-emerald-500" />
+          ? <Check size={12} className="text-success" />
           : <span className="text-[10px]">copy</span>
         }
       </span>
