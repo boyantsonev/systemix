@@ -16,7 +16,7 @@ export function LandingHero() {
   return (
     <div className="flex flex-col justify-center p-6 py-16 sm:p-10 sm:py-20">
       {/* SEO: "design system" stays in the H1 (seo-gtm-brief §3) */}
-      <h1 className="mb-6 max-w-xl text-[2.3rem] font-bold leading-[1.06] sm:text-[2.9rem] [text-shadow:var(--glow-head)]">
+      <h1 className="mb-6 max-w-xl text-[2rem] font-bold leading-[1.08] sm:text-[2.9rem] sm:leading-[1.06] [text-shadow:var(--glow-head)]">
         {v.h1}
       </h1>
 

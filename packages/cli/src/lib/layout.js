@@ -35,6 +35,7 @@ const rel = {
   // ── runtime state ──
   state: STATE,
   queue: `${STATE}/queue.json`,
+  workflows: `${STATE}/workflows`,
 };
 
 /** Absolute paths under a given project root. */
@@ -51,6 +52,7 @@ const abs = (root) => ({
   tokens: path.join(root, DESIGN, "tokens.css"),
   state: path.join(root, STATE),
   queue: path.join(root, STATE, "queue.json"),
+  workflows: path.join(root, STATE, "workflows"),
 });
 
 module.exports = { EXPERIMENTS, DESIGN, STATE, rel, abs };

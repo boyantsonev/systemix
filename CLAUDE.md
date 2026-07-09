@@ -8,8 +8,9 @@ Systemix is **the evidence / self-training layer for a design system**. A builde
 
 **Direction: out of alpha → public release.** The approved architecture is the **v5 plan** at `~/.claude/plans/help-me-plan-and-golden-seahorse.md` (and memory `project_public_release`). Read those before non-trivial work.
 
-## Current Status (2026-06-17)
+## Current Status (2026-07-09)
 Public-release groundwork (Phase 0) in progress:
+- ✅ Landing tightened + artifact-forward (denser sections, live loop pulled up), marketing `/for/<persona>` routes removed (personas stay as a home section + `/docs` guides), docs pruned (dropped Deferred TokenGuard docs + stale `_archive`, moved superseded scratch)
 - ✅ `write-policy` self-modification safety rail (skill/guardrail writes = always HITL)
 - ✅ `design/` instance template (`packages/cli/templates/design/`) — the spine
 - ✅ Hermes re-pointed Ollama → deterministic (engine = Claude Code)

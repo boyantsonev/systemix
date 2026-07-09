@@ -29,7 +29,7 @@ export default function AuditPage() {
           <section className="border-b border-border/60 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
               <Eyebrow>AI-Readiness Audit · €249 · emailed in 24–48h</Eyebrow>
-              <h1 className="mx-auto max-w-3xl text-[2.5rem] font-bold leading-[1.1] sm:text-[3rem] [text-shadow:var(--glow-head)]">
+              <h1 className="mx-auto max-w-3xl text-[2rem] font-bold leading-[1.12] sm:text-[3rem] sm:leading-[1.1] [text-shadow:var(--glow-head)]">
                 Is your design system AI-ready?
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
@@ -71,11 +71,11 @@ export default function AuditPage() {
                 </a>
               </div>
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-border bg-card p-7 shadow-[var(--shadow-panel)]">
-                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Full Kit</p>
+                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Learning Kit</p>
                 <p className="text-[2rem] font-bold leading-none">€99</p>
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">download · pay once</p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
-                  Want to fix it yourself? The Full Kit is the whole context engine, downloadable —
+                  Want to fix it yourself? The Learning Kit is the whole context engine, downloadable —
                   files yours to keep.
                 </p>
                 <TrackedLink
@@ -84,7 +84,7 @@ export default function AuditPage() {
                   location="audit-to-kit"
                   className="tva-label mt-6 block rounded-md border border-border px-5 py-3 text-center text-[11px] text-foreground transition-colors hover:border-primary"
                 >
-                  Get the Kit →
+                  Get the Learning Kit →
                 </TrackedLink>
               </div>
             </div>

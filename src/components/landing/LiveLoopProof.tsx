@@ -72,14 +72,14 @@ export function LiveLoopProof({ className }: { className?: string }) {
     <div className={className}>
       <div className="rounded-xl border border-border/50 bg-card p-6 sm:p-8">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
+          <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
             Running on this site · {exp.id}
           </span>
           <span
             className={
               closed
-                ? "rounded-full bg-foreground px-2 py-0.5 text-[10px] font-semibold text-background"
-                : "rounded-full border border-border/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
+                ? "shrink-0 rounded-full bg-foreground px-2 py-0.5 text-[10px] font-semibold text-background"
+                : "shrink-0 rounded-full border border-border/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
             }
           >
             {closed ? "closed" : "measuring"}
