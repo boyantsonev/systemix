@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { DM_Sans, Space_Mono } from "next/font/google";
+import { Chakra_Petch, JetBrains_Mono } from "next/font/google";
 import { Providers } from "@/components/systemix/Providers";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const chakraPetch = Chakra_Petch({
+  variable: "--font-chakra-petch",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
 });
 
@@ -27,9 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning data-radius="soft" data-crt="soft">
-      {/* CRT is scoped (spec v1.1): no global overlays — the effect lives on
-          .terminal / .crt-panel surfaces only. [data-crt] still dials strength. */}
-      <body className={`${dmSans.variable} ${spaceMono.variable} font-sans antialiased`}>
+      <body className={`${chakraPetch.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+        {/* TVA CRT atmosphere — fixed overlays, tokenized via [data-crt] */}
+        <div className="crt-scan" aria-hidden="true" />
+        <div className="crt-veil" aria-hidden="true" />
+        <div className="crt-sweep" aria-hidden="true" />
         <Providers>{children}</Providers>
       </body>
     </html>

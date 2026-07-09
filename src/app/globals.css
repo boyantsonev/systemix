@@ -51,13 +51,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* TVA `launch` type pairing — DM Sans (body/display) + Space Mono (data/labels),
-     loaded via next/font in layout.tsx. The theme's [data-type="square"] dial is
-     not shipped (its fonts aren't loaded); launch is baked as the default. */
-  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
-  --font-display: var(--font-dm-sans), ui-sans-serif, sans-serif;
-  --font-label: var(--font-space-mono), ui-monospace, monospace;
+  /* TVA `square` type pairing — Chakra Petch (body/display/labels) + JetBrains
+     Mono (data/code), loaded via next/font in layout.tsx. */
+  --font-sans: var(--font-chakra-petch), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-display: var(--font-chakra-petch), ui-sans-serif, sans-serif;
+  --font-label: var(--font-chakra-petch), ui-sans-serif, sans-serif;
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -336,10 +335,10 @@
   --radius: 0.3125rem; /* 5px */
   --radius-screen: calc(var(--radius) * 2); /* larger tube-like panels/terminals */
 
-  /* Type roles — launch pairing (DM Sans + Space Mono, next/font vars) */
-  --font-label: var(--font-space-mono), ui-monospace, monospace;
-  --tracking-heading: -0.01em;
-  --tracking-label: 0.18em;
+  /* Type roles — square pairing (Chakra Petch + JetBrains Mono, next/font vars) */
+  --font-label: var(--font-chakra-petch), ui-sans-serif, sans-serif;
+  --tracking-heading: 0.01em;
+  --tracking-label: 0.14em;
   --case-heading: none;
 
   /* CRT dial (base = soft) — strength multiplier × per-theme --crt-scan-max */
@@ -356,8 +355,8 @@
   --ease: cubic-bezier(0.33, 0, 0.2, 1);
   --duration: 260ms;
 
-  /* Mono fallback for code surfaces */
-  --font-mono: var(--font-space-mono), ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
+  /* Mono for code surfaces */
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
 
   /* ── Typography scale — WCAG AA floor: 12px minimum for readable text ── */
   --font-size-2xs: 0.6875rem;   /* 11px — decorative labels only */
@@ -434,10 +433,53 @@
     text-shadow: none;
   }
 
-  /* ── CRT, scoped (spec v1.1): no global overlays — the effect lives only on
-     "screen" surfaces. `.crt-panel` overlays scanlines + a veil on any panel;
-     `.terminal` is the lit amber tube (scanlines built in). Text sections sit
-     on clean paper/ink. ── */
+  /* ── CRT atmosphere — room-wide fixed overlays (scanlines, breathing veil,
+     a slow light sweep), tokenized via [data-crt]. `.crt-panel` additionally
+     overlays scanlines + a veil on any panel; `.terminal` is the lit amber
+     tube (scanlines built in). ── */
+  .crt-scan {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, calc(var(--crt-scan-strength) * var(--crt-scan-max))) 0,
+      transparent 1.4px,
+      transparent var(--crt-scan-gap)
+    );
+  }
+  .crt-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: var(--crt-veil);
+    animation: crt-breathe calc(6s * var(--crt-breathe)) ease-in-out infinite;
+  }
+  .crt-sweep {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -40vh;
+    height: 38vh;
+    z-index: 9996;
+    pointer-events: none;
+    display: var(--crt-sweep-display);
+    opacity: var(--crt-sweep-opacity);
+    filter: blur(6px);
+    background: linear-gradient(180deg, transparent, var(--crt-sweep-color) 50%, transparent);
+    animation: crt-sweep 7s linear infinite;
+  }
+  @keyframes crt-breathe {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.98; }
+  }
+  @keyframes crt-sweep {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(180vh); }
+  }
   .crt-panel {
     position: relative;
   }
@@ -458,6 +500,8 @@
       );
   }
   @media (prefers-reduced-motion: reduce) {
+    .crt-veil { animation: none; }
+    .crt-sweep { display: none; }
     .agent-cursor { animation: none; }
   }
 
