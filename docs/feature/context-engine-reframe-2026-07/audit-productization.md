@@ -18,6 +18,10 @@ To make the €249 tier real:
 3. **Delivery** — render the markdown report as the portable artifact and email it. The "me-in-the-loop" framing (a human reviews before send) is a feature, not a limitation — keep it.
 4. **Honesty** — the 24–48h SLA is a human commitment until automated; keep the copy to what a person can keep.
 
+## Payment: LemonSqueezy, before the intake
+
+Gate the audit on a **LemonSqueezy** €249 product (Merchant-of-Record → EU VAT handled). Checkout → success redirect to the intake form (repo/site + email) → a human runs `readiness-audit` → the scored report is emailed in 24–48h. The `AUDIT_CHECKOUT_URL` constant (`src/lib/landing/content.ts`) is the seam — it defaults to the audit mailto today and becomes the LemonSqueezy buy URL once the product exists; `/audit` keeps `AuditRequestForm` as the intake either way.
+
 ## Sequencing
 
-The report format, scoring, and rubric are done and deliverable **today** by hand. Ship the copy + form now; add payment first (turns intent into revenue), then the trigger/SLA automation. This is productization of an existing skill, not a new build.
+The report format, scoring, and rubric are done and deliverable **today** by hand. Ship the copy + form now; add the LemonSqueezy payment first (turns intent into revenue), then the trigger/SLA automation. This is productization of an existing skill, not a new build.

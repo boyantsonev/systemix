@@ -18,6 +18,12 @@ export const BRAND_CLONE_MAILTO =
 export const KIT_MAILTO = "mailto:boyan.works@gmail.com?subject=Systemix%20AI%20Kit";
 export const CALL_MAILTO = "mailto:boyan.works@gmail.com?subject=Systemix%20scoping%20call";
 
+// Checkout seam — flip these to the LemonSqueezy product URLs once the store is
+// live (e.g. "https://<store>.lemonsqueezy.com/buy/<id>"). Until then they fall
+// back to the existing mailto/form so nothing breaks. One-line change per tier.
+export const KIT_CHECKOUT_URL = KIT_MAILTO;
+export const AUDIT_CHECKOUT_URL = "mailto:boyan.works@gmail.com?subject=Systemix%20AI-Readiness%20Audit";
+
 /** The positioning line — say this before any jargon (SEO brief §1). */
 export const POSITIONING = "Systemix keeps your design system from rotting.";
 
@@ -86,7 +92,7 @@ export const logoRows = {
 
 export const statement = {
   strong: "AI can generate a design system in an afternoon. Keeping it true is the hard part.",
-  dim: "Nothing writes down why decisions were made — so by week two it drifts, and by week six it's slop. Systemix is the automation that keeps the system learning from what you ship.",
+  dim: "Nobody writes down why the decisions were made — so by week two it drifts, and by week six it's slop. Systemix runs inside your AI coding tool, watches every release, and writes down what changed and why.",
 };
 
 // ── Feature deep-dives — negative→positive headline + mockup key ─────────────
@@ -98,57 +104,41 @@ export type DeepDive = {
   mockup: "experiment-card" | "learnings-feed" | "doors-code" | "signals-card" | "hitl-card" | "drift-report";
 };
 
+// Trimmed to three: what it does (autopilot, with receipts folded in), how you
+// run it (doors), and why it's safe (control). Signals + drift live in the FAQ.
 export const deepDives: DeepDive[] = [
   {
     key: "autopilot",
     headline: "Your design system, on autopilot.",
-    body: "Every ship is a signal. Systemix watches what changed, proposes the decision, and — once you approve — records the reason. Solved problems stay solved.",
+    body: "Every ship is a signal. Systemix watches what changed, proposes the decision, and — once you approve — writes down the reason with its evidence. Solved problems stay solved; you never re-decide the same thing.",
     mockup: "experiment-card",
   },
   {
-    key: "receipts",
-    headline: "Decisions with receipts, not vibes.",
-    body: "Every approved call is saved with its evidence and a confidence score. Your system remembers what worked and why — cited, not guessed.",
-    mockup: "learnings-feed",
-  },
-  {
     key: "doors",
-    headline: "Three doors. Pick yours.",
-    body: "Run it as slash-command skills, a CLI, or an MCP connector. The same automation, whichever way your team already works.",
+    headline: "Three ways to run it.",
+    body: "A slash command in Claude Code, the terminal CLI, or your AI agent over MCP. Same files underneath — pick whichever way your team already works.",
     mockup: "doors-code",
-  },
-  {
-    key: "signals",
-    headline: "Measure when you're ready.",
-    body: "Wire PostHog and every headline, CTA, and flow becomes evidence. No analytics yet? The automation runs without it.",
-    mockup: "signals-card",
   },
   {
     key: "control",
     headline: "You stay in control.",
-    body: "Start in ghost mode — suggest only. Dial up to assisted or autonomous when you trust it. A human always closes the decision.",
+    body: "It starts in ghost mode — suggest only. Dial up to assisted or autonomous when you trust it. A human always closes the decision.",
     mockup: "hitl-card",
-  },
-  {
-    key: "drift",
-    headline: "Catch drift before it ships.",
-    body: "Systemix flags where design and code split and shows the diff. Tokens live in code, so there's one source of truth.",
-    mockup: "drift-report",
   },
 ];
 
 // ── Audiences — the design system as an architecture ─────────────────────────
 
 export const audiences = {
-  label: "The architecture",
-  heading: "One context engine, every audience.",
-  body: "Your design system stops being a component library and becomes a context engine — the agentic feed of decisions, tokens, and evidence that every persona, and every agent, reads from the same source. Design systems always connected these roles; this one is AI-native.",
+  label: "Every role",
+  heading: "Everyone works from the same notes.",
+  body: "One source of truth your whole team — and your AI agents — read from: the decisions, the tokens, and the evidence, all in your repo. A design system has always connected these roles; this one keeps the notes for them.",
   items: [
     { name: "Engineers", href: "/for/engineers", line: "tokens and guardrails, canonical in code" },
     { name: "Designers", href: "/for/designers", line: "rationale that survives every handoff" },
     { name: "Marketing", href: "/for/marketers", line: "headlines and flows become evidence" },
     { name: "Business", href: "/for/business", line: "decisions with receipts, not meetings" },
-    { name: "AI agents", href: "/for/agents", line: "the context layer your agents read first" },
+    { name: "AI agents", href: "/for/agents", line: "the notes your agents read first" },
   ],
   note: "Even clients read it — the system explains its own choices.",
 };
@@ -172,10 +162,10 @@ export const proof = {
 export const credibility = {
   label: "Who's behind it",
   heading: "Built by a two-person studio that got tired of watching design systems rot.",
-  body: "Systemix runs its own site. Every headline you're reading was proposed by the automation, measured, and kept because it won. We ship what we sell.",
+  body: "Systemix runs its own site. Every headline you're reading was proposed by it, measured, and kept because it won. We ship what we sell.",
   cta: { label: "See it running →", href: "/experiments" },
   links: [
-    { label: "Book a call →", href: CALL_MAILTO },
+    { label: "GitHub →", href: GITHUB_URL },
     { label: "LinkedIn →", href: "https://www.linkedin.com/in/boyantsonev/" },
   ],
 };
@@ -285,40 +275,24 @@ export const faq = {
   heading: "The honest answers.",
   items: [
     {
-      q: "What exactly do I get?",
-      a: "The context engine for your design system: it watches what you ship, proposes decisions, and records the reasons. Every skill is free; the €99 Kit is the whole thing packaged to download and own.",
-    },
-    {
-      q: "I don't have a design system yet — can I use this?",
-      a: "Yes. npx systemix init scaffolds one and starts the automation from day one.",
-    },
-    {
-      q: "Why not just prompt my AI tool from scratch each time?",
-      a: "Because it forgets. Systemix keeps the decisions and evidence, so you don't re-solve the same thing every release.",
-    },
-    {
       q: "Do I own the files?",
       a: "Yes. Everything lives in your repo as plain files. Cancel anytime, keep everything.",
-    },
-    {
-      q: "Which AI tools does it work with?",
-      a: "Claude Code, Cursor, Codex — any of the three doors.",
     },
     {
       q: "Does it touch my code without asking?",
       a: "No. It starts in ghost mode (suggest-only). You choose when to give it more.",
     },
     {
-      q: "Do I need PostHog?",
-      a: "No. Wire it when you want evidence; the automation runs without it.",
+      q: "I don't have a design system yet — can I use this?",
+      a: "Yes. npx systemix init scaffolds one and starts watching from day one. Wire PostHog later if you want evidence; it runs without it, and catches drift on its own.",
     },
     {
       q: "Is it really open source?",
-      a: "Yes — the core is on GitHub. Start free, upgrade if it earns it.",
+      a: "Yes — every skill is on GitHub, MIT. Start free; the €99 Kit is the whole thing packaged to download and own.",
     },
     {
-      q: "Can I use it for client work?",
-      a: "Yes. Keep the files, hand them off, or run the automation for the client.",
+      q: "Which AI tools does it work with?",
+      a: "Claude Code, Cursor, Codex — a slash command, the CLI, or MCP.",
     },
   ] satisfies FaqItem[],
 };
@@ -337,7 +311,7 @@ export const brandClone = {
 
 export const bottomCta = {
   heading: "Stop the rot.",
-  body: "One command starts the automation in ghost mode — free, in your repo, nothing touched without your sign-off.",
+  body: "One command starts Systemix in ghost mode — free, in your repo, nothing touched without your sign-off.",
   fineprint: "Open source · no lock-in · files in your own repo",
 };
 
@@ -350,7 +324,7 @@ export const nav = {
     { label: "Audit", href: "/audit" },
     { label: "Docs", href: "/docs" },
   ],
-  cta: { label: "Book a call →", href: CALL_MAILTO },
+  cta: { label: "★ Star on GitHub", href: GITHUB_URL },
 };
 
 export const footer = {
