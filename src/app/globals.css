@@ -535,6 +535,77 @@
   }
 }
 
+/* Dossier button — corner-bracket frame, diagonal solid-fill wipe on hover.
+   The skills dossier's primary CTA (CopySkillButton). Colors reference
+   --foreground/--background so it inverts correctly in both themes.
+   Deliberately UNLAYERED (outside @layer base/utilities): it must outrank
+   the Button component's shared Tailwind utility classes (text-sm, px-4
+   py-2, rounded-md, …) that the "dossier" variant can't fully strip via
+   className alone — unlayered CSS always wins over any @layer'd utility
+   regardless of source order. */
+.dossier-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  /* --font-mono is a Tailwind @theme inline token (inlined into utilities at
+     build time, not a real runtime custom property) — reference the
+     underlying next/font variable it resolves from instead. */
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  background: repeating-linear-gradient(
+    119deg,
+    rgba(237, 237, 236, 0.2) 0px, rgba(237, 237, 236, 0.2) 1px,
+    transparent 1px, transparent 5px
+  );
+  border: none;
+  cursor: pointer;
+  isolation: isolate;
+  transition: color 0.2s ease 0.15s;
+}
+.dossier-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--foreground);
+  clip-path: polygon(-1% 0%, -1% 0%, -100% 100%, -1% 100%);
+  transition: clip-path 0.4s cubic-bezier(0.25, 0, 0, 1);
+  z-index: -1;
+  pointer-events: none;
+}
+.dossier-btn:hover {
+  color: var(--background);
+}
+.dossier-btn:hover::after {
+  clip-path: polygon(0% 0%, 200% 0%, 100% 100%, 0% 100%);
+}
+.dossier-btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background-image:
+    linear-gradient(to right, var(--foreground) 8px, transparent 8px, transparent calc(100% - 8px), var(--foreground) calc(100% - 8px)),
+    linear-gradient(to right, var(--foreground) 8px, transparent 8px, transparent calc(100% - 8px), var(--foreground) calc(100% - 8px)),
+    linear-gradient(to bottom, var(--foreground) 8px, transparent 8px, transparent calc(100% - 8px), var(--foreground) calc(100% - 8px)),
+    linear-gradient(to bottom, var(--foreground) 8px, transparent 8px, transparent calc(100% - 8px), var(--foreground) calc(100% - 8px));
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  z-index: 2;
+  pointer-events: none;
+  transition: inset 0.25s cubic-bezier(0.25, 0, 0, 1);
+}
+.dossier-btn:hover::before { inset: -3px; }
+.dossier-btn:active::before { inset: 3px; transition-duration: 0.12s; }
+.dossier-btn:disabled { cursor: default; opacity: var(--disabled-opacity); }
+@media (prefers-reduced-motion: reduce) {
+  .dossier-btn, .dossier-btn::after, .dossier-btn::before { transition: none; }
+}
+
 /* TVA label utility — uppercase-tracked mono (eyebrows, buttons, table heads) */
 @utility tva-label {
   font-family: var(--font-label);

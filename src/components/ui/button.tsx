@@ -21,6 +21,10 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // Corner-bracket frame + diagonal wipe on hover (globals.css .dossier-btn).
+        // Owns its own layout/color/typography — neutralize the base string's
+        // conflicting utilities so .dossier-btn's CSS is the only source of truth.
+        dossier: "dossier-btn rounded-none normal-case tracking-normal bg-transparent",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

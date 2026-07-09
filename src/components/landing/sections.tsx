@@ -11,7 +11,7 @@ import {
   SiTailwindcss,
   SiVercel,
 } from "@icons-pack/react-simple-icons";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
@@ -629,7 +629,7 @@ export function BottomCTA() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="tva-label rounded-md border border-border px-5 py-2.5 text-[12px] text-foreground transition-colors hover:border-primary"
+            className={cn(buttonVariants({ variant: "dossier" }), "h-auto")}
           >
             ★ Star on GitHub
           </a>

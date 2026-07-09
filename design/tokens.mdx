@@ -34,3 +34,23 @@ All configuration is attribute-driven on `<html>` — token swaps, no forks:
 - Tints: derive with `color-mix` + `--tint-weak/mid/line` — never new tokens.
 
 Drift between these rules and the code is what the **Drift Report** measures.
+
+## A gotcha for bespoke CSS (e.g. `.dossier-btn`)
+
+Font tokens (`--font-sans` / `--font-mono` / `--font-display` / `--font-label`)
+are declared inside `@theme inline`, which Tailwind v4 **inlines directly
+into generated utility classes** rather than exposing as real runtime CSS
+custom properties — `var(--font-mono)` resolves to nothing outside Tailwind's
+own utility generation. Hand-written CSS that needs a font must reference the
+underlying `next/font` variable instead (e.g. `var(--font-jetbrains-mono)`,
+set on `<body>` in `layout.tsx`). Color tokens (`--background`, `--primary`,
+…) don't have this problem — they're plain `:root`/`.dark` custom properties
+that `@theme inline` only re-maps, so `var(--foreground)` etc. work fine
+anywhere.
+
+Relatedly: a bespoke effect class meant to override a component's own
+Tailwind utility classes (padding, font-size, radius, …) must live **outside
+every `@layer` block** in `globals.css`. Tailwind's `@layer utilities` always
+outranks `@layer base` regardless of source order — nesting inside `@layer
+base` (as `.terminal`/`.crt-panel` do, since they don't need to win against
+utility classes) silently loses that fight.

@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { resolveSkillFile } from "@/lib/skills-catalog";
 
 export const dynamic = "force-dynamic";
 
-// Resolve a skill's SKILL.md body for the /config graph's "copy skill" action.
-// Order: the instance-installed copy (.claude/skills/<name>) first, then the
-// bundled pipeline sources (packages/cli/pipelines/*/skills/<name>) — so it works
-// both in a real instance and in this repo (which vendors the skills as source).
+// Resolve a skill's SKILL.md body for the /config graph's "copy skill" action
+// and the /skills/[slug] dossier page's "copy skill.md" CTA. Resolution order
+// (instance-installed first, then bundled pipeline sources) lives in
+// resolveSkillFile() so both callers share it.
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ name: string }> },
@@ -17,22 +16,9 @@ export async function GET(
     return NextResponse.json({ error: "invalid skill name" }, { status: 400 });
   }
 
-  const root = process.cwd();
-  const candidates = [path.join(root, ".claude", "skills", name, "SKILL.md")];
-
-  const pipelinesDir = path.join(root, "packages", "cli", "pipelines");
-  if (fs.existsSync(pipelinesDir)) {
-    for (const pipeline of fs.readdirSync(pipelinesDir)) {
-      candidates.push(path.join(pipelinesDir, pipeline, "skills", name, "SKILL.md"));
-    }
+  const found = resolveSkillFile(name);
+  if (!found) {
+    return NextResponse.json({ error: "skill not found" }, { status: 404 });
   }
-
-  for (const file of candidates) {
-    if (fs.existsSync(file)) {
-      const body = fs.readFileSync(file, "utf8");
-      return NextResponse.json({ name, path: path.relative(root, file), body });
-    }
-  }
-
-  return NextResponse.json({ error: "skill not found" }, { status: 404 });
+  return NextResponse.json({ name, path: found.path, body: found.raw });
 }
