@@ -214,6 +214,84 @@ describe("PATCH /api/queue — memory write-back (Phase D)", () => {
   });
 });
 
+describe("PATCH /api/queue — hypothesis-proposal (the engine's generate stage)", () => {
+  function proposalCard(over: Record<string, unknown> = {}) {
+    return {
+      id: "hypothesis-proposal-kit-cta-1",
+      type: "hypothesis-proposal",
+      status: "pending",
+      experimentId: "kit-cta-2026-07",
+      goal: "leads",
+      hypothesis: "clearer kit CTA lifts requests",
+      context: "ODI-B (score 16): underserved",
+      confidence: 0.5,
+      citedLearnings: [] as string[],
+      payload: {
+        id: "kit-cta-2026-07",
+        section: "kit",
+        goal: "leads",
+        hypothesis: "clearer kit CTA lifts requests",
+        metric: "kit-request-rate",
+      },
+      requestedAt: "2026-07-01T00:00:00.000Z",
+      ...over,
+    };
+  }
+  const contractPath = () => path.join(tmp, "experiments", "kit-cta-2026-07.mdx");
+
+  it("approve scaffolds experiments/<id>.mdx from the payload and resolves the card", async () => {
+    seedQueue([proposalCard()]);
+    const { PATCH } = await routes();
+    const res = await PATCH(patchReq({ id: "hypothesis-proposal-kit-cta-1", action: "approved" }));
+    expect(res.status).toBe(200);
+
+    const raw = fs.readFileSync(contractPath(), "utf8");
+    expect(raw).toContain("status: running");
+    expect(raw).toContain("metric: kit-request-rate");
+    expect(raw).toContain("hypothesis: clearer kit CTA lifts requests");
+    expect(readQueue().cards[0].status).toBe("approved");
+  });
+
+  it("approve backlinks the cited learnings (Used by:)", async () => {
+    fs.mkdirSync(path.join(tmp, "experiments"), { recursive: true });
+    fs.writeFileSync(
+      path.join(tmp, "experiments", "LEARNINGS.md"),
+      [
+        "# Learnings", "",
+        "## Memory", "",
+        "- **2026-06-01 · prior win** — confidence 0.9 · from [prior-x], decision: promote. Review by: 2026-09-01. Used by: —",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    seedQueue([proposalCard({ citedLearnings: ["prior-x"] })]);
+    const { PATCH } = await routes();
+    const res = await PATCH(patchReq({ id: "hypothesis-proposal-kit-cta-1", action: "approved" }));
+    expect(res.status).toBe(200);
+
+    const learnings = fs.readFileSync(path.join(tmp, "experiments", "LEARNINGS.md"), "utf8");
+    expect(learnings).toContain("Used by: [kit-cta-2026-07]");
+  });
+
+  it("approve with a colliding experiment id 500s and the card stays pending", async () => {
+    seedHypothesis("kit-cta-2026-07", "leads");
+    seedQueue([proposalCard()]);
+    const { PATCH } = await routes();
+    const res = await PATCH(patchReq({ id: "hypothesis-proposal-kit-cta-1", action: "approved" }));
+    expect(res.status).toBe(500);
+    expect(readQueue().cards[0].status).toBe("pending");
+  });
+
+  it("reject flips status only — no contract is created", async () => {
+    seedQueue([proposalCard()]);
+    const { PATCH } = await routes();
+    const res = await PATCH(patchReq({ id: "hypothesis-proposal-kit-cta-1", action: "rejected" }));
+    expect(res.status).toBe(200);
+    expect(fs.existsSync(contractPath())).toBe(false);
+    expect(readQueue().cards[0].status).toBe("rejected");
+  });
+});
+
 describe("PATCH /api/queue — engagement-snapshot", () => {
   it("acknowledge appends to the engagement log and resolves the card", async () => {
     seedQueue([engagementCard()]);

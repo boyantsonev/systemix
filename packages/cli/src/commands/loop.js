@@ -6,7 +6,6 @@
 
 const { loadConfig } = require("../config");
 const { runLoop, sweepLoop, DEFAULT_THRESHOLDS } = require("../lib/loop");
-const { proposeNextExperiment } = require("../lib/propose");
 
 const LOOP_HELP = `
   systemix loop — Ralph-drive running experiments to decision-ready (HITL at close)
@@ -85,17 +84,9 @@ async function loop(args = [], opts = {}) {
         report(r);
       }
     } else {
-      console.log("\n  systemix loop — no running experiments\n");
-    }
-
-    // The propose stage: with the sweep done, should the NEXT experiment exist?
-    // Queue-card only — the runner never creates the experiment file (HITL).
-    const proposal = proposeNextExperiment(root, { now: opts.now ?? new Date() });
-    if (proposal.proposed) {
-      console.log(`  proposal queued: ${proposal.card.suggestedId}`);
-      console.log("     next: review the card, then /init-experiment (it prefills from the card)");
-    } else if (proposal.deduped) {
-      console.log(`  proposal pending: ${proposal.card.suggestedId} — review it, then /init-experiment`);
+      // Proposing the NEXT experiment is the engine's generate stage
+      // (`systemix propose` / the weekly cron), not the daily loop runner.
+      console.log("\n  systemix loop — no running experiments (run `systemix propose` to draft the next one)\n");
     }
   }
   console.log("");
