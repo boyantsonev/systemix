@@ -10,7 +10,7 @@ import {
   SectionHeading,
 } from "@/components/landing/sections";
 import { SectionTrack, TrackedLink, InstallCommand } from "@/components/systemix/LandingEvents";
-import { INIT_COMMAND, KIT_MAILTO } from "@/lib/landing/content";
+import { INIT_COMMAND, KIT_CHECKOUT_URL } from "@/lib/landing/content";
 
 // The €99 downloadable Full Kit — the whole context engine, packaged to own.
 export const metadata: Metadata = {
@@ -96,7 +96,7 @@ export default function KitPage() {
               </p>
               <div className="mt-9 flex flex-col items-center gap-4">
                 <TrackedLink
-                  href={KIT_MAILTO}
+                  href={KIT_CHECKOUT_URL}
                   event="kit_requested"
                   location="kit-hero"
                   className="tva-label rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
@@ -171,7 +171,7 @@ export default function KitPage() {
                   ))}
                 </ul>
                 <TrackedLink
-                  href={KIT_MAILTO}
+                  href={KIT_CHECKOUT_URL}
                   event="kit_requested"
                   location="kit-pricing"
                   className="tva-label mt-7 block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"

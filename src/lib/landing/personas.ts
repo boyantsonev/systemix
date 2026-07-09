@@ -61,8 +61,6 @@ export type PersonaContent = {
   feedsMeta?: string;
 };
 
-const BOOK_A_CALL = "mailto:boyan.works@gmail.com?subject=Systemix%20scoping%20call";
-
 export const personaContent: Record<PersonaKey, PersonaContent> = {
   business: {
     key: "business",
@@ -75,7 +73,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
       eyebrow: "For the pre-PMF founder",
       heading: "Know why you kept or killed every bet.",
       body: "Your design system and your growth experiments finally share one memory. Every decision is written down with evidence and confidence, so the next sprint starts from what the last one proved — not from scratch.",
-      primaryCta: { label: "Book a scoping call →", href: BOOK_A_CALL },
+      primaryCta: { label: "See it running →", href: "/experiments" },
     },
     jtbd: {
       heading: "How this helps you",
@@ -264,7 +262,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
       eyebrow: "For marketers",
       heading: "Every experiment earns a learning.",
       body: "Each landing variant, CTA test, and funnel bet is a file: hypothesis, live PostHog evidence, and the decision it earned. The learnings ledger remembers what converted — so you never rerun a dead test.",
-      primaryCta: { label: "Book a scoping call →", href: BOOK_A_CALL },
+      primaryCta: { label: "See it running →", href: "/experiments" },
     },
     jtbd: {
       heading: "How this helps you",

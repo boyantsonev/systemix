@@ -15,9 +15,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
-import { LoopOrbit } from "@/components/landing/LoopOrbit";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
-import { LoopDiagram } from "@/components/loop/LoopDiagram";
 import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { DeepDiveMockup } from "@/components/landing/DeepDiveMockups";
@@ -353,16 +351,15 @@ export function TheLoop() {
         </div>
       </div>
 
-      {/* The engine, in six steps — the meta-loop with the personas who own each */}
-      <div className="mx-auto mt-10 px-6 sm:px-10">
-        <p className="tva-label mb-6 text-[10px] text-muted-foreground">The engine, in six steps</p>
-        <LoopDiagram variant="meta" className="mx-auto max-w-5xl" />
-      </div>
-
-      {/* full-bleed tool constellation */}
-      <LoopOrbit className="mx-auto mt-14 max-w-6xl px-6" />
-
+      {/* The strongest proof is the live loop itself — no diagram needed here.
+          The 6-step meta-loop + personas live in /docs and on the /for/* pages. */}
       <LiveLoopProof className="mx-auto mt-12 max-w-3xl px-6" />
+
+      <div className="mx-auto mt-8 max-w-3xl px-6">
+        <Link href="/docs/concepts/the-meta-loop" className="text-[13px] text-muted-foreground underline underline-offset-4 hover:text-foreground">
+          How the whole loop works →
+        </Link>
+      </div>
     </section>
   );
 }
@@ -632,9 +629,9 @@ export function BottomCTA() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+            className="tva-label rounded-md border border-border px-5 py-2.5 text-[12px] text-foreground transition-colors hover:border-primary"
           >
-            or star on GitHub →
+            ★ Star on GitHub
           </a>
         </div>
         <p className="mt-7 font-mono text-[12px] text-muted-foreground/70">{bottomCta.fineprint}</p>

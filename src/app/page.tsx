@@ -3,7 +3,6 @@ import { SectionTrack } from "@/components/systemix/LandingEvents";
 import {
   Audiences,
   BottomCTA,
-  PersonaValueTable,
   FaqJsonLd,
   FaqSection,
   FeatureDeepDives,
@@ -17,6 +16,7 @@ import {
   TheLoop,
   Trust,
 } from "@/components/landing/sections";
+import { ScrollEffect } from "@/components/effects/ScrollEffect";
 import { faq } from "@/lib/landing/content";
 
 // Title + meta per the SEO brief (docs/feature/rebrand-hifi/seo-gtm-brief.md §3):
@@ -40,15 +40,18 @@ export default function LandingPage() {
           <SectionTrack name="stack">
             <StackStrip />
           </SectionTrack>
+          <ScrollEffect variant="crt-geo" intensity="calm" tint="primary" height={140} />
           <SectionTrack name="statement">
             <Statement />
           </SectionTrack>
+          <ScrollEffect variant="ascii-wave" intensity="soft" tint="highlight" height={180} />
           <SectionTrack name="deep-dives">
             <FeatureDeepDives />
           </SectionTrack>
           <SectionTrack name="audiences">
             <Audiences />
           </SectionTrack>
+          <ScrollEffect variant="dither-field" intensity="calm" tint="primary" height={160} />
           <SectionTrack name="loop">
             <TheLoop />
           </SectionTrack>
@@ -58,12 +61,10 @@ export default function LandingPage() {
           <SectionTrack name="pricing">
             <Services />
           </SectionTrack>
-          <SectionTrack name="persona-value">
-            <PersonaValueTable />
-          </SectionTrack>
           <SectionTrack name="faq">
             <FaqSection />
           </SectionTrack>
+          <ScrollEffect variant="crt-geo" intensity="soft" tint="primary" height={140} />
           <SectionTrack name="bottom-cta">
             <BottomCTA />
           </SectionTrack>
