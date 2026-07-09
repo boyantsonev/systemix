@@ -23,10 +23,23 @@ the interface consistent** — no drift, no duplicate components, no slop.
   autonomous mode.
 - Skills live in `.claude/skills/` (Claude Code discovers them automatically).
 
+## Recall before building (the memory is the point)
+Before any product/UI change, recall what this repo has already learned:
+`npx systemix experiment learnings --recent 5` (or the MCP `experiment_learnings`).
+**Don't contradict a high-confidence learning without flagging it to the human.**
+Cite learning ids in PR descriptions; when a change builds on a prior learning,
+backlink it: `npx systemix experiment used <prior-id> --by <id>`. The full
+evidence digest (learnings + running experiments + goals + ODI ranking) is
+`npx systemix propose context`.
+
 ## Where it grows (the loop, optional)
 Once the system holds, close a learning loop in `experiments/`:
 `/init-experiment` → `/write-variants` → `/measure` → `/close-experiment` appends the
 decision to `experiments/LEARNINGS.md`. General, not design-bound.
+The **engine** closes the arc back to generate: the weekly cron
+(`.github/workflows/systemix-engine.yml`) runs `/propose-experiment` to queue the
+ONE next bet as a hypothesis-proposal card — a human approves it on Home; approval
+scaffolds the contract, and nothing ships until `/write-variants` + a merged PR.
 `/atlas` interviews the instance topology and generates a multi-agent loop workflow
 that wraps `systemix loop` (propose-only, HITL like all self-modification).
 

@@ -114,6 +114,19 @@ function scaffoldExperiments(projectRoot, includeMeta) {
   }
 }
 
+// Vendor the engine's weekly generate-stage cron (.github/workflows/). Skips if
+// the file already exists — never clobbers a customized workflow.
+function scaffoldEngineWorkflow(projectRoot) {
+  const dest = path.join(projectRoot, ".github", "workflows", "systemix-engine.yml");
+  if (fs.existsSync(dest)) {
+    console.log("  -  .github/workflows/systemix-engine.yml exists — left as-is");
+    return;
+  }
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(path.join(TEMPLATES_DIR, "github", "systemix-engine.yml"), dest);
+  console.log("  ✓  .github/workflows/systemix-engine.yml  (weekly propose-only engine cron)");
+}
+
 function scaffoldDesign(projectRoot) {
   // Vendor the design/ substrate (optional): DESIGN.md, guardrails.mdx, tokens.css.
   copyDir(path.join(TEMPLATES_DIR, "design"), layout.abs(projectRoot).design);
@@ -275,6 +288,7 @@ async function init(opts = {}) {
   // ── Scaffold the loop (always) + the design substrate (when scaffolding) ──
   console.log("  Setting up experiments/ (the loop)...\n");
   scaffoldExperiments(projectRoot, siMode !== "off");
+  scaffoldEngineWorkflow(projectRoot);
   if (designMode === "scaffold") {
     scaffoldDesign(projectRoot);
   } else if (designMode === "existing") {
@@ -366,6 +380,9 @@ async function init(opts = {}) {
   }
   console.log();
   console.log("  Commit experiments/ + .claude/skills/ + systemix.config.yaml (and design/ if scaffolded) so the instance is reproducible in CI.");
+  console.log("  The scheduled engine needs two GitHub repo secrets: POSTHOG_API_KEY +");
+  console.log("  POSTHOG_PROJECT_ID (evidence) and ANTHROPIC_API_KEY (the weekly propose");
+  console.log("  cron in .github/workflows/systemix-engine.yml) — without them the runs skip gracefully.");
   console.log("  Run `npx systemix doctor` to verify all dependencies.\n");
 }
 

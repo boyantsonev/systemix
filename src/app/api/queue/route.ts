@@ -236,6 +236,49 @@ function applyInstrumentation(card: InstrumentationCard): { ok: boolean; error?:
   return { ok: true };
 }
 
+type HypothesisProposalCard = {
+  id: string;
+  type: string;
+  status: string;
+  experimentId?: string;
+  citedLearnings?: string[];
+  payload?: { id?: string } & Record<string, unknown>;
+  resolvedAt?: string;
+  resolution?: unknown;
+};
+
+// Hypothesis proposals (the engine's generate stage): approving converts the
+// card's payload into a real contract — experiments/<id>.mdx via the same
+// createExperiment every door uses — and backlinks the learnings it cited.
+// Approval creates the CONTRACT only; variants + code still ship through
+// /write-variants and a merged PR (the next human gates).
+async function applyHypothesisProposal(
+  card: HypothesisProposalCard,
+): Promise<{ ok: boolean; error?: string }> {
+  const payload = card.payload;
+  if (!payload?.id) return { ok: false, error: "No payload.id on card" };
+  const tier = loadInstanceConfig()?.trust?.hermes_tier ?? 0;
+  assertWriteAllowed({ tier, artifact: "hypothesis", humanApproved: true });
+
+  const mod = await import("../../../../packages/cli/src/lib/experiments.js");
+  const exp = mod.default ?? mod; // CJS interop (Next vs Vitest)
+  try {
+    exp.createExperiment(process.cwd(), payload.id, payload);
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "createExperiment failed" };
+  }
+  // Backlink recall → loop: flip `Used by:` on each cited learning. Best-effort —
+  // a missing bullet never fails the approval.
+  for (const prior of card.citedLearnings ?? []) {
+    try {
+      exp.markLearningUsed(process.cwd(), prior, payload.id);
+    } catch {
+      /* best-effort */
+    }
+  }
+  return { ok: true };
+}
+
 export async function PATCH(req: NextRequest) {
   const { id, action, note } = await req.json();
   if (!id || !action) {
@@ -273,6 +316,14 @@ export async function PATCH(req: NextRequest) {
       void import("../../../../packages/cli/src/commands/skill-update.js")
         .then(({ update }) => update((card as ExperimentCard).experimentId!, decision, card))
         .catch(() => {});
+    }
+  }
+
+  // Hypothesis proposals: approve scaffolds the contract; reject/defer just flip status.
+  if (card.type === "hypothesis-proposal" && action === "approved") {
+    const result = await applyHypothesisProposal(card as HypothesisProposalCard);
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error ?? "Experiment scaffold failed" }, { status: 500 });
     }
   }
 

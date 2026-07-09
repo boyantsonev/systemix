@@ -1,10 +1,11 @@
 "use strict";
 
 /**
- * Acceptance tests — the propose stage (`lib/propose.js`). The loop's missing
- * half: after the sweep, the runner may queue an `experiment-proposal` card —
- * and NEVER creates the experiment file (the covenant, pinned here). Real
- * filesystem (tmp dirs), fixed clock, deterministic templates (no LLM).
+ * Acceptance tests — the engine's generate stage (`systemix propose`). Real
+ * filesystem (tmp dirs), fixed clock. Pins the covenant: the propose path
+ * validates + dedupes + queues ONE hypothesis-proposal card and NEVER creates
+ * an experiment; approval (the app) does that. Also pins the digest's
+ * cold-start signal and the recomputed ODI ranking.
  */
 
 const fs = require("fs");
@@ -12,11 +13,11 @@ const os = require("os");
 const path = require("path");
 
 const exp = require("../../../src/lib/experiments");
-const goals = require("../../../src/lib/goals");
-const { proposeNextExperiment } = require("../../../src/lib/propose");
-const { loop } = require("../../../src/commands/loop");
+const { createGoal } = require("../../../src/lib/goals");
+const { buildProposalContext, pushHypothesisProposal, readOdi } = require("../../../src/lib/propose");
+const { propose } = require("../../../src/commands/propose");
 
-const NOW = new Date("2026-07-04T00:00:00.000Z");
+const NOW = new Date("2026-07-08T00:00:00.000Z");
 
 function tmpRoot() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "systemix-propose-"));
@@ -25,118 +26,160 @@ const readQueue = (root) => {
   const p = path.join(root, ".systemix", "queue.json");
   return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : { cards: [] };
 };
-const writeQueue = (root, queue) => {
-  fs.mkdirSync(path.join(root, ".systemix"), { recursive: true });
-  fs.writeFileSync(path.join(root, ".systemix", "queue.json"), JSON.stringify(queue, null, 2), "utf8");
-};
-const experimentFiles = (root) => {
-  const dir = path.join(root, "experiments");
-  return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".mdx")) : [];
-};
 
-describe("proposeNextExperiment — the propose stage", () => {
+const JOBS_YAML = `
+jobs:
+  - id: "JOB-T"
+    odi_outcomes:
+      - id: "ODI-A"
+        statement: "well served"
+        importance_estimated: 5
+        satisfaction_estimated: 9
+        score_estimated: 99   # stored score is a lie — must be recomputed to 5
+      - id: "ODI-B"
+        statement: "underserved"
+        importance_estimated: 9
+        satisfaction_estimated: 2
+        score_estimated: 1    # stored score is a lie — must be recomputed to 16
+      - id: "ODI-C"
+        statement: "no numbers"
+`;
+
+function writeJobs(root, yaml = JOBS_YAML) {
+  const dir = path.join(root, "docs", "product");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "jobs.yaml"), yaml, "utf8");
+}
+
+const proposal = (over = {}) => ({
+  hypothesis: "clearer kit CTA lifts requests",
+  context: "ODI-B (score 16): underserved",
+  confidence: 0.5,
+  citedOdi: ["ODI-B"],
+  ...over,
+  payload: {
+    id: "kit-cta-2026-07",
+    section: "kit",
+    goal: "leads",
+    hypothesis: "clearer kit CTA lifts requests",
+    metric: "kit-request-rate",
+    ...(over.payload ?? {}),
+  },
+});
+
+describe("systemix propose — context (the read-only digest)", () => {
   let root;
-  beforeEach(() => {
-    root = tmpRoot();
-  });
+  beforeEach(() => (root = tmpRoot()));
   afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
 
-  it("idle loop (0 running) queues a proposal card — and NEVER creates an experiment file", () => {
-    goals.createGoal(root, "consultancy-leads", { title: "Consultancy leads", now: NOW });
-    const before = experimentFiles(root);
+  it("empty ledger ⇒ coldStart:true, no learnings, odi:[] when jobs.yaml is absent", () => {
+    const ctx = buildProposalContext(root);
+    expect(ctx.coldStart).toBe(true);
+    expect(ctx.learnings).toEqual([]);
+    expect(ctx.odi).toEqual([]);
+    expect(ctx.pendingProposal).toBeNull();
+  });
 
-    const r = proposeNextExperiment(root, { now: NOW });
+  it("running experiments + active goals appear (the overlap guard's inputs)", () => {
+    exp.createExperiment(root, "x", { section: "landing", metric: "ctr", now: NOW });
+    createGoal(root, "leads", { title: "Leads", icp: "founder", killIf: "no lift twice", now: NOW });
+    const ctx = buildProposalContext(root);
+    expect(ctx.running).toEqual([
+      expect.objectContaining({ id: "x", section: "landing", metric: "ctr" }),
+    ]);
+    expect(ctx.goals).toEqual([
+      expect.objectContaining({ id: "leads", icp: "founder", "kill-if": "no lift twice" }),
+    ]);
+  });
 
-    expect(r.proposed).toBe(true);
-    expect(experimentFiles(root)).toEqual(before); // the covenant: queue.json only
-    const cards = readQueue(root).cards;
-    expect(cards).toHaveLength(1);
-    expect(cards[0]).toMatchObject({
-      type: "experiment-proposal",
+  it("ODI outcomes are RE-scored (importance + max(imp−sat,0)), ranked, numbers-less skipped", () => {
+    writeJobs(root);
+    const odi = readOdi(root);
+    expect(odi.map((o) => o.id)).toEqual(["ODI-B", "ODI-A"]); // C skipped, B (16) over A (5)
+    expect(odi[0].score).toBe(16);
+    expect(odi[1].score).toBe(5); // never the stored 99
+  });
+
+  it("a closed experiment shows in recentDecisions and its bullet ends coldStart", () => {
+    exp.createExperiment(root, "x", { now: NOW });
+    exp.closeExperiment(root, "x", { result: "won", decision: "promote", confidence: 0.9, now: NOW });
+    const ctx = buildProposalContext(root);
+    expect(ctx.coldStart).toBe(false);
+    expect(ctx.learnings[0]).toMatchObject({ id: "x", decision: "promote" });
+    expect(ctx.recentDecisions).toEqual([
+      expect.objectContaining({ id: "x", decision: "promote" }),
+    ]);
+  });
+});
+
+describe("systemix propose — queue (validate → dedupe → atomic write)", () => {
+  let root;
+  beforeEach(() => (root = tmpRoot()));
+  afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
+
+  it("queues ONE pending hypothesis-proposal card and NEVER creates the experiment", () => {
+    const { card, deduped } = pushHypothesisProposal(root, proposal(), { now: NOW });
+    expect(deduped).toBe(false);
+    expect(card).toMatchObject({
+      type: "hypothesis-proposal",
+      experimentId: "kit-cta-2026-07",
+      goal: "leads",
+      proposedBy: "engine-propose",
       status: "pending",
-      proposedBy: "loop-runner",
-      goal: "consultancy-leads",
-      suggestedId: "consultancy-leads-2026-07",
+      citedOdi: ["ODI-B"],
     });
-    expect(cards[0].nextStep).toMatch(/init-experiment/);
+    expect(readQueue(root).cards).toHaveLength(1);
+    // the covenant: approval creates the contract, the engine does not
+    expect(fs.existsSync(path.join(root, "experiments", "kit-cta-2026-07.mdx"))).toBe(false);
+    // digest surfaces the pending card
+    expect(buildProposalContext(root).pendingProposal.id).toBe(card.id);
   });
 
-  it("cites the newest learning + the active goal in the draft", () => {
-    goals.createGoal(root, "consultancy-leads", { title: "Consultancy leads", now: NOW });
-    exp.createExperiment(root, "hero-cta-2026-06", { now: NOW });
-    exp.closeExperiment(root, "hero-cta-2026-06", {
-      result: "Bolder CTA lifted calls 24%",
-      decision: "promote",
-      confidence: 0.85,
-      now: NOW,
-    });
-
-    const r = proposeNextExperiment(root, { now: NOW });
-
-    expect(r.proposed).toBe(true);
-    expect(r.card.sourceLearnings).toContain("hero-cta-2026-06");
-    expect(r.card.draftHypothesis).toMatch(/Bolder CTA lifted calls 24%/);
-    expect(r.card.draftHypothesis).toMatch(/Consultancy leads/);
-    expect(r.card.rationale).toMatch(/from \[hero-cta-2026-06\]/);
-  });
-
-  it("empty ledger still proposes, with the honest no-learnings template", () => {
-    goals.createGoal(root, "consultancy-leads", { title: "Consultancy leads", now: NOW });
-    const r = proposeNextExperiment(root, { now: NOW });
-    expect(r.proposed).toBe(true);
-    expect(r.card.draftHypothesis).toMatch(/No learnings recorded yet/);
-    expect(r.card.sourceLearnings).toEqual([]);
-  });
-
-  it("dedupes: a second call while a proposal is pending queues nothing", () => {
-    proposeNextExperiment(root, { now: NOW });
-    const r2 = proposeNextExperiment(root, { now: NOW });
-    expect(r2.proposed).toBe(false);
-    expect(r2.deduped).toBe(true);
+  it("a second push while one is pending dedupes globally (even a different id)", () => {
+    pushHypothesisProposal(root, proposal(), { now: NOW });
+    const second = pushHypothesisProposal(
+      root,
+      proposal({ payload: { id: "other-bet-2026-07" } }),
+      { now: NOW },
+    );
+    expect(second.deduped).toBe(true);
+    expect(second.card.experimentId).toBe("kit-cta-2026-07");
     expect(readQueue(root).cards).toHaveLength(1);
   });
 
-  it("no-op while experiments run and no recent learning is uncited", () => {
-    exp.createExperiment(root, "running-one", { now: NOW });
-    const r = proposeNextExperiment(root, { now: NOW });
-    expect(r.proposed).toBe(false);
+  it("rejects a payload id that collides with an existing experiment", () => {
+    exp.createExperiment(root, "kit-cta-2026-07", { now: NOW });
+    expect(() => pushHypothesisProposal(root, proposal(), { now: NOW })).toThrow(/already exists/);
     expect(readQueue(root).cards).toHaveLength(0);
   });
 
-  it("a fresh close triggers a proposal even while another experiment runs — and a resolved proposal keeps that learning cited", () => {
-    exp.createExperiment(root, "still-running", { now: NOW });
-    exp.createExperiment(root, "just-closed", { now: NOW });
-    exp.closeExperiment(root, "just-closed", { result: "won", decision: "promote", confidence: 0.85, now: NOW });
-
-    const r = proposeNextExperiment(root, { now: NOW });
-    expect(r.proposed).toBe(true);
-    expect(r.card.sourceLearnings).toContain("just-closed");
-
-    // Human dismisses the proposal — the learning stays cited, so the loop
-    // doesn't re-propose the same bet tomorrow.
-    const queue = readQueue(root);
-    queue.cards[queue.cards.length - 1].status = "dismissed";
-    writeQueue(root, queue);
-
-    const r2 = proposeNextExperiment(root, { now: NOW });
-    expect(r2.proposed).toBe(false);
-    expect(readQueue(root).cards.filter((c) => c.type === "experiment-proposal")).toHaveLength(1);
+  it("rejects malformed proposals (missing payload fields, missing citation context)", () => {
+    expect(() => pushHypothesisProposal(root, {}, { now: NOW })).toThrow(/payload/);
+    expect(() =>
+      pushHypothesisProposal(root, { context: "x", payload: { id: "a" } }, { now: NOW }),
+    ).toThrow(/payload\.hypothesis/);
+    expect(() =>
+      pushHypothesisProposal(root, proposal({ context: "  " }), { now: NOW }),
+    ).toThrow(/context is required/);
+    expect(readQueue(root).cards).toHaveLength(0);
   });
 
-  it("suggestedId dodges an existing experiment file (-b suffix)", () => {
-    goals.createGoal(root, "consultancy-leads", { title: "Consultancy leads", now: NOW });
-    exp.createExperiment(root, "consultancy-leads-2026-07", { now: NOW });
-    exp.closeExperiment(root, "consultancy-leads-2026-07", { decision: "kill", now: NOW });
-    const r = proposeNextExperiment(root, { now: NOW });
-    expect(r.card.suggestedId).toBe("consultancy-leads-2026-07-b");
+  it("CLI door: `propose queue --stdin` queues; `propose context` returns the digest", async () => {
+    const r = await propose(["queue", "--stdin"], {
+      projectRoot: root,
+      now: NOW,
+      stdin: JSON.stringify(proposal()),
+    });
+    expect(r.deduped).toBe(false);
+    expect(readQueue(root).cards[0].type).toBe("hypothesis-proposal");
+
+    const digest = await propose(["context"], { projectRoot: root });
+    expect(digest.pendingProposal.id).toBe(r.card.id);
   });
 
-  it("CLI door: `systemix loop` with nothing running queues the proposal after the sweep", async () => {
-    goals.createGoal(root, "consultancy-leads", { title: "Consultancy leads", now: NOW });
-    await loop([], { projectRoot: root, now: NOW });
-    const cards = readQueue(root).cards;
-    expect(cards).toHaveLength(1);
-    expect(cards[0].type).toBe("experiment-proposal");
-    expect(experimentFiles(root)).toEqual([]); // still nothing created
+  it("CLI door: invalid stdin JSON throws (non-zero exit via bin's catch)", async () => {
+    await expect(
+      propose(["queue", "--stdin"], { projectRoot: root, stdin: "not json" }),
+    ).rejects.toThrow(/not valid JSON/);
   });
 });
