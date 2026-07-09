@@ -14,8 +14,13 @@ import {
 import {
   PersonaGuideCta,
   PersonaHero,
+  PersonaJob,
   PersonaJtbd,
+  PersonaLoop,
+  PersonaMetaLane,
   PersonaProof,
+  PersonaSetup,
+  PersonaSignals,
 } from "@/components/landing/PersonaSections";
 import { PersonaSwitcher } from "@/components/landing/PersonaSwitcher";
 import {
@@ -69,6 +74,21 @@ export default async function PersonaPage({
         <PersonaSwitcher current={p.key} className="pb-16" />
         <SectionTrack name="jtbd" persona={p.key}>
           <PersonaJtbd persona={p} />
+        </SectionTrack>
+        <SectionTrack name="job" persona={p.key}>
+          <PersonaJob persona={p} />
+        </SectionTrack>
+        <SectionTrack name="operational-loop" persona={p.key}>
+          <PersonaLoop persona={p} />
+        </SectionTrack>
+        <SectionTrack name="setup" persona={p.key}>
+          <PersonaSetup persona={p} />
+        </SectionTrack>
+        <SectionTrack name="signals" persona={p.key}>
+          <PersonaSignals persona={p} />
+        </SectionTrack>
+        <SectionTrack name="meta-lane" persona={p.key}>
+          <PersonaMetaLane persona={p} />
         </SectionTrack>
         {p.sharedSections.map((key) => {
           const Shared = SHARED_SECTIONS[key];

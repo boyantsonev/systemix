@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
 import { LoopOrbit } from "@/components/landing/LoopOrbit";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
+import { LoopDiagram } from "@/components/loop/LoopDiagram";
 import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { DeepDiveMockup } from "@/components/landing/DeepDiveMockups";
@@ -27,7 +28,7 @@ import {
   audiences,
   bottomCta,
   brandClone,
-  buildVsBuy,
+  personaValue,
   credibility,
   deepDives,
   faq,
@@ -352,21 +353,14 @@ export function TheLoop() {
         </div>
       </div>
 
-      {/* full-bleed tool constellation */}
-      <LoopOrbit className="mx-auto mt-6 max-w-6xl px-6" />
-
-      <div className="mx-auto mt-4 flex items-center justify-center gap-2 px-6 font-mono text-[12px] text-muted-foreground">
-        {proof.steps.map((s, i) => (
-          <span key={s.title} className="flex items-center gap-2">
-            <span>{s.title}</span>
-            {i < proof.steps.length - 1 && (
-              <span aria-hidden className="text-muted-foreground/40">
-                →
-              </span>
-            )}
-          </span>
-        ))}
+      {/* The engine, in six steps — the meta-loop with the personas who own each */}
+      <div className="mx-auto mt-10 px-6 sm:px-10">
+        <p className="tva-label mb-6 text-[10px] text-muted-foreground">The engine, in six steps</p>
+        <LoopDiagram variant="meta" className="mx-auto max-w-5xl" />
       </div>
+
+      {/* full-bleed tool constellation */}
+      <LoopOrbit className="mx-auto mt-14 max-w-6xl px-6" />
 
       <LiveLoopProof className="mx-auto mt-12 max-w-3xl px-6" />
     </section>
@@ -504,12 +498,7 @@ export function Services() {
             )}
           >
             <p className="tva-label mb-3 text-[10px] text-muted-foreground">{t.name}</p>
-            <p className="text-[1.5rem] font-bold leading-none">
-              {t.priceAnchor && (
-                <s className="mr-2 text-[1rem] font-normal text-muted-foreground">{t.priceAnchor}</s>
-              )}
-              {t.price}
-            </p>
+            <p className="text-[1.5rem] font-bold leading-none">{t.price}</p>
             {t.priceNote && (
               <p className="mt-1 font-mono text-[11px] text-muted-foreground">{t.priceNote}</p>
             )}
@@ -542,48 +531,41 @@ export function Services() {
   );
 }
 
-// ── Build-vs-buy — expandable rows (tap a row for the explanation) ───────────
+// ── Per-persona value — expandable rows (tap a row for what it means) ────────
 
-export function BuildVsBuyTable() {
+export function PersonaValueTable() {
   return (
     <Section>
       <div className="max-w-3xl">
-        <Eyebrow>{buildVsBuy.label}</Eyebrow>
-        <SectionHeading>{buildVsBuy.heading}</SectionHeading>
-        <p className="mt-3 font-mono text-[12px] text-muted-foreground">{buildVsBuy.hint}</p>
+        <Eyebrow>{personaValue.label}</Eyebrow>
+        <SectionHeading>{personaValue.heading}</SectionHeading>
+        <p className="mt-3 font-mono text-[12px] text-muted-foreground">{personaValue.hint}</p>
       </div>
       <div className="mt-10">
         {/* header row */}
-        <div className="grid grid-cols-[1fr_5.5rem_6.5rem] gap-4 border-b-2 border-border pb-3 sm:grid-cols-[1fr_8rem_9rem]">
-          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.diy}</span>
-          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.time}</span>
-          <span className="tva-label text-[10px] text-muted-foreground">{buildVsBuy.columns.kit}</span>
+        <div className="grid grid-cols-[7rem_1fr] gap-4 border-b-2 border-border pb-3 sm:grid-cols-[10rem_1fr]">
+          <span className="tva-label text-[10px] text-muted-foreground">{personaValue.columns.role}</span>
+          <span className="tva-label text-[10px] text-muted-foreground">{personaValue.columns.gets}</span>
         </div>
-        {buildVsBuy.rows.map((r) => (
-          <details key={r.item} className="group border-b border-border/60">
-            <summary className="grid cursor-pointer list-none grid-cols-[1fr_5.5rem_6.5rem] items-baseline gap-4 py-3 text-[14px] transition-colors hover:bg-accent/40 sm:grid-cols-[1fr_8rem_9rem] [&::-webkit-details-marker]:hidden">
-              <span className="flex items-center gap-2 text-foreground">
+        {personaValue.rows.map((r) => (
+          <details key={r.role} className="group border-b border-border/60">
+            <summary className="grid cursor-pointer list-none grid-cols-[7rem_1fr] items-baseline gap-4 py-3 text-[14px] transition-colors hover:bg-accent/40 sm:grid-cols-[10rem_1fr] [&::-webkit-details-marker]:hidden">
+              <span className="font-bold text-foreground">{r.role}</span>
+              <span className="flex items-center gap-2 text-muted-foreground">
                 <span
                   aria-hidden
                   className="font-mono text-[12px] text-muted-foreground transition-transform group-open:rotate-90"
                 >
                   ▸
                 </span>
-                {r.item}
+                {r.gets}
               </span>
-              <span className="font-mono text-muted-foreground">{r.time}</span>
-              <span className="font-mono text-[13px] text-success">included</span>
             </summary>
-            <p className="max-w-2xl pb-4 pl-6 pr-4 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="max-w-2xl pb-4 pl-6 pr-4 text-[13px] leading-relaxed text-muted-foreground sm:pl-[11rem]">
               {r.detail}
             </p>
           </details>
         ))}
-        <div className="grid grid-cols-[1fr_5.5rem_6.5rem] gap-4 py-4 sm:grid-cols-[1fr_8rem_9rem]">
-          <span className="pl-6 font-bold text-foreground">{buildVsBuy.total.item}</span>
-          <span className="font-mono font-bold text-highlight">{buildVsBuy.total.time}</span>
-          <span className="font-mono font-bold text-highlight">{buildVsBuy.total.kit}</span>
-        </div>
       </div>
     </Section>
   );

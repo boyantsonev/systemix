@@ -11,6 +11,7 @@ const skillUpdate = require("./skill-update");
 
 const fs = require("fs");
 const path = require("path");
+const { fetchPosthogEvidence } = require("../lib/loop");
 
 const QUEUE_PATH = path.join(process.cwd(), ".systemix", "queue.json");
 const EXPERIMENTS_DIR = path.join(process.cwd(), "experiments");
@@ -308,10 +309,25 @@ async function queryPostHogExperiment(event, days = 30) {
         AND event IN ('$pageview','${event}')
     `);
     const [visitors = 0, event_count = 0, event_persons = 0] = rows[0] ?? [];
+
+    // Per-variant counts — the CANONICAL evidence shape the loop runner
+    // evaluates (`variants` is the load-bearing key; lib/loop.js treats a
+    // snapshot without it as stale and re-pulls, so without this merge the two
+    // daily crons overwrite each other's evidence-posthog block all day).
+    const arm = await fetchPosthogEvidence({ event, days });
+    const withVariants = arm && arm.wired !== false && !arm.error && arm.variants;
+
     return {
       ...base,
       visitors, event_count, event_persons,
       rate: visitors > 0 ? event_persons / visitors : null,
+      ...(withVariants
+        ? {
+            variants: arm.variants,
+            samples: Object.values(arm.variants).reduce((s, n) => s + (Number(n) || 0), 0),
+            ...(arm.prev_total != null ? { prev_total: arm.prev_total } : {}),
+          }
+        : {}),
       source: "live",
     };
   } catch (err) {
@@ -358,13 +374,24 @@ function writeExperimentSnapshot(id, ev) {
 
   let fm = match[1];
   const body = match[2];
+  // Canonical shape (shared with lib/loop.js): variants is the load-bearing
+  // key — the runner trusts a today-dated snapshot iff it carries one.
   const block = [
     "evidence-posthog:",
     `  fetched_at: "${ev.fetched_at}"`,
     `  source: "${ev.source}"`,
     `  window_days: ${ev.period_days}`,
-    `  visitors: ${ev.visitors}`,
     `  event: "${ev.event}"`,
+    ...(ev.variants
+      ? [
+          `  samples: ${ev.samples ?? Object.values(ev.variants).reduce((s, n) => s + (Number(n) || 0), 0)}`,
+          ...(Object.keys(ev.variants).length
+            ? ["  variants:", ...Object.entries(ev.variants).map(([k, n]) => `    ${k}: ${Number(n) || 0}`)]
+            : ["  variants: {}"]),
+          ...(ev.prev_total != null ? [`  prev_total: ${ev.prev_total}`] : []),
+        ]
+      : []),
+    `  visitors: ${ev.visitors}`,
     `  event_count: ${ev.event_count}`,
     `  event_persons: ${ev.event_persons}`,
     `  rate: ${ev.rate == null ? "null" : Math.round(ev.rate * 10000) / 10000}`,

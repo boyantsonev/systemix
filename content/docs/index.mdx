@@ -2,23 +2,45 @@
 title: What is Systemix?
 ---
 
-Systemix is a composable hypothesis→validate→learn loop. You write an experiment — an ICP, a hypothesis, and the AI workflow that tests it — measure it against real signal, and close it with a decision. The learning is written back to `experiments/LEARNINGS.md`, where the next agent or sprint starts from evidence, not a fresh guess — because each session starts stateless, the files are its memory.
+Systemix runs little experiments on your website, writes down what it learned and why, and suggests the next one. **You approve every decision.**
 
-**Three ways to drive the loop:**
+That's the whole product. It runs in Claude Code, and everything it knows lives as plain files in your repo — no platform, no dashboard you don't own.
+
+<LoopDiagram variant="operational" />
+
+## The four steps
+
+1. **Propose** — the daily runner suggests the next experiment as a card in `.systemix/queue.json`, built from what the loop has already learned. It never creates anything itself — you say yes or no.
+2. **Build** — the experiment becomes a file: `experiments/<id>.mdx`. The bet, who it's for, and the number that will prove it.
+3. **Measure** — the runner pulls real numbers (PostHog) into the file, every day, on its own.
+4. **Learn** — when the numbers are strong enough, you get a card recommending a decision. You close it; the lesson is written to `experiments/LEARNINGS.md` — the notebook the next proposal starts from.
+
+## What you approve
+
+The system moves on its own, but three things always wait for your OK:
+
+- **Starting a new experiment** — the runner proposes; `/init-experiment` is how you accept.
+- **Closing an experiment** — the runner recommends promote / iterate / kill; you decide.
+- **Changing its own skills or rules** — always proposed, never self-applied.
+
+## Three ways to drive it
+
 - [Claude Code skills](/docs/slash-commands) — `/systemix-init`, `/measure`, `/close-experiment` and more
-- CLI — `systemix experiment new | list | close | learnings`
+- CLI — `systemix experiment new | list | close | learnings` and `systemix loop`
 - MCP — `experiment_new`, `experiment_list`, `experiment_close` for any agent that speaks MCP
 
-The design system is optional. You bring your own, scaffold one, or skip it entirely.
+All three doors read and write the same files.
+
+**Optional adapters** — a design-system spine (`design/`, guardrails, tokens) and Figma sync ship in the box, but the loop doesn't need them. See [the design-system adapter](/docs/design-system).
 
 ## Start here
 
 → [Getting started](/docs/getting-started) — set up the loop in a new or existing repo
 
-→ [The experiment](/docs/concepts/experiment) — what an experiment is and how it progresses
+→ [The loop](/docs/concepts/the-loop) — each step in detail, and what the daily runner does
 
-→ [The loop](/docs/concepts/the-loop) — the five-skill sequence from hypothesis to learning
+→ [The experiment](/docs/concepts/experiment) — the anatomy of one experiment file
 
-→ [Why files & loops](/docs/concepts/why-files) — why the memory lives on disk, curated
+→ [Why files & loops](/docs/concepts/why-files) — why the memory lives on disk
 
-→ [Slash commands](/docs/slash-commands) — the full skill reference
+→ [Skills reference](/docs/slash-commands) — every skill, generated from the source

@@ -3,7 +3,7 @@ import { SectionTrack } from "@/components/systemix/LandingEvents";
 import {
   Audiences,
   BottomCTA,
-  BuildVsBuyTable,
+  PersonaValueTable,
   FaqJsonLd,
   FaqSection,
   FeatureDeepDives,
@@ -58,8 +58,8 @@ export default function LandingPage() {
           <SectionTrack name="pricing">
             <Services />
           </SectionTrack>
-          <SectionTrack name="build-vs-buy">
-            <BuildVsBuyTable />
+          <SectionTrack name="persona-value">
+            <PersonaValueTable />
           </SectionTrack>
           <SectionTrack name="faq">
             <FaqSection />

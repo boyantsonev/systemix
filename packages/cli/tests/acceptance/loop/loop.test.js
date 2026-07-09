@@ -150,6 +150,31 @@ describe("systemix loop — the Ralph runner", () => {
     expect(r.stop).toBe("decision-ready");
   });
 
+  it("trusts a today-dated CANONICAL snapshot from the other writer — no re-pull (the two-crons fix)", async () => {
+    // `systemix evidence experiment pull` now writes the canonical shape (with
+    // `variants`). The runner must accept it as fresh and go straight to
+    // evaluate — the two daily crons stop overwriting each other.
+    exp.setMeasurement(root, "x", { event: "book_call_clicked" });
+    const { file, data, content } = exp.getExperiment(root, "x");
+    data["evidence-posthog"] = {
+      fetched_at: "2026-07-04",
+      source: "live",
+      window_days: 30,
+      event: "book_call_clicked",
+      samples: 230,
+      variants: { control: 100, variant_b: 130 },
+      visitors: 500, // extra funnel keys are allowed — the runner ignores them
+      rate: 0.02,
+    };
+    fs.writeFileSync(file, exp.stringifyMdx(content, data), "utf8");
+
+    const neverCalled = jest.fn();
+    const r = await runLoop(root, "x", { now: NOW, fetchEvidence: neverCalled });
+    expect(neverCalled).not.toHaveBeenCalled(); // trusted the canonical snapshot
+    expect(r.iterations[0].action).toBe("queue-card"); // first iteration went straight to evaluate
+    expect(r.stop).toBe("decision-ready");
+  });
+
   it("evaluateEvidence handles a zero-control baseline conservatively (not ready)", () => {
     const v = evaluateEvidence({ variants: { control: 0, variant_b: 50 } });
     expect(v.ready).toBe(false);

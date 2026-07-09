@@ -20,6 +20,24 @@ done when the declared metric actually fires and the change is up for review.
 
 ## Steps
 
+### Step 0a — Check for a runner proposal
+
+The daily runner queues an `experiment-proposal` card in `.systemix/queue.json`
+when the loop is idle or a fresh learning landed (it proposes; it never creates
+the file). Check for one first:
+
+- Read `.systemix/queue.json` for a card with `type: "experiment-proposal"` and
+  `status: "pending"`.
+- If present, offer it to the user as the prefilled draft: its `goal`,
+  `suggestedId`, `draftHypothesis`, `rationale`, and `sourceLearnings` seed
+  Steps 1–2 (the user edits, confirms, or discards — never auto-accept).
+- Once the experiment file is created from it, mark the card
+  `status: "accepted"` with `resolution: { experimentId: "<id>" }` and
+  `resolvedAt`. If the user discards it, mark it `status: "dismissed"` — a
+  dismissed proposal's learnings stay cited, so the runner won't re-propose the
+  same bet.
+- No card → continue normally.
+
 ### Step 0 — Recall prior learnings
 
 Before authoring, pull the loop's recent memory so this experiment starts from

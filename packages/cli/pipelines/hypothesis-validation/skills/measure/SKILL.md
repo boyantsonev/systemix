@@ -1,6 +1,7 @@
 ---
+name: measure
 description: Add PostHog instrumentation to a component. Reads the experiment contract for what to measure.
-argument-hint: [component-name-or-path] [optional: event-name]
+argument-hint: "[component-name-or-path] [optional: event-name]"
 ---
 
 # /measure — Add Instrumentation

@@ -5,6 +5,8 @@ import { RecordsIndex } from "@/components/contract/RecordsIndex";
 import { NowStrip } from "@/components/contract/NowStrip";
 import { PendingDecisions } from "@/components/contract/PendingDecisions";
 import { AutonomyClause } from "@/components/contract/AutonomyClause";
+import { LoopDiagram } from "@/components/loop/LoopDiagram";
+import { SkillsReference } from "@/components/docs/SkillsReference";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -14,6 +16,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     NowStrip,
     PendingDecisions,
     AutonomyClause,
+    LoopDiagram,
+    SkillsReference,
     ...components,
   } as MDXComponents;
 }

@@ -77,14 +77,16 @@ async function loop(args = [], opts = {}) {
     report(await runLoop(root, id, runOpts));
   } else {
     const results = await sweepLoop(root, runOpts);
-    if (!results.length) {
-      console.log("\n  (no running experiments — `systemix experiment new <id>` starts one)\n");
-      return;
-    }
-    console.log(`\n  systemix loop — swept ${results.length} running experiment${results.length === 1 ? "" : "s"}\n`);
-    for (const r of results) {
-      console.log(`  ${r.id}: ${r.stop}${r.note ? ` — ${r.note}` : ""}`);
-      report(r);
+    if (results.length) {
+      console.log(`\n  systemix loop — swept ${results.length} running experiment${results.length === 1 ? "" : "s"}\n`);
+      for (const r of results) {
+        console.log(`  ${r.id}: ${r.stop}${r.note ? ` — ${r.note}` : ""}`);
+        report(r);
+      }
+    } else {
+      // Proposing the NEXT experiment is the engine's generate stage
+      // (`systemix propose` / the weekly cron), not the daily loop runner.
+      console.log("\n  systemix loop — no running experiments (run `systemix propose` to draft the next one)\n");
     }
   }
   console.log("");
