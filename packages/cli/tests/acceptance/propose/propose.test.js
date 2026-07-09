@@ -51,6 +51,12 @@ function writeJobs(root, yaml = JOBS_YAML) {
   fs.writeFileSync(path.join(dir, "jobs.yaml"), yaml, "utf8");
 }
 
+function writeWorkflow(root, slug, data) {
+  const dir = path.join(root, ".systemix", "workflows");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${slug}.json`), JSON.stringify(data), "utf8");
+}
+
 const proposal = (over = {}) => ({
   hypothesis: "clearer kit CTA lifts requests",
   context: "ODI-B (score 16): underserved",
@@ -100,6 +106,26 @@ describe("systemix propose — context (the read-only digest)", () => {
     expect(odi[1].score).toBe(5); // never the stored 99
   });
 
+  it("productWorkflows surfaces only scope:product flows, keyed by persona/jtbd", () => {
+    writeWorkflow(root, "student-socrat-homework", {
+      id: "student-socrat-homework",
+      name: "Socratic homework help",
+      scope: "product",
+      persona: "student",
+      jtbd: "JOB-001",
+      description: "A student is stuck and wants the answer.",
+    });
+    writeWorkflow(root, "engine-generate-loop", {
+      id: "engine-generate-loop",
+      name: "Systemix generate stage",
+      scope: "internal",
+    });
+    const ctx = buildProposalContext(root);
+    expect(ctx.productWorkflows).toEqual([
+      expect.objectContaining({ id: "student-socrat-homework", persona: "student", jtbd: "JOB-001" }),
+    ]);
+  });
+
   it("a closed experiment shows in recentDecisions and its bullet ends coldStart", () => {
     exp.createExperiment(root, "x", { now: NOW });
     exp.closeExperiment(root, "x", { result: "won", decision: "promote", confidence: 0.9, now: NOW });
@@ -127,6 +153,7 @@ describe("systemix propose — queue (validate → dedupe → atomic write)", ()
       proposedBy: "engine-propose",
       status: "pending",
       citedOdi: ["ODI-B"],
+      citedWorkflow: [],
     });
     expect(readQueue(root).cards).toHaveLength(1);
     // the covenant: approval creates the contract, the engine does not

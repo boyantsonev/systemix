@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/systemix/ThemeToggle";
 import { InstallCommand, TrackedLink } from "@/components/systemix/LandingEvents";
 import { LiveLoopProof } from "@/components/landing/LiveLoopProof";
-import { PersonaNavDropdown } from "@/components/landing/PersonaNavDropdown";
+import { MobileNav } from "@/components/landing/MobileNav";
 import { LandingHero } from "@/components/landing/LandingHero";
 import { DeepDiveMockup } from "@/components/landing/DeepDiveMockups";
 import {
@@ -39,7 +39,7 @@ import {
   statement,
 } from "@/lib/landing/content";
 
-// ── The soft grid (LaunchKit pattern) ─────────────────────────────────────────
+// ── The soft grid (dense soft-grid pattern) ──────────────────────────────────
 // A hairline-framed container; sections are bordered cells inside it. Text sits
 // on clean paper/ink — the CRT effect lives only on .terminal/.crt-panel
 // surfaces (spec v1.1).
@@ -64,7 +64,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("border-t border-border/60 py-20 sm:py-28", className)}>
+    <section id={id} className={cn("border-t border-border/60 py-12 sm:py-16", className)}>
       <div className="mx-auto px-6 sm:px-10">{children}</div>
     </section>
   );
@@ -107,8 +107,7 @@ export function LandingNav() {
             <span className="text-xl font-bold tracking-tight">systemix</span>
           </Link>
 
-          <nav className="ml-4 hidden items-center gap-1 sm:flex">
-            <PersonaNavDropdown />
+          <nav className="ml-4 hidden items-center gap-1 md:flex">
             {nav.links.map((l) => (
               <Link
                 key={l.href}
@@ -122,11 +121,20 @@ export function LandingNav() {
 
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
-            <Button variant="outline" size="sm" asChild>
-              <TrackedLink href={nav.cta.href} event="book_a_call" location="nav">
+            {/* Desktop (≥md): inline Star CTA. Mobile (<md): the CTA lives in the
+                MobileNav sheet, so the bar stays wordmark + toggle + hamburger. */}
+            <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
+              <TrackedLink
+                href={nav.cta.href}
+                event="book_a_call"
+                location="nav"
+                className="flex items-center gap-1.5"
+              >
+                <SiGithub size={14} aria-hidden />
                 {nav.cta.label}
               </TrackedLink>
             </Button>
+            <MobileNav className="md:hidden" />
           </div>
         </div>
       </div>
@@ -134,7 +142,7 @@ export function LandingNav() {
   );
 }
 
-// ── Hero row — copy | facts table | tool grid (LaunchKit pattern) ────────────
+// ── Hero row — copy | facts table | tool grid (dense soft-grid pattern) ──────
 
 /** Count earned bullets under `## Memory` in LEARNINGS.md (0 while none). */
 function countLearnings(): number {
@@ -248,7 +256,7 @@ export function StackStrip() {
       <p className="tva-label flex items-center px-6 py-4 text-[10px] text-muted-foreground sm:px-10">
         {logoRows.stack.label}
       </p>
-      <div className="flex flex-1 flex-wrap divide-x divide-border/60 border-l border-border/60">
+      <div className="flex flex-1 flex-wrap sm:divide-x sm:divide-border/60 sm:border-l sm:border-border/60">
         {logoRows.stack.items.map((name) => {
           const Icon = STACK_ICONS[name];
           return (
@@ -342,7 +350,7 @@ export function Audiences() {
 
 export function TheLoop() {
   return (
-    <section id="loop" className="border-t border-border/60 py-20 sm:py-28">
+    <section id="loop" className="border-t border-border/60 py-12 sm:py-16">
       <div className="mx-auto px-6 sm:px-10">
         <div className="max-w-3xl">
           <Eyebrow>{proof.label}</Eyebrow>
@@ -352,8 +360,8 @@ export function TheLoop() {
       </div>
 
       {/* The strongest proof is the live loop itself — no diagram needed here.
-          The 6-step meta-loop + personas live in /docs and on the /for/* pages. */}
-      <LiveLoopProof className="mx-auto mt-12 max-w-3xl px-6" />
+          The 6-step meta-loop lives in /docs. */}
+      <LiveLoopProof className="mx-auto mt-10 max-w-3xl px-6 sm:px-10" />
 
       <div className="mx-auto mt-8 max-w-3xl px-6">
         <Link href="/docs/concepts/the-meta-loop" className="text-[13px] text-muted-foreground underline underline-offset-4 hover:text-foreground">
@@ -660,13 +668,6 @@ export function LandingFooter() {
             <span className="tva-label rounded-sm border border-border px-1.5 py-0.5 text-[9px]">
               {footer.badge}
             </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 font-mono text-[12px] text-muted-foreground/70">
-            {footer.personaLinks.map((l) => (
-              <Link key={l.href} href={l.href} className="transition-colors hover:text-foreground">
-                {l.label}
-              </Link>
-            ))}
           </div>
         </div>
       </div>

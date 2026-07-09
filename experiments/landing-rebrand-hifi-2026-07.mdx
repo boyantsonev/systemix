@@ -5,20 +5,20 @@ section: hero
 icp: pre-pmf-founder
 jtbd: stop my design system from rotting without hiring a design-ops team
 goal: consultancy-leads
-hypothesis: 'A hi-fidelity rebrand — plain-English rot-first copy in the LaunchKit arc (metrics strip, feature deep-dives with real product mockups, pay-once pricing, build-vs-buy, FAQ) on the TVA amber-CRT theme — converts better than the lo-fi prototype landing: more installs, kit intent, and calls.'
+hypothesis: 'A dense, plain-English landing — rot-first hero, metrics strip, feature deep-dives with real product mockups, pay-once pricing, and an honest FAQ, on the TVA amber-CRT theme — converts better than the lo-fi prototype landing: more installs, Learning Kit intent, and calls.'
 given: a founder lands on Systemix from a feed and gives the page five seconds
 conclusion: the rebranded page lifts install_command_copied per visitor and produces kit_requested / book_a_call intent the lo-fi page never did
 status: running
 metric: install-copy-rate
 variants:
   control: 'current lo-fi landing (warm-paper Manrope, AI-native DS positioning)'
-  variant_b: 'TVA amber-CRT rebrand + LaunchKit-arc copy (rot-first hero, deep-dives with terminal mockups, pay-once Kit anchor)'
+  variant_b: 'TVA amber-CRT rebrand + dense product-arc copy (rot-first hero, deep-dives with terminal mockups, pay-once Learning Kit anchor)'
 workflow:
   steps:
     - id: references
       kind: input
       label: "the reference decode"
-      note: LaunchKit + getdesign.md arcs
+      note: dense product landings
     - id: copy
       kind: agent
       label: "write the copy decks"
@@ -79,7 +79,7 @@ The current landing is lo-fi prototype branding: the copy leads with mechanisms
 ("evidence layer", "contracts") and the visual identity is a placeholder
 warm-paper theme. The bet has two halves that ship as one variant:
 
-1. **Copy** — clone the LaunchKit / getdesign.md narrative arc (imperative
+1. **Copy** — adopt the dense product-landing narrative arc (imperative
    rot-first hero, honest metrics strip, feature deep-dives with *real product
    mockups*, founder credibility, pay-once pricing anchor ~~$299~~ $249,
    build-vs-buy hours table, permission-granting FAQ) translated to plain
@@ -116,7 +116,7 @@ before knowing what Systemix does for them.
   the permanent spine; iterate inside it.
 - `iterate`: engagement flat but time-on-page/section depth improves → the
   structure works, the words don't; tighten the hero pair, keep the arc.
-- `kill`: no lift anywhere → the LaunchKit arc doesn't fit this audience;
+- `kill`: no lift anywhere → the dense product-arc doesn't fit this audience;
   revisit positioning (rot vs learning-loop lead) before touching layout again.
 
 ## Changelog
@@ -124,7 +124,7 @@ before knowing what Systemix does for them.
 - **2026-07-08** — Revision round from user testing (same bet, same metric):
   "the loop" banned from marketing copy (automation / AI-native design system
   that learns from signals / agentic-feed context-layer framing + the
-  "one architecture, every audience" section); LaunchKit soft-grid layout
+  "one architecture, every audience" section); dense soft-grid layout
   (hairline frame, 3-col hero, stack strip, statement); CRT scoped to screen
   surfaces; dark body text warm white (spec v1.1); build-vs-buy rows expandable;
   Home dogfood made real (drift-report script + feed, runner worktree guard,
