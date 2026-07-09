@@ -141,8 +141,8 @@ export const deepDives: DeepDive[] = [
 
 export const audiences = {
   label: "The architecture",
-  heading: "One architecture, every audience.",
-  body: "Your design system stops being a component library and becomes a context layer — an agentic feed of decisions, tokens, and evidence that everyone who touches the product reads from the same source.",
+  heading: "One context engine, every audience.",
+  body: "Your design system stops being a component library and becomes a context engine — the agentic feed of decisions, tokens, and evidence that every persona, and every agent, reads from the same source. Design systems always connected these roles; this one is AI-native.",
   items: [
     { name: "Engineers", href: "/for/engineers", line: "tokens and guardrails, canonical in code" },
     { name: "Designers", href: "/for/designers", line: "rationale that survives every handoff" },
@@ -186,98 +186,94 @@ export type PricingTier = {
   key: string;
   name: string;
   price: string;
-  priceAnchor?: string; // strike-through anchor (e.g. $299 → $249)
+  priceAnchor?: string; // strike-through anchor (e.g. €299 → €99)
   priceNote?: string;
   body: string;
-  cta: { label: string; href: string; event: "kit_requested" | "book_a_call" } | { label: string; command: string };
+  cta: { label: string; href: string; event: "kit_requested" | "audit_requested" | "book_a_call" } | { label: string; command: string };
   highlight: boolean;
 };
 
 export const pricing = {
-  label: "Pick your door",
-  heading: "Start free. Pay once when it earns it.",
-  anchorLine: "Pay once. Lifetime access. No seats, no meter.",
+  label: "Pick your tier",
+  heading: "Start free. Pay when it earns it.",
+  anchorLine: "Own the files. No seats, no meter.",
   tiers: [
     {
       key: "free",
-      name: "Start free",
-      price: "$0",
+      name: "Free",
+      price: "€0",
       priceNote: INIT_COMMAND,
-      body: "The full automation in ghost mode. Your files, your repo.",
+      body: "Every skill, in ghost mode. Your files, your repo — no account.",
       cta: { label: INIT_COMMAND, command: INIT_COMMAND },
       highlight: false,
     },
     {
       key: "kit",
-      name: "AI Kit",
-      price: "$249",
-      priceAnchor: "$299",
-      priceNote: "pay once",
-      body: "The AI-native design system setup, complete. Yours to keep, no subscription.",
+      name: "Full Kit",
+      price: "€99",
+      priceNote: "download · pay once",
+      body: "The complete AI-native design-system kit — engine, docs, app setup, skills, workflows. Downloadable, yours to keep.",
       cta: { label: "Get the Kit →", href: "/kit", event: "kit_requested" },
       highlight: true,
     },
     {
-      key: "loop",
-      name: "Scheduled runs",
-      price: "Monthly",
-      body: "We run the automation on a schedule so you don't have to remember to.",
-      cta: { label: "Book a call →", href: CALL_MAILTO, event: "book_a_call" },
+      key: "audit",
+      name: "Readiness Audit",
+      price: "€249",
+      priceNote: "emailed in 24–48h",
+      body: "An automated, me-in-the-loop AI-native readiness audit — scored 0–100, with the exact setup to fix it. Delivered to your inbox.",
+      cta: { label: "Request the audit →", href: "/audit", event: "audit_requested" },
       highlight: false,
     },
     {
-      key: "team",
-      name: "Team",
+      key: "sprint",
+      name: "Consultancy",
       price: "Custom",
-      body: "Multiple repos, shared decision history, support.",
+      priceNote: "2-week sprint",
+      body: "A discovery + implementation sprint — we wire your AI-native design system to your stack, with you.",
       cta: { label: "Book a call →", href: CALL_MAILTO, event: "book_a_call" },
       highlight: false,
     },
   ] satisfies PricingTier[],
 };
 
-// ── Build-vs-buy table — the rational close (expandable rows) ────────────────
+// ── Per-persona value — what each role actually gets (expandable rows) ────────
+// Replaces the old build-hours table: value by role, not internal mechanism.
 
-export type BuildVsBuyRow = { item: string; time: string; detail: string };
+export type PersonaValueRow = { role: string; gets: string; detail: string };
 
-export const buildVsBuy = {
-  label: "Build vs buy",
-  heading: "Build this yourself, or turn it on today.",
-  hint: "Tap a row to see what each piece actually is.",
-  columns: { diy: "Build it yourself", time: "Time", kit: "With Systemix" },
+export const personaValue = {
+  label: "One kit, every audience",
+  heading: "What each role gets.",
+  hint: "Tap a row for what it means in practice.",
+  columns: { role: "Role", gets: "What you get" },
   rows: [
     {
-      item: "Experiment scaffolding",
-      time: "~8 hrs",
-      detail: "One consistent file per bet — hypothesis, metric, variants, status — plus the templates and tooling that keep them consistent. Ships as plain MDX files and a CLI that scaffolds them in one command.",
+      role: "Engineers",
+      gets: "tokens + drift, canonical in code",
+      detail: "A design system that documents itself in MDX next to the code, with drift caught before review. Three doors — CLI, MCP, Claude Code skills — over one set of files you own.",
     },
     {
-      item: "PostHog wiring",
-      time: "~6 hrs",
-      detail: "Event capture with per-variant breakdowns, and a reverse proxy so ad-blockers don't silently eat your data. Ships pre-wired — you paste one key.",
+      role: "Designers",
+      gets: "rationale that survives handoff",
+      detail: "The why behind every token and component, recorded where engineers and agents read it. Drift surfaces itself as a feed instead of ambushing next quarter's audit; Figma bridges when you want it.",
     },
     {
-      item: "Learnings ledger",
-      time: "~12 hrs",
-      detail: "The memory: every closed experiment appends its decision, evidence, and confidence to one auditable file that future work cites. Building it means write-back tooling and a citation format. Ships built in.",
+      role: "Marketers",
+      gets: "headlines + flows become evidence",
+      detail: "Every variant, CTA test, and funnel bet is one readable page: hypothesis, live PostHog evidence, decision. A ledger remembers what converted, so you never rerun a dead test.",
     },
     {
-      item: "Human-approval rail (HITL)",
-      time: "~16 hrs",
-      detail: "Approval cards for every proposed change, with an autonomy dial (ghost → assisted → autonomous). Building it means a queue, write-policies, and UI. Ships as the queue and cards on your Home screen.",
+      role: "Business",
+      gets: "decisions with receipts",
+      detail: "Every bet closes with a recorded call — promote, iterate, kill — cited to the evidence that earned it. One weekly synthesis instead of five dashboards; the next sprint starts from what the last one proved.",
     },
     {
-      item: "Drift audit",
-      time: "~20 hrs",
-      detail: "A scanner that catches raw hex values, off-token spacing, and design/code splits before they ship — with a history so you can see the trend. Ships as a skill you run on demand or on a schedule.",
+      role: "AI agents",
+      gets: "the context layer, machine-readable",
+      detail: "The whole system exposed over MCP as plain files: read tokens, contracts, drift, and learnings; open and measure experiments; write evidence back — with human-in-the-loop guardrails on every decision that matters.",
     },
-    {
-      item: "Scheduled runner",
-      time: "~6 hrs",
-      detail: "A cron that advances running experiments to decision-ready and files the paperwork for a human to close. Building it means CI config and idempotent state handling. Ships as a GitHub Action.",
-    },
-  ] satisfies BuildVsBuyRow[],
-  total: { item: "You save", time: "~68+ hrs", kit: "$249 once" },
+  ] satisfies PersonaValueRow[],
 };
 
 // ── FAQ — permission-granting, short answers ─────────────────────────────────
@@ -290,7 +286,7 @@ export const faq = {
   items: [
     {
       q: "What exactly do I get?",
-      a: "A CLI and framework that automates your design system: it watches what you ship, proposes decisions, and records the reasons. Free to start; the AI Kit adds the paid pieces.",
+      a: "The context engine for your design system: it watches what you ship, proposes decisions, and records the reasons. Every skill is free; the €99 Kit is the whole thing packaged to download and own.",
     },
     {
       q: "I don't have a design system yet — can I use this?",

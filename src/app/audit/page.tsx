@@ -11,13 +11,12 @@ import {
 import { SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
 
-// Copy deck: docs/feature/rebrand-hifi/copy-audit.md — getdesign.md/request
-// clone: a lead magnet with one job, get the 3-field form filled. Free audit
-// as the hook; cross-sell the Kit.
+// The €249 AI-Readiness Audit — an automated, me-in-the-loop readiness report
+// (the readiness-audit skill is the engine), scored 0–100 and emailed in 24–48h.
 export const metadata: Metadata = {
-  title: "Free design system audit — find your drift | Systemix",
+  title: "AI-Readiness Audit — is your design system AI-ready? | Systemix",
   description:
-    "Send your repo. We run the automation once and show you exactly where your design system is drifting. Free, 10 minutes.",
+    "Send your repo. Get back a scored AI-native readiness report — drift, slop, an opportunity ranking, and the exact setup to fix it. €249, emailed in 24–48h.",
 };
 
 export default function AuditPage() {
@@ -29,18 +28,19 @@ export default function AuditPage() {
         <SectionTrack name="audit-hero">
           <section className="border-b border-border/60 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
-              <Eyebrow>Free · takes 10 minutes</Eyebrow>
+              <Eyebrow>AI-Readiness Audit · €249 · emailed in 24–48h</Eyebrow>
               <h1 className="mx-auto max-w-3xl text-[2.5rem] font-bold leading-[1.1] sm:text-[3rem] [text-shadow:var(--glow-head)]">
-                Find out where your design system is rotting.
+                Is your design system AI-ready?
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
-                Send us your repo. We run the automation once and show you the drift — free.
+                Send us your repo. You get back a scored readiness report — the drift, the slop, an
+                opportunity ranking, and the exact setup to make your agents follow a system.
               </p>
               <a
                 href="#form"
                 className="tva-label mt-9 inline-block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
               >
-                Get my free audit
+                Request the audit
               </a>
             </div>
           </section>
@@ -49,35 +49,34 @@ export default function AuditPage() {
         <SectionTrack name="audit-paths">
           <Section>
             <div className="max-w-3xl">
-              <Eyebrow>Choose your path</Eyebrow>
-              <SectionHeading>Free report, or run it yourself.</SectionHeading>
+              <Eyebrow>What you get</Eyebrow>
+              <SectionHeading>A scored report, not a vibe check.</SectionHeading>
             </div>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5">
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-primary bg-card p-7 shadow-[var(--shadow-panel)]">
-                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Free Audit</p>
-                <p className="text-[2rem] font-bold leading-none">$0</p>
+                <p className="tva-label mb-3 text-[10px] text-muted-foreground">AI-Readiness Audit</p>
+                <p className="text-[2rem] font-bold leading-none">€249</p>
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-                  one pass of the automation on your repo
+                  automated · emailed in 24–48h
                 </p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
-                  You get: a drift report + the top 3 decisions we&apos;d propose.
+                  A readiness score 0–100 across six dimensions, the drift + slop map, an opportunity
+                  ranking, and the exact setup to fix it.
                 </p>
                 <a
                   href="#form"
                   className="tva-label mt-6 block rounded-md bg-primary px-5 py-3 text-center text-[11px] text-primary-foreground transition-opacity hover:opacity-90"
                 >
-                  Start free audit
+                  Request the audit
                 </a>
               </div>
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-border bg-card p-7 shadow-[var(--shadow-panel)]">
-                <p className="tva-label mb-3 text-[10px] text-muted-foreground">AI Kit</p>
-                <p className="text-[2rem] font-bold leading-none">
-                  <s className="mr-2 text-[1.1rem] font-normal text-muted-foreground">$299</s>
-                  $249
-                </p>
-                <p className="mt-1 font-mono text-[11px] text-muted-foreground">pay once</p>
+                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Full Kit</p>
+                <p className="text-[2rem] font-bold leading-none">€99</p>
+                <p className="mt-1 font-mono text-[11px] text-muted-foreground">download · pay once</p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
-                  Skip the wait — run the automation yourself, in your repo, files yours to keep.
+                  Want to fix it yourself? The Full Kit is the whole context engine, downloadable —
+                  files yours to keep.
                 </p>
                 <TrackedLink
                   href="/kit"
@@ -99,11 +98,11 @@ export default function AuditPage() {
                 <Eyebrow>The form</Eyebrow>
                 <SectionHeading>Send it. Get the report.</SectionHeading>
                 <Lead>
-                  Read-only — nothing written to your repo. A human runs the automation once and replies
-                  with the drift report and the top three decisions we&apos;d propose.
+                  Read-only — nothing written to your repo. We run the readiness audit with a human in
+                  the loop and email your scored report within 24–48 hours.
                 </Lead>
                 <p className="mt-6 font-mono text-[12px] text-muted-foreground">
-                  No spam. We reply with the report, not a sales call.
+                  €249, one-time. A real report, reviewed by a human — not a bot dump.
                 </p>
               </div>
               <AuditRequestForm />

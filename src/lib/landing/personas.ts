@@ -5,9 +5,19 @@
 // from the shared registry in content.ts.
 
 import { BRAND_CLONE_MAILTO, GITHUB_URL, INIT_COMMAND } from "./content";
+import type { PersonaTag } from "@/components/loop/LoopDiagram";
 
 export const PERSONAS = ["business", "engineers", "designers", "marketers", "agents"] as const;
 export type PersonaKey = (typeof PERSONAS)[number];
+
+/** Persona routes are plural; the meta-loop diagram tags are singular. Map, don't rename. */
+export const PERSONA_TAG: Record<PersonaKey, PersonaTag> = {
+  business: "business",
+  engineers: "engineer",
+  designers: "design",
+  marketers: "marketer",
+  agents: "agent",
+};
 
 /** Shared landing sections a persona page can compose, in render order. */
 export type SectionKey = "loop" | "doors" | "trust" | "services" | "brandClone";
@@ -35,6 +45,20 @@ export type PersonaContent = {
   };
   sharedSections: SectionKey[];
   guideHref: string;
+
+  // ── The context-engine reframe: each persona is a participant in the meta-loop,
+  // with its own job, operational loop, setup, and data-flow. Optional so pages
+  // render these blocks only when present (safe incremental rollout).
+  /** The one job this persona owns. */
+  job?: { heading: string; body: string };
+  /** Their operational loop — the few steps they actually run. */
+  loop?: { heading: string; steps: { label: string; note: string }[] };
+  /** How they set up: the doors/skills they reach for. */
+  setup?: { heading: string; skills: string[]; body: string };
+  /** Their data-flow: what they put into the loop and read back out. */
+  signals?: { heading: string; produces: string[]; consumes: string[]; body: string };
+  /** One line: how this persona feeds the shared meta-loop. */
+  feedsMeta?: string;
 };
 
 const BOOK_A_CALL = "mailto:boyan.works@gmail.com?subject=Systemix%20scoping%20call";
@@ -73,10 +97,34 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     proof: {
       kind: "outcomes",
       heading: "Wired to your stack in a week",
-      body: "The kit is free and open-source. The sprint is me wiring the automation to your signals — brand cloned in session one, experiments live by end of week, the whole setup yours when we're done.",
+      body: "Every skill is free and open-source. The sprint is me wiring the automation to your signals — brand cloned in session one, experiments live by end of week, the whole setup yours when we're done.",
     },
     sharedSections: ["loop", "trust", "services"],
     guideHref: "/docs/guides/business",
+    job: {
+      heading: "Your job in the loop",
+      body: "Frame the bet and make the call. You decide what's worth testing and, when the evidence lands, whether it ships — from receipts, not opinion.",
+    },
+    loop: {
+      heading: "Your operational loop",
+      steps: [
+        { label: "Frame the bet", note: "one sentence: who, what, the number that proves it" },
+        { label: "Read the weekly brief", note: "one synthesis of every signal, not five dashboards" },
+        { label: "Decide", note: "promote · iterate · kill — recorded with its reason" },
+      ],
+    },
+    setup: {
+      heading: "How you set up",
+      skills: ["/new-goal", "/growth-audit"],
+      body: "You don't run tools day to day — you read the Home dashboard queue and the memory feed, and make the close calls.",
+    },
+    signals: {
+      heading: "Your data-flow",
+      produces: ["goals", "close decisions"],
+      consumes: ["the weekly synthesis", "LEARNINGS.md"],
+      body: "You put outcomes in; the loop hands you evidence back, so the next sprint starts from what the last one proved.",
+    },
+    feedsMeta: "You own the Hypothesis and Ideate steps — every bet starts and every learning is judged against a goal you set.",
   },
 
   engineers: {
@@ -116,6 +164,30 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     sharedSections: ["doors", "loop", "trust"],
     guideHref: "/docs/guides/engineers",
+    job: {
+      heading: "Your job in the loop",
+      body: "Build the thing and keep the code true to the system. You ship the variant and hold the line on tokens, drift, and the contract.",
+    },
+    loop: {
+      heading: "Your operational loop",
+      steps: [
+        { label: "Scaffold", note: "npx systemix init — files in your repo, no lock-in" },
+        { label: "Build the variant", note: "ship it through the seam, wire the event" },
+        { label: "Catch drift", note: "/drift-report before it reaches review" },
+      ],
+    },
+    setup: {
+      heading: "How you set up",
+      skills: ["npx systemix init", "/init-experiment", "/measure", "/drift-report"],
+      body: "Three doors, one set of files: the CLI in CI, MCP for any agent, Claude Code skills for human-in-the-loop. Pick per task.",
+    },
+    signals: {
+      heading: "Your data-flow",
+      produces: ["tokens", "component contracts", "the built variant"],
+      consumes: ["drift reports", "evidence", "decisions"],
+      body: "Tokens are canonical in your CSS; the loop writes decisions back into the contract next to the code.",
+    },
+    feedsMeta: "You own the Build and Document steps — you make the bet real and write the decision back where the next change reads it.",
   },
 
   designers: {
@@ -155,6 +227,30 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     sharedSections: ["brandClone", "loop", "trust"],
     guideHref: "/docs/guides/designers",
+    job: {
+      heading: "Your job in the loop",
+      body: "Hold the rationale and catch the drift. You decide what the system should look like and why — and you're the first to see when reality diverges.",
+    },
+    loop: {
+      heading: "Your operational loop",
+      steps: [
+        { label: "Record the why", note: "the reasoning behind each token and component" },
+        { label: "Watch the drift feed", note: "top offenders named, trend kept" },
+        { label: "Approve the fix", note: "or make it an intentional exception" },
+      ],
+    },
+    setup: {
+      heading: "How you set up",
+      skills: ["/design-interview", "/drift-report", "/tokens", "/sync-to-figma"],
+      body: "Tokens are canonical in code, so it works without design tooling — and a Figma bridge syncs Variables both ways when you want it.",
+    },
+    signals: {
+      heading: "Your data-flow",
+      produces: ["design rationale", "token decisions", "drift resolutions"],
+      consumes: ["drift scores", "the live-site scrape", "brand clones"],
+      body: "Your reasoning goes in where engineers and agents read it; the drift feed surfaces itself instead of ambushing next quarter's audit.",
+    },
+    feedsMeta: "You touch every step — the rationale you record is the ground truth the whole loop measures build, evidence, and drift against.",
   },
 
   marketers: {
@@ -194,6 +290,30 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     sharedSections: ["loop", "services", "trust"],
     guideHref: "/docs/guides/marketers",
+    job: {
+      heading: "Your job in the loop",
+      body: "Run the experiments and read the numbers. You turn every headline, CTA, and funnel into a measured bet and evaluate what actually converted.",
+    },
+    loop: {
+      heading: "Your operational loop",
+      steps: [
+        { label: "Write the variant", note: "/write-variants — copy calibrated to the ICP" },
+        { label: "Measure", note: "/measure wires the metric to a PostHog event" },
+        { label: "Evaluate", note: "the runner pulls numbers; you weigh the call" },
+      ],
+    },
+    setup: {
+      heading: "How you set up",
+      skills: ["/init-experiment", "/write-variants", "/measure", "/growth-audit"],
+      body: "Wire PostHog once with /connect-signal; from then on a running experiment is one readable page, not a dashboard sprawl.",
+    },
+    signals: {
+      heading: "Your data-flow",
+      produces: ["experiments", "variant copy", "conversion evidence"],
+      consumes: ["PostHog numbers", "close proposals", "the learnings ledger"],
+      body: "Your bets become files; PostHog evidence flows back and the ledger remembers what converted — so you never rerun a dead test.",
+    },
+    feedsMeta: "You own the Measure and Evaluate steps — you supply the evidence the whole loop turns on.",
   },
 
   agents: {
@@ -233,6 +353,30 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     sharedSections: ["doors", "trust"],
     guideHref: "/docs/guides/agents",
+    job: {
+      heading: "The agent's job in the loop",
+      body: "Operate the design system as machine-readable context — read it before acting, act on it, and write evidence back. Agents are a participant in the loop, not just a way to reach it.",
+    },
+    loop: {
+      heading: "The agent's operational loop",
+      steps: [
+        { label: "Read context", note: "tokens, component contracts, drift, learnings" },
+        { label: "Act", note: "open and measure experiments, generate from the system" },
+        { label: "Write evidence back", note: "then yield: propose, a human closes" },
+      ],
+    },
+    setup: {
+      heading: "How an agent connects",
+      skills: ["npx systemix init", "the systemix-mcp server", "experiment_* · contract_*"],
+      body: "MCP over the same MDX files humans edit. Any MCP-capable agent drives the full loop — no bespoke integration, no proprietary API.",
+    },
+    signals: {
+      heading: "The agent's data-flow",
+      produces: ["evidence records", "emitted events", "HITL task cards"],
+      consumes: ["tokens", "component contracts", "drift lists", "learnings"],
+      body: "An agent both reads and writes the context layer — which is why it's an owner in the loop, not a tool list. Guardrails hold: agents propose, humans close.",
+    },
+    feedsMeta: "Agents own the Evaluate and Document steps — they synthesize evidence and write it back into the context every other persona reads.",
   },
 };
 

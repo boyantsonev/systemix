@@ -2,9 +2,9 @@
 title: The loop
 ---
 
-One loop, four steps, two places where it stops and asks you.
+One loop, four steps, two places where it stops and asks you. This is the operational loop — one turn of the bigger [meta-loop](/docs/concepts/the-meta-loop), and the part that runs on a daily cron today.
 
-<LoopDiagram />
+<LoopDiagram variant="operational" />
 
 Each step reads and writes plain files in your repo. A daily runner (`systemix loop`, usually on a cron) moves things forward; you make every actual decision.
 

@@ -94,7 +94,7 @@ export function AuditRequestForm() {
         Request the report →
       </button>
       <p className="text-center font-mono text-[11px] text-muted-foreground/50">
-        Free · one-time · no spam
+        €249 · one-time · emailed in 24–48h
       </p>
     </form>
   );
