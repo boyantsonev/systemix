@@ -53,6 +53,37 @@ function readOdi(root, { top = 5 } = {}) {
   return outcomes.sort((a, b) => b.score - a.score).slice(0, top);
 }
 
+// ── Product workflows (persona/JTBD flows the build chapter authored) ────────
+// `/build-workflow` writes .systemix/workflows/<slug>.json tagged `scope`:
+//   "internal" — the agentic workflow around Systemix itself (skip here; that's
+//                `/atlas`'s job, not a bet against the client's own product).
+//   "product"  — a persona/JTBD-driven flow for the product being built. These
+//                are exactly what a next hypothesis should extend or unblock.
+
+function readProductWorkflows(root) {
+  const dir = layout.abs(root).workflows;
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith(".json")) continue;
+    let w;
+    try {
+      w = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+    } catch {
+      continue;
+    }
+    if (w?.scope !== "product") continue;
+    out.push({
+      id: w.id ?? path.basename(f, ".json"),
+      name: w.name ?? null,
+      persona: w.persona ?? null,
+      jtbd: w.jtbd ?? null,
+      description: w.description ?? null,
+    });
+  }
+  return out;
+}
+
 // ── Goals (declared by humans; the engine only reads them) ───────────────────
 
 function readGoals(root) {
@@ -94,6 +125,9 @@ const pendingProposal = (queue) =>
  *   recentDecisions  the latest closed experiments (don't re-propose a kill)
  *   goals            active goals (given / success-criteria / kill-if)
  *   odi              top underserved outcomes, score recomputed from jobs.yaml
+ *   productWorkflows persona/JTBD flows for the product itself (scope:"product"
+ *                    in .systemix/workflows/*.json) — what the build chapter
+ *                    authored; a next bet can extend or unblock a step in one
  *   pendingProposal  the pending hypothesis-proposal card, if any (one max)
  */
 function buildProposalContext(root, { recent = 5, odiTop = 5 } = {}) {
@@ -111,6 +145,7 @@ function buildProposalContext(root, { recent = 5, odiTop = 5 } = {}) {
       .map(({ id, section, decision, confidence }) => ({ id, section, decision, confidence })),
     goals: readGoals(root),
     odi: readOdi(root, { top: odiTop }),
+    productWorkflows: readProductWorkflows(root),
     pendingProposal: pendingProposal(readQueue(root)),
   };
 }
@@ -162,6 +197,7 @@ function pushHypothesisProposal(root, proposal, { now = new Date() } = {}) {
     confidence: proposal.confidence ?? null,
     citedLearnings: asStrings(proposal.citedLearnings),
     citedOdi: asStrings(proposal.citedOdi),
+    citedWorkflow: asStrings(proposal.citedWorkflow),
     payload: p,
     summary:
       `Proposed next bet: ${p.id} (goal: ${p.goal}). Approve to scaffold the contract — ` +

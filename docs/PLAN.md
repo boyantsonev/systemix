@@ -1,7 +1,11 @@
 # Systemix — Strategic Plan & Context Tracker
 
 > Living document. Tracks the venture-level architecture and the per-client engagement state.
-> Iteration 2 — updated 2026-06-02. Scope of this iteration: **plan only** (no code).
+> **Superseded as the architecture SSOT by the v5 plan** (`~/.claude/plans/help-me-plan-and-golden-seahorse.md`)
+> and memory `project_public_release` — read those first for the current model
+> (the loop is the product; `design/` is an optional substrate; engine = Claude Code).
+> Kept as the venture/client-engagement tracker. Body below is Iteration 2 (2026-06-02)
+> and may reference pre-v5 framings (Supabase/multi-tenant) that the v5 plan retired.
 
 ---
 

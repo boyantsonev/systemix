@@ -34,6 +34,54 @@ function skillDescription(packDir: string, slug: string): string {
   }
 }
 
+/**
+ * Resolve a skill slug to its SKILL.md file — the instance-installed copy
+ * (.claude/skills/<slug>) first, then each bundled pipeline's source
+ * (packages/cli/pipelines/*\/skills/<slug>). Shared by the /api/skills/[name]
+ * route and the /skills/[slug] detail page so there's one resolution order.
+ */
+export function resolveSkillFile(slug: string): { path: string; raw: string } | null {
+  const root = process.cwd();
+  const candidates = [path.join(root, ".claude", "skills", slug, "SKILL.md")];
+
+  const pipelinesDir = path.join(root, "packages", "cli", "pipelines");
+  if (fs.existsSync(pipelinesDir)) {
+    for (const pipeline of fs.readdirSync(pipelinesDir)) {
+      candidates.push(path.join(pipelinesDir, pipeline, "skills", slug, "SKILL.md"));
+    }
+  }
+
+  for (const file of candidates) {
+    if (fs.existsSync(file)) {
+      return { path: path.relative(root, file), raw: fs.readFileSync(file, "utf8") };
+    }
+  }
+  return null;
+}
+
+export type SkillDossier = {
+  slug: string;
+  name: string;
+  description: string;
+  path: string;
+  body: string;
+};
+
+/** Full frontmatter + body for a skill's detail ("dossier") page. */
+export function loadSkillBySlug(slug: string): SkillDossier | null {
+  const found = resolveSkillFile(slug);
+  if (!found) return null;
+  const { data, content } = matter(found.raw);
+  const fm = data as { name?: string; description?: string };
+  return {
+    slug,
+    name: fm.name ?? slug,
+    description: fm.description ?? "",
+    path: found.path,
+    body: content.trim(),
+  };
+}
+
 /** All CLI packs (the workflows), each with its skill roster. */
 export function loadSkillPacks(): CatalogPack[] {
   const pipelinesDir = path.join(process.cwd(), "packages", "cli", "pipelines");
