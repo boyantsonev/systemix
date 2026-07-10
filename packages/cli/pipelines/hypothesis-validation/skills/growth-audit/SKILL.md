@@ -69,6 +69,6 @@ For each decision-ready experiment, provide:
 
 ### Step 5 — Highlight top priority
 
-Identify the single highest-signal experiment and lead with: "Top priority: <experiment-id> — <one sentence reason>."
+Identify the single highest-signal experiment and lead with: "Top priority: `<experiment-id>` — `<one sentence reason>`."
 
 If all experiments are insufficient, suggest: "No experiments are decision-ready. Consider running paid traffic to `/[section]` or widening ICP targeting."

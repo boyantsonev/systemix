@@ -29,7 +29,7 @@ From $ARGUMENTS:
 git diff <base> <head> -- contract/
 ```
 
-If no output: report "No contract changes between <base> and <head>."
+If no output: report "No contract changes between `<base>` and `<head>`."
 
 ### Step 3 — Parse and format
 
