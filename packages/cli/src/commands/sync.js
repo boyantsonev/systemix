@@ -3,7 +3,7 @@
  *                 BAST-79 (--schedule flag, F-05)
  *
  * Usage:
- *   npx @systemix/cli sync [options]
+ *   npx @getsystemix/cli sync [options]
  *
  * Options:
  *   --dry-run              Estimate token cost without executing (F-01)
@@ -148,7 +148,7 @@ function checkSkillVersions() {
     const name = fm.name || dir;
 
     if (!fm.version) {
-      console.warn(`\u26a0 skill ${name} has no version field \u2014 run npx @systemix/cli update to upgrade`);
+      console.warn(`\u26a0 skill ${name} has no version field \u2014 run npx @getsystemix/cli update to upgrade`);
     }
   }
 }
@@ -370,7 +370,7 @@ const SYNC_HELP = `
   systemix sync — orchestrate the full design<->code sync loop
 
   Usage:
-    npx @systemix/cli sync [options]
+    npx @getsystemix/cli sync [options]
 
   Options:
     --dry-run              Estimate token cost without executing (F-01)
@@ -390,13 +390,13 @@ const SYNC_HELP = `
     "weekly Mon 06:00"     Recurring every Monday at 06:00
 
   Examples:
-    npx @systemix/cli sync --dry-run
-    npx @systemix/cli sync --dry-run --only tokens
-    npx @systemix/cli sync --node button-primary --page Components
-    npx @systemix/cli sync --incremental --budget 20000
-    npx @systemix/cli sync --file h1m7dfFILe1wGSfxwQ6U02 --dry-run
-    npx @systemix/cli sync --schedule "weekly Mon 06:00" --incremental
-    npx @systemix/cli sync --schedule auto
+    npx @getsystemix/cli sync --dry-run
+    npx @getsystemix/cli sync --dry-run --only tokens
+    npx @getsystemix/cli sync --node button-primary --page Components
+    npx @getsystemix/cli sync --incremental --budget 20000
+    npx @getsystemix/cli sync --file h1m7dfFILe1wGSfxwQ6U02 --dry-run
+    npx @getsystemix/cli sync --schedule "weekly Mon 06:00" --incremental
+    npx @getsystemix/cli sync --schedule auto
 `;
 
 async function sync(args = []) {

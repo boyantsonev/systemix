@@ -26,7 +26,7 @@ assumption/hypothesis, the variants, and the current evidence in its frontmatter
 ### Step 2 — Read the evidence
 Using the experiment's `posthog-event` / `metric` (wired by `/measure`), get the latest
 data. Preferred (deterministic, no MCP needed): run
-`npx @systemix/cli evidence experiment pull --experiment <id>` — it queries PostHog with the
+`npx @getsystemix/cli evidence experiment pull --experiment <id>` — it queries PostHog with the
 server key, writes the `evidence-posthog` block into the contract, and queues a card.
 If the PostHog MCP is connected you may read it directly instead. Then compute:
 - Total samples (visitors); the event rate (conversions / visitors)

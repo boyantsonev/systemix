@@ -68,7 +68,7 @@ describe("instance-config signal round-trip", () => {
 
 // serializeInstanceConfig used to emit only the 6 known top-level sections, so a
 // "Save config" silently DROPPED the whole `atlas:` block (personas/agents/surfaces)
-// that `npx @systemix/cli atlas build` and the /atlas surface depend on. Same footgun
+// that `npx @getsystemix/cli atlas build` and the /atlas surface depend on. Same footgun
 // class as the signal-keys bug above (PR #53), but for an entire top-level block.
 // Gate: parse the real config → patch (normal UI save) → serialize → re-parse →
 // the atlas vocabulary survives intact.

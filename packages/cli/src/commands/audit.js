@@ -4,7 +4,7 @@ const path = require("path");
 // The design-audit skill is the zero-setup front door. `systemix audit` vendors
 // just that one skill into the repo (no full init, no config, no MCP) so the
 // engine — Claude Code — can run it. This keeps the landing CTA honest: someone
-// runs `npx @systemix/cli audit`, gets the skill, and runs `/design-audit`.
+// runs `npx @getsystemix/cli audit`, gets the skill, and runs `/design-audit`.
 
 const SKILL_SRC = path.join(
   __dirname, "..", "..", "pipelines", "design-system", "skills", "design-audit"

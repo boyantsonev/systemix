@@ -58,8 +58,8 @@ function readProposals(status) {
 function show() {
   if (!fs.existsSync(DESIGN_DIR)) {
     console.log("\n  No design system yet.\n");
-    console.log("  → existing repo:  npx @systemix/cli audit    (then /design-audit)");
-    console.log("  → from scratch:   npx @systemix/cli design init  (then /design-interview)\n");
+    console.log("  → existing repo:  npx @getsystemix/cli audit    (then /design-audit)");
+    console.log("  → from scratch:   npx @getsystemix/cli design init  (then /design-interview)\n");
     return;
   }
 
@@ -109,7 +109,7 @@ function init() {
   console.log("  proposed for approval; nothing is written until you say yes.\n");
   console.log("  Next: open Claude Code in this repo and run\n");
   console.log("    /design-interview\n");
-  console.log("  Already have UI? Use `npx @systemix/cli audit` instead.\n");
+  console.log("  Already have UI? Use `npx @getsystemix/cli audit` instead.\n");
 }
 
 async function design(args) {

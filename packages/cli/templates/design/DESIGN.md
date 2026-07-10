@@ -88,7 +88,7 @@ Once the system holds, close a learning loop in `experiments/`:
 `/init-experiment` → `/write-variants` → `/measure` → `/close-experiment`
 appends the decision to `experiments/LEARNINGS.md`. Before any product/UI
 change, recall what's already been learned:
-`npx @systemix/cli experiment learnings --recent 5` — don't contradict a
+`npx @getsystemix/cli experiment learnings --recent 5` — don't contradict a
 high-confidence learning without flagging it.
 
 When drift or a learning suggests a rule change, propose a tighter

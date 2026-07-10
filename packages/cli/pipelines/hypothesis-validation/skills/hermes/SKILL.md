@@ -24,7 +24,7 @@ deterministically from PostHog by the CLI; the reasoning is yours.
 
 2. **Pull fresh evidence (deterministic — no LLM):**
    ```bash
-   npx @systemix/cli evidence experiment pull --experiment <id>   # or: --all
+   npx @getsystemix/cli evidence experiment pull --experiment <id>   # or: --all
    ```
    This queries PostHog with `POSTHOG_API_KEY`/`POSTHOG_PROJECT_ID`, writes the
    `evidence-posthog` block into `experiments/<id>.mdx`, and queues a pending

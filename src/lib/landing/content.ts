@@ -11,8 +11,8 @@
 // Copy decks: docs/feature/rebrand-hifi/ · SEO: seo-gtm-brief.md
 
 export const GITHUB_URL = "https://github.com/boyantsonev/systemix-poc";
-export const AUDIT_COMMAND = "npx @systemix/cli audit";
-export const INIT_COMMAND = "npx @systemix/cli init";
+export const AUDIT_COMMAND = "npx @getsystemix/cli audit";
+export const INIT_COMMAND = "npx @getsystemix/cli init";
 export const BRAND_CLONE_MAILTO =
   "mailto:boyan.works@gmail.com?subject=Brand%20clone%20request";
 export const KIT_MAILTO = "mailto:boyan.works@gmail.com?subject=Systemix%20AI%20Kit";
@@ -284,7 +284,7 @@ export const faq = {
     },
     {
       q: "I don't have a design system yet — can I use this?",
-      a: "Yes. npx @systemix/cli init scaffolds one and starts watching from day one. Wire PostHog later if you want evidence; it runs without it, and catches drift on its own.",
+      a: "Yes. npx @getsystemix/cli init scaffolds one and starts watching from day one. Wire PostHog later if you want evidence; it runs without it, and catches drift on its own.",
     },
     {
       q: "Is it really open source?",

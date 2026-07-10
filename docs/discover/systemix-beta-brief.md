@@ -174,7 +174,7 @@ Code Connect + Dev Mode + Figma MCP cover the design-side surface. But Figma's p
 - A GitHub repo: `systemix/design-md-evidence-spec` — a draft extension to Google's DESIGN.md frontmatter for production-evidence fields. Position Systemix as the reference implementation of the spec, not a proprietary tool. This is the cheapest possible moat against R1.
 
 ### Move 6 (week 6, gated on Moves 1–5): Distribution work
-- Only after Moves 1–5 succeed: publish `@systemix/cli` to npm, submit Figma plugin, publish GitHub Action.
+- Only after Moves 1–5 succeed: publish `@getsystemix/cli` to npm, submit Figma plugin, publish GitHub Action.
 - Paid acquisition decision: defer until you have 10 Tier 1 design partners using the evidence loop weekly. The ARR math doesn't work on Tier 1 buyers without strong product-led growth signal — and you don't have the signal yet.
 
 ### What to *not* do before Moves 1–5 succeed

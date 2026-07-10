@@ -47,7 +47,7 @@ jobs:
           # arbitrary bash. All queue writes go through the validated CLI door.
           claude_args: >-
             --max-turns 15
-            --allowedTools "Bash(npx @systemix/cli propose:*),Bash(node packages/cli/bin/cli.js propose:*),Read,Glob,Grep"
+            --allowedTools "Bash(npx @getsystemix/cli propose:*),Bash(node packages/cli/bin/cli.js propose:*),Read,Glob,Grep"
 
       - name: Open PR with the proposal card
         if: steps.gate.outputs.wired == 'true'

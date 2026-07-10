@@ -1,7 +1,7 @@
 /**
  * schedule.js — BAST-79 (F-05: Off-Peak Scheduler)
  *
- * Implements `npx @systemix/cli schedule [subcommand] [options]`
+ * Implements `npx @getsystemix/cli schedule [subcommand] [options]`
  * Also handles the --schedule flag forwarded from sync.js.
  *
  * Subcommands:
@@ -12,7 +12,7 @@
  *     --command "…"  Which command to schedule (default: sync --incremental)
  *
  * --schedule flag (forwarded from sync):
- *   npx @systemix/cli sync --schedule "weekly Mon 06:00" --incremental
+ *   npx @getsystemix/cli sync --schedule "weekly Mon 06:00" --incremental
  */
 
 "use strict";
@@ -31,9 +31,9 @@ const SCHEDULE_HELP = `
   systemix schedule — defer workflow runs to off-peak windows
 
   Usage:
-    npx @systemix/cli schedule list           List all scheduled systemix runs
-    npx @systemix/cli schedule clear          Remove all systemix cron entries
-    npx @systemix/cli schedule run [options]  Schedule a sync run
+    npx @getsystemix/cli schedule list           List all scheduled systemix runs
+    npx @getsystemix/cli schedule clear          Remove all systemix cron entries
+    npx @getsystemix/cli schedule run [options]  Schedule a sync run
 
   Run options:
     --when <schedule>    When to run (default: auto)
@@ -46,15 +46,15 @@ const SCHEDULE_HELP = `
     "weekly Mon 06:00"   Recurring every Monday at 06:00 local time
 
   Examples:
-    npx @systemix/cli schedule run
-    npx @systemix/cli schedule run --when "tonight 22:00"
-    npx @systemix/cli schedule run --when "weekly Mon 06:00" --command "sync --only tokens"
-    npx @systemix/cli schedule list
-    npx @systemix/cli schedule clear
+    npx @getsystemix/cli schedule run
+    npx @getsystemix/cli schedule run --when "tonight 22:00"
+    npx @getsystemix/cli schedule run --when "weekly Mon 06:00" --command "sync --only tokens"
+    npx @getsystemix/cli schedule list
+    npx @getsystemix/cli schedule clear
 
   Via sync --schedule flag:
-    npx @systemix/cli sync --schedule "weekly Mon 06:00" --incremental
-    npx @systemix/cli sync --schedule auto --incremental
+    npx @getsystemix/cli sync --schedule "weekly Mon 06:00" --incremental
+    npx @getsystemix/cli sync --schedule auto --incremental
 `;
 
 // ── Arg parser ─────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ function scheduleList() {
 
   if (entries.length === 0) {
     console.log("\n  No scheduled systemix runs found.\n");
-    console.log("  Run `npx @systemix/cli schedule run` to add one.\n");
+    console.log("  Run `npx @getsystemix/cli schedule run` to add one.\n");
     return;
   }
 
@@ -147,7 +147,7 @@ function scheduleRun(args) {
     process.exit(1);
   }
 
-  const fullCommand = `npx @systemix/cli ${opts.command}`;
+  const fullCommand = `npx @getsystemix/cli ${opts.command}`;
   const nextRun = formatNextRun(descriptor);
 
   console.log(
@@ -197,7 +197,7 @@ function handleScheduleFlag(scheduleArg, syncArgs) {
     ? `sync ${filteredArgs.join(" ")}`
     : "sync --incremental";
 
-  const fullCommand = `npx @systemix/cli ${syncCommand}`;
+  const fullCommand = `npx @getsystemix/cli ${syncCommand}`;
 
   let descriptor;
   try {
@@ -231,7 +231,7 @@ function handleScheduleFlag(scheduleArg, syncArgs) {
 // ── Main entry point ───────────────────────────────────────────────────────
 
 /**
- * Entry point for `npx @systemix/cli schedule [subcommand] [args...]`
+ * Entry point for `npx @getsystemix/cli schedule [subcommand] [args...]`
  *
  * @param {string[]} args  All args after "schedule"
  */
