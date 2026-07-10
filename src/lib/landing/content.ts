@@ -53,7 +53,7 @@ export const hero = {
       body: "Systemix watches what you ship, catches drift, and proposes fixes your team approves. Your system learns instead of decaying.",
     },
     variant_b: {
-      h1: "Your design system, but it learns.",
+      h1: "Your design system rots. This one learns.",
       body: "An AI-native design system that learns from the signals it gets: every release it catches what drifted, proposes the fix, and remembers why.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,

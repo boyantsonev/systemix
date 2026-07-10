@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "AI-Readiness Audit — is your design system AI-ready? | Systemix",
   description:
     "Send your repo. Get back a scored AI-native readiness report — drift, slop, an opportunity ranking, and the exact setup to fix it. €249, emailed in 24–48h.",
+  alternates: { canonical: "/audit" },
 };
 
 export default function AuditPage() {
@@ -110,23 +111,6 @@ export default function AuditPage() {
           </Section>
         </SectionTrack>
 
-        <SectionTrack name="audit-founders">
-          <Section>
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="text-[16px] font-bold text-foreground">Built by a two-person studio.</p>
-              <p className="mx-auto mt-2 max-w-xl text-[14px] leading-relaxed text-muted-foreground">
-                We run this automation on our own site every week. You&apos;ll get a human reading your
-                report — not a bot.
-              </p>
-              {/* Proof wall placeholder (copy-audit.md §5) — one honest line until
-                  real outcomes/quotes exist. */}
-              <p className="tva-label mx-auto mt-8 max-w-2xl border-t border-border/60 pt-6 text-[11px] leading-relaxed text-highlight">
-                &quot;Systemix&apos;s own site is the first case study — every headline here was
-                proposed, measured, and kept by the automation.&quot;
-              </p>
-            </div>
-          </Section>
-        </SectionTrack>
       </main>
       </GridFrame>
       <LandingFooter />

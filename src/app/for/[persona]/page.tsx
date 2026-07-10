@@ -44,7 +44,11 @@ export async function generateMetadata({
   const { persona } = await params;
   const p = personaContent[persona as PersonaKey];
   if (!p) return {};
-  return { title: p.metaTitle, description: p.metaDescription };
+  return {
+    title: p.metaTitle,
+    description: p.metaDescription,
+    alternates: { canonical: `/for/${persona}` },
+  };
 }
 
 const SHARED_SECTIONS: Record<SectionKey, React.ComponentType> = {

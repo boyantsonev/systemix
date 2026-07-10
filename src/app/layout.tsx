@@ -15,10 +15,26 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const SITE_TITLE = "Systemix — Stop your design system from rotting";
+const SITE_DESCRIPTION =
+  "Systemix watches what you ship, catches design-system drift, and proposes AI fixes your team approves. Open source. Free to start.";
+
 export const metadata: Metadata = {
-  title: "Systemix — Stop your design system from rotting",
-  description:
-    "Systemix watches what you ship, catches design-system drift, and proposes AI fixes your team approves. Open source. Free to start.",
+  metadataBase: new URL("https://getsystemix.vercel.app"),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: "Systemix",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

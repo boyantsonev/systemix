@@ -26,11 +26,12 @@ instead of decaying.
 
 - Free: `npx systemix init` scaffolds the automation (and optionally a design
   system) in your repo, ghost mode on.
-- AI Kit ($249, pay once): the AI-native design system setup, pre-wired — signals hookup, drift
-  audit, human-approval rail, scheduled runner. Lifetime updates, no
+- Full Kit (€99, pay once): the whole AI-native design-system context engine,
+  downloadable — engine, docs, app setup, skills, and workflows. No
   subscription. https://getsystemix.vercel.app/kit
-- Free audit: send a repo URL, get back a drift report + top 3 proposed
-  decisions. https://getsystemix.vercel.app/audit
+- AI-Readiness Audit (€249, emailed in 24–48h): send a repo URL, get back a
+  scored readiness report — drift, slop, an opportunity ranking, and the
+  exact setup to fix it. https://getsystemix.vercel.app/audit
 
 ## Links
 

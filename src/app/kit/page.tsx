@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "Systemix Full Kit — the AI-native design-system context engine, €99 to download",
   description:
     "The complete AI-native design-system kit: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files. No subscription, no lock-in.",
+  alternates: { canonical: "/kit" },
 };
 
 const METRICS = [

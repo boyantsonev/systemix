@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   title: "Systemix — Stop your design system from rotting",
   description:
     "Systemix watches what you ship, catches design-system drift, and proposes AI fixes your team approves. Open source. Free to start.",
+  alternates: { canonical: "/" },
 };
 
 export default function LandingPage() {
