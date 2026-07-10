@@ -39,6 +39,13 @@ engine proposes again. Do not draft a second bet.
   an `iterate` decision left open. Record which bullet(s) you build on — they
   become `citedLearnings` (by experiment id), and the human's approval will
   backlink them (`Used by:`).
+- **Product-workflow path** (`productWorkflows` non-empty): these are the
+  persona/JTBD flows the build chapter authored via `/build-workflow`
+  (`scope: "product"`) — how the product actually serves a persona's job today.
+  A step in one of these flows that's unserved, manual, or a known drop-off is
+  strong ground for the next bet — it's evidence about the *product*, not about
+  Systemix's own evidence ledger. Cite the workflow id in `citedWorkflow` and
+  name the step/persona/jtbd it targets in `context`.
 - **Cold start** (`coldStart: true`, the ledger is empty): rank by the `odi`
   outcomes (already scored `importance + max(importance − satisfaction, 0)`,
   highest = most underserved) crossed with the active `goals` — especially a
@@ -60,8 +67,9 @@ It must be:
 
 - **Falsifiable** — a specific change, a specific metric, a win/lose line.
 - **ICP-calibrated** — use the goal's `icp`; speak to that person's pain.
-- **Cited** — `context` quotes the learning bullet verbatim or names the ODI
-  outcome (id + score) the bet builds on. An uncited proposal is slop.
+- **Cited** — `context` quotes the learning bullet verbatim, names the ODI
+  outcome (id + score), or names the product workflow (id + persona + jtbd)
+  the bet builds on. An uncited proposal is slop.
 
 Shape the full payload (it maps 1:1 onto `systemix experiment new` — approval
 creates `experiments/<id>.mdx` from exactly these fields):
@@ -73,6 +81,7 @@ creates `experiments/<id>.mdx` from exactly these fields):
   "confidence": 0.55,
   "citedLearnings": ["<prior-experiment-id>"],
   "citedOdi": ["ODI-1"],
+  "citedWorkflow": ["<product-workflow-id>"],
   "payload": {
     "id": "<kebab-slug>-<YYYY-MM>", "section": "<surface>", "icp": "<from the goal>",
     "jtbd": "<the job this serves>", "goal": "<active goal id>",

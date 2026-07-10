@@ -1,7 +1,7 @@
 // Landing copy registry — the single place to edit the narrative, and the seam
 // the hero A/B test reads from (useVariant("landing-hero")). Engine = Claude Code.
 //
-// Rebrand (landing-rebrand-hifi-2026-07), revision 2: LaunchKit soft-grid arc —
+// Rebrand (landing-rebrand-hifi-2026-07), revision 2: dense soft-grid arc —
 // announcement → hero row (copy | facts | tools) → stack strip → statement →
 // deep-dives → audiences → proof → credibility → pricing → build-vs-buy → FAQ.
 // Voice: outcome first, mechanism below the fold. "The loop" is BANNED in
@@ -60,7 +60,7 @@ export const hero = {
   fineprint: "Open source · ghost mode by default · your files, your repo",
 };
 
-// ── Hero facts — the "what you get" table cell (LaunchKit pattern) ───────────
+// ── Hero facts — the "what you get" table cell (dense soft-grid pattern) ─────
 
 export type HeroFact = { label: string; value: string };
 
@@ -88,7 +88,7 @@ export const logoRows = {
   },
 };
 
-// ── Statement block — the two-tone problem/resolution (LaunchKit pattern) ────
+// ── Statement block — the two-tone problem/resolution (soft-grid pattern) ────
 
 export const statement = {
   strong: "AI can generate a design system in an afternoon. Keeping it true is the hard part.",
@@ -134,11 +134,11 @@ export const audiences = {
   heading: "Everyone works from the same notes.",
   body: "One source of truth your whole team — and your AI agents — read from: the decisions, the tokens, and the evidence, all in your repo. A design system has always connected these roles; this one keeps the notes for them.",
   items: [
-    { name: "Engineers", href: "/for/engineers", line: "tokens and guardrails, canonical in code" },
-    { name: "Designers", href: "/for/designers", line: "rationale that survives every handoff" },
-    { name: "Marketing", href: "/for/marketers", line: "headlines and flows become evidence" },
-    { name: "Business", href: "/for/business", line: "decisions with receipts, not meetings" },
-    { name: "AI agents", href: "/for/agents", line: "the notes your agents read first" },
+    { name: "Engineers", href: "/docs/guides/engineers", line: "tokens and guardrails, canonical in code" },
+    { name: "Designers", href: "/docs/guides/designers", line: "rationale that survives every handoff" },
+    { name: "Marketing", href: "/docs/guides/marketers", line: "headlines and flows become evidence" },
+    { name: "Business", href: "/docs/guides/business", line: "decisions with receipts, not meetings" },
+    { name: "AI agents", href: "/docs/guides/agents", line: "the notes your agents read first" },
   ],
   note: "Even clients read it — the system explains its own choices.",
 };
@@ -146,9 +146,9 @@ export const audiences = {
 // ── Proof — running on itself (shared with /for/* pages) ─────────────────────
 
 export const proof = {
-  label: "The proof",
-  heading: "Running on itself.",
-  body: "This site is a Systemix instance. The agentic feed below is live — every experiment, decision, and learning is a file in this repo, written by the automation and approved by a human.",
+  label: "See it live",
+  heading: "This page is the product.",
+  body: "This site is a Systemix instance. The feed below isn't a screenshot — it's live files in this repo: every experiment, decision, and learning, written by the automation and kept by a human. Drop-in context files like these are common now; the difference here is they update themselves with evidence and drift instead of going stale.",
   steps: [
     { n: "01", title: "ship" },
     { n: "02", title: "measure" },
@@ -199,11 +199,11 @@ export const pricing = {
     },
     {
       key: "kit",
-      name: "Full Kit",
+      name: "Learning Kit",
       price: "€99",
       priceNote: "download · pay once",
-      body: "The complete AI-native design-system kit — engine, docs, app setup, skills, workflows. Downloadable, yours to keep.",
-      cta: { label: "Get the Kit →", href: "/kit", event: "kit_requested" },
+      body: "The complete AI-native design system that learns — engine, docs, app setup, skills, workflows. Downloadable, yours to keep.",
+      cta: { label: "Get the Learning Kit →", href: "/kit", event: "kit_requested" },
       highlight: true,
     },
     {
@@ -217,10 +217,10 @@ export const pricing = {
     },
     {
       key: "sprint",
-      name: "Consultancy",
+      name: "Wiring service",
       price: "Custom",
       priceNote: "2-week sprint",
-      body: "A discovery + implementation sprint — we wire your AI-native design system to your stack, with you.",
+      body: "We wire your Learning Kit into your stack — a discovery + implementation sprint, with you.",
       cta: { label: "Book a call →", href: CALL_MAILTO, event: "book_a_call" },
       highlight: false,
     },
@@ -233,7 +233,7 @@ export const pricing = {
 export type PersonaValueRow = { role: string; gets: string; detail: string };
 
 export const personaValue = {
-  label: "One kit, every audience",
+  label: "One Learning Kit, every audience",
   heading: "What each role gets.",
   hint: "Tap a row for what it means in practice.",
   columns: { role: "Role", gets: "What you get" },
@@ -288,7 +288,7 @@ export const faq = {
     },
     {
       q: "Is it really open source?",
-      a: "Yes — every skill is on GitHub, MIT. Start free; the €99 Kit is the whole thing packaged to download and own.",
+      a: "Yes — every skill is on GitHub, MIT. Start free; the €99 Learning Kit is the whole thing packaged to download and own.",
     },
     {
       q: "Which AI tools does it work with?",
@@ -320,11 +320,11 @@ export const bottomCta = {
 export const nav = {
   links: [
     { label: "How it works", href: "/#deep-dives" },
-    { label: "Kit", href: "/kit" },
+    { label: "Learning Kit", href: "/kit" },
     { label: "Audit", href: "/audit" },
     { label: "Docs", href: "/docs" },
   ],
-  cta: { label: "★ Star on GitHub", href: GITHUB_URL },
+  cta: { label: "Star on GitHub", href: GITHUB_URL },
 };
 
 export const footer = {
@@ -332,15 +332,8 @@ export const footer = {
   links: [
     { label: "GitHub", href: GITHUB_URL },
     { label: "Docs", href: "/docs" },
-    { label: "Kit", href: "/kit" },
+    { label: "Learning Kit", href: "/kit" },
     { label: "Audit", href: "/audit" },
-  ],
-  personaLinks: [
-    { label: "For business", href: "/for/business" },
-    { label: "For engineers", href: "/for/engineers" },
-    { label: "For designers", href: "/for/designers" },
-    { label: "For marketers", href: "/for/marketers" },
-    { label: "For AI agents", href: "/for/agents" },
   ],
   badge: "Open source",
 };

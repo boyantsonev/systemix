@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { loadInstalledSkills, loadSkillPacks } from "@/lib/skills-catalog";
 
 export const metadata: Metadata = {
@@ -53,10 +54,11 @@ export default function SkillsPage() {
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {pack.skills.map((s) => (
-                    <div
+                    <Link
                       key={s.slug}
+                      href={`/skills/${s.slug}`}
                       id={s.slug}
-                      className="scroll-mt-16 rounded-md border border-border/60 bg-background p-4"
+                      className="scroll-mt-16 rounded-md border border-border/60 bg-background p-4 transition-colors hover:border-primary hover:bg-muted/30"
                     >
                       <p className="font-mono text-[13px] font-bold text-foreground">/{s.slug}</p>
                       {s.description && (
@@ -64,7 +66,7 @@ export default function SkillsPage() {
                           {s.description}
                         </p>
                       )}
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -81,14 +83,18 @@ export default function SkillsPage() {
                 </p>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {installed.map((s) => (
-                    <div key={s.slug} className="rounded-md border border-border/60 bg-background p-4">
+                    <Link
+                      key={s.slug}
+                      href={`/skills/${s.slug}`}
+                      className="rounded-md border border-border/60 bg-background p-4 transition-colors hover:border-primary hover:bg-muted/30"
+                    >
                       <p className="font-mono text-[13px] font-bold text-foreground">/{s.slug}</p>
                       {s.description && (
                         <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">
                           {s.description}
                         </p>
                       )}
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

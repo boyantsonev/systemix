@@ -23,8 +23,9 @@ const PROPOSE_HELP = `
     systemix propose queue --file <path>                      … or from a JSON file
 
   The proposal JSON shape:
-    { "hypothesis": "...", "context": "cites a learning bullet or ODI id",
+    { "hypothesis": "...", "context": "cites a learning bullet, ODI id, or product workflow",
       "confidence": 0.55, "citedLearnings": ["<experiment-id>"], "citedOdi": ["ODI-1"],
+      "citedWorkflow": ["<product-workflow-id>"],
       "payload": { "id", "section", "icp", "jtbd", "goal", "hypothesis", "given",
                    "conclusion", "metric", "control", "variant_b", "rationale" } }
 

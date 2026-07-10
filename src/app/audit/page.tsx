@@ -10,6 +10,7 @@ import {
 } from "@/components/landing/sections";
 import { SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
+import { Button } from "@/components/ui/button";
 
 // The €249 AI-Readiness Audit — an automated, me-in-the-loop readiness report
 // (the readiness-audit skill is the engine), scored 0–100 and emailed in 24–48h.
@@ -29,19 +30,16 @@ export default function AuditPage() {
           <section className="border-b border-border/60 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
               <Eyebrow>AI-Readiness Audit · €249 · emailed in 24–48h</Eyebrow>
-              <h1 className="mx-auto max-w-3xl text-[2.5rem] font-bold leading-[1.1] sm:text-[3rem] [text-shadow:var(--glow-head)]">
+              <h1 className="mx-auto max-w-3xl text-[2rem] font-bold leading-[1.12] sm:text-[3rem] sm:leading-[1.1] [text-shadow:var(--glow-head)]">
                 Is your design system AI-ready?
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
                 Send us your repo. You get back a scored readiness report — the drift, the slop, an
                 opportunity ranking, and the exact setup to make your agents follow a system.
               </p>
-              <a
-                href="#form"
-                className="tva-label mt-9 inline-block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-              >
-                Request the audit
-              </a>
+              <Button variant="secondary" size="lg" className="mt-9" asChild>
+                <a href="#form">Request the audit</a>
+              </Button>
             </div>
           </section>
         </SectionTrack>
@@ -63,29 +61,23 @@ export default function AuditPage() {
                   A readiness score 0–100 across six dimensions, the drift + slop map, an opportunity
                   ranking, and the exact setup to fix it.
                 </p>
-                <a
-                  href="#form"
-                  className="tva-label mt-6 block rounded-md bg-primary px-5 py-3 text-center text-[11px] text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  Request the audit
-                </a>
+                <Button variant="secondary" size="sm" className="mt-6 w-full" asChild>
+                  <a href="#form">Request the audit</a>
+                </Button>
               </div>
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-border bg-card p-7 shadow-[var(--shadow-panel)]">
-                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Full Kit</p>
+                <p className="tva-label mb-3 text-[10px] text-muted-foreground">Learning Kit</p>
                 <p className="text-[2rem] font-bold leading-none">€99</p>
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">download · pay once</p>
                 <p className="mt-4 flex-1 text-[14px] leading-relaxed text-muted-foreground">
-                  Want to fix it yourself? The Full Kit is the whole context engine, downloadable —
+                  Want to fix it yourself? The Learning Kit is the whole context engine, downloadable —
                   files yours to keep.
                 </p>
-                <TrackedLink
-                  href="/kit"
-                  event="cross_promo_click"
-                  location="audit-to-kit"
-                  className="tva-label mt-6 block rounded-md border border-border px-5 py-3 text-center text-[11px] text-foreground transition-colors hover:border-primary"
-                >
-                  Get the Kit →
-                </TrackedLink>
+                <Button variant="outline" size="sm" className="mt-6 w-full" asChild>
+                  <TrackedLink href="/kit" event="cross_promo_click" location="audit-to-kit">
+                    Get the Learning Kit →
+                  </TrackedLink>
+                </Button>
               </div>
             </div>
           </Section>

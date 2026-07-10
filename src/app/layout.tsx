@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning data-radius="soft" data-crt="soft">
+    <html lang="en" suppressHydrationWarning data-radius="sharp" data-crt="soft">
       <body className={`${chakraPetch.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         {/* TVA CRT atmosphere — fixed overlays, tokenized via [data-crt] */}
         <div className="crt-scan" aria-hidden="true" />

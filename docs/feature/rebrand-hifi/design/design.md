@@ -166,7 +166,7 @@ All configuration is attribute-driven on the root element and can be wired to a 
 `:root` = light, `.dark` = dark (shadcn's default class). Light is a *daylight printout* (warm paper, glow→soft shadow, sweep hidden, scanlines faint) — **not** a naive inversion. The terminal panel stays a lit dark screen in both, preserving the CRT identity with the lights on.
 
 ### 5.2 Radius dial (`data-radius`)
-`sharp` (0), `soft` (5/10px — default, current look), `round` (10/20px).
+`sharp` (0 — default, current look), `soft` (5/10px), `round` (10/20px).
 
 ### 5.3 Type dial (`data-type`)
 | Value | Pairing | Character | Heading case |
@@ -192,24 +192,25 @@ Every component in this system is documented with: **Anatomy** (parts), **Varian
 
 ### 6.2 Button
 
-**Anatomy:** container (border + fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
+**Anatomy — `default`/`secondary` (the "filed" style):** corner-bracket frame · diagonal hatch fill · diagonal solid-fill wipe on hover · label in `--font-mono`, uppercase-tracked. Deliberately unlayered CSS (`.filed-btn` in `globals.css`) so it outranks the Button component's own Tailwind utility classes; owns only its chrome, not box dimensions, so it composes with every `size`.
+**Anatomy — `solid`/`outline`/`ghost`/`link`/`destructive`:** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
 
-**Variants:** `solid` (primary fill), `default/ghost` (bordered), `subtle` (muted border/text), `danger` (destructive).
-**Sizes:** `sm` (8/11px), base (12/16px), `lg` (15/22px).
+**Variants:** `default` — the flagship "filed" style, cream/white (`--foreground`/`--background`, inverts automatically across themes). `secondary` — the same filed chrome, amber (`--primary`/`--primary-foreground`) — a second prominent action alongside the one `default` flagship on a view. `solid` — plain flat amber fill, no bracket, for dense controls that shouldn't carry it. `outline` (bordered), `ghost` (borderless subtle), `link` (text-only), `destructive`.
+**Sizes:** `xs`, `sm`, `default` (base), `lg`. `default`/`secondary` aren't meant for icon-only buttons — use `ghost`/`outline` for those.
 
 **States**
 
 | State | Treatment | Token |
 |---|---|---|
-| Default | transparent/fill + `--line-hot` border | `--primary`, `--border` |
-| Hover | fill brightens ~8%, `--shadow-strong` bloom | `--glow-strong` |
-| Focus-visible | focus ring | `--ring` / `--glow-focus` |
-| Active | translateY(1px), shadow removed | — |
+| Default | filed bracket+hatch (`default`/`secondary`), flat fill (`solid`), or border (`outline`) | `--foreground`/`--background`, `--primary`, `--border` |
+| Hover | filed: diagonal wipe inverts ink, bracket expands. `solid`: opacity shift + `--glow-strong` bloom | `--glow-strong` |
+| Focus-visible | glow ring | `--glow-focus` |
+| Active | filed: bracket contracts. All variants: translateY(1px), shadow removed | — |
 | Disabled | `opacity: var(--disabled-opacity)`, no pointer events | `--disabled-opacity` |
 
-**Accessibility:** min 44×44px hit target for touch; focus-visible ring must be present (never `outline:none` without a replacement); label contrast ≥4.5:1 (solid primary uses dark ink on light theme, verified 4.9:1); state is conveyed by more than color (fill + shadow + position).
+**Accessibility:** min 44×44px hit target for touch; focus-visible ring must be present (never `outline:none` without a replacement); label contrast ≥4.5:1 (filed ink is the paired `-foreground`/`-ink` token, verified 4.9:1 light); state is conveyed by more than color (fill/wipe + shadow + position).
 
-**Do / Don't:** Do keep one `solid` primary per view. Don't use two competing primaries; don't rely on hover-only affordances for touch.
+**Do / Don't:** Do keep one `default` (filed, cream) as the standout per view; a `secondary` (filed, amber) can sit alongside it as a second prominent action. Don't put two `default`s side by side; don't rely on hover-only affordances for touch.
 
 ### 6.3 Alert / Callout
 

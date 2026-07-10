@@ -2,7 +2,7 @@
 //
 // TODAY: a cheap, static, theme-aware SVG texture (no canvas, no JS, no anim) —
 // it reserves the exact layout footprint and reads the amber tokens via
-// currentColor, dissolving at the edges with the same radial mask LoopOrbit uses.
+// currentColor, dissolving at the edges with a radial mask.
 //
 // LATER (upgrade in THIS file, props unchanged): swap the inner render per
 // `variant` for a real library-backed effect — `crt-geo`/`dither-field` →
@@ -101,7 +101,7 @@ export function ScrollEffect({
       className={cn("pointer-events-none relative w-full select-none", TINT[tint], className)}
       style={{
         height: typeof height === "number" ? `${height}px` : height,
-        // dissolve toward the edges — same radial-mask trick as LoopOrbit
+        // dissolve toward the edges with a radial mask
         maskImage: "radial-gradient(120% 80% at 50% 50%, black 30%, transparent 75%)",
         WebkitMaskImage: "radial-gradient(120% 80% at 50% 50%, black 30%, transparent 75%)",
         opacity: OPACITY[intensity],

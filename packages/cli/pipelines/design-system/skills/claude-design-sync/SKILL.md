@@ -46,7 +46,7 @@ Present a table: `token · current · proposed · status`.
 
 ### Step 4 — Propose the change (HITL)
 - Write the proposed `design/tokens.css` (`:root` / `.dark`).
-- Update `design/DESIGN.md` — record the source ("synced from Claude Design <date/link>") in the
+- Update `design/DESIGN.md` — record the source ("synced from Claude Design `<date/link>`") in the
   Memory / decision log, and adjust the brief if the visual direction shifted.
 - If the design implies new rules, propose an edit to `design/guardrails.mdx`.
 - **Open a PR / show the diff and wait for approval before writing.** Token changes follow the

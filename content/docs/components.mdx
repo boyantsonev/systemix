@@ -1,0 +1,18 @@
+---
+title: Components
+description: Live reference for Button, Input, and Select — every variant and size, rendered from the real components.
+---
+
+This page renders the actual `Button`, `Input`, and `Select` components from
+`src/components/ui/`, not screenshots or a mockup — it can't drift from the code.
+
+`default` is the flagship "filed" style — a corner-bracket frame with a diagonal
+wipe on hover, colored cream/white via `--foreground`/`--background` so it inverts
+automatically across light and dark. `secondary` is the same filed chrome in amber
+(`--primary`/`--primary-foreground`) — a second prominent action alongside the one
+`default` flagship on a view. `solid` is a plain flat amber fill with no bracket,
+for dense controls that shouldn't carry it. `outline`, `ghost`, and `link` cover
+lower-emphasis actions — including icon-only buttons, which `default`/`secondary`
+aren't meant for; `destructive` is for irreversible ones.
+
+<ButtonReference />

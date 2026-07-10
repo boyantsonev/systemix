@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { TYPE_COLOR_DARK, TYPE_COLOR_LIGHT, TYPE_LABEL, type NodeType } from "@/lib/data/system-graph";
 import type { TopoNode, SourceCard } from "@/lib/state/instance-topology";
+import { useCopySkill } from "@/components/skills/useCopySkill";
 
 // The node inspector content (ADR-021/022). Rendered in the right push panel on
 // /config when a graph node is selected. Polymorphic by node type: the `source`
@@ -52,23 +53,8 @@ const TYPE_DESC: Record<NodeType, string> = {
 // project's context — the invocation string alone was never enough.
 function SkillCopy({ node }: { node: TopoNode }) {
   const name = node.id.replace(/^skill:/, "");
-  const [body, setBody] = useState<"idle" | "loading" | "copied" | "error">("idle");
+  const { state: body, copy: copyBody } = useCopySkill(name);
   const [ref, setRef] = useState(false);
-
-  const copyBody = useCallback(async () => {
-    setBody("loading");
-    try {
-      const res = await fetch(`/api/skills/${name}`);
-      if (!res.ok) throw new Error("not found");
-      const data = (await res.json()) as { body: string };
-      await navigator.clipboard.writeText(data.body);
-      setBody("copied");
-      setTimeout(() => setBody("idle"), 1500);
-    } catch {
-      setBody("error");
-      setTimeout(() => setBody("idle"), 2000);
-    }
-  }, [name]);
 
   const copyRef = useCallback(() => {
     const desc = NODE_DESC[node.id] ?? TYPE_DESC.skill;
