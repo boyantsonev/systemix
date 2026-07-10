@@ -535,6 +535,88 @@
   }
 }
 
+/* Filed button — corner-bracket frame, diagonal solid-fill wipe on hover.
+   The Button component's `default` variant (button.tsx): the flagship CTA
+   style app-wide. Colors are read from --filed-fill/--filed-ink (default:
+   --foreground/--background, so it inverts correctly in both themes); the
+   `secondary` variant overrides those two properties to the amber
+   --primary/--primary-foreground pair below — same chrome, second color, so
+   a page can carry one cream "the" flagship action and one amber
+   supporting one without looking like two competing flagships.
+   Deliberately UNLAYERED (outside @layer base/utilities): it must outrank
+   the Button component's shared Tailwind utility classes (text-sm,
+   rounded-md, …) — unlayered CSS always wins over any @layer'd utility
+   regardless of source order.
+   Owns only its own chrome (frame, wipe, hatch, color inversion, type) —
+   deliberately does NOT set display/gap/padding/height, so it composes
+   correctly with every `size` variant (h-9 px-4 py-2, h-8 px-3, …) instead
+   of only working at one fixed dimension. */
+.filed-btn {
+  position: relative;
+  --filed-fill: var(--foreground);
+  --filed-ink: var(--background);
+  border-radius: 0;
+  /* --font-mono is a Tailwind @theme inline token (inlined into utilities at
+     build time, not a real runtime custom property) — reference the
+     underlying next/font variable it resolves from instead. */
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--filed-fill);
+  background: repeating-linear-gradient(
+    119deg,
+    rgba(237, 237, 236, 0.2) 0px, rgba(237, 237, 236, 0.2) 1px,
+    transparent 1px, transparent 5px
+  );
+  border: none;
+  cursor: pointer;
+  isolation: isolate;
+  transition: color 0.2s ease 0.15s;
+}
+.filed-btn.filed-btn--secondary {
+  --filed-fill: var(--primary);
+  --filed-ink: var(--primary-foreground);
+}
+.filed-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--filed-fill);
+  clip-path: polygon(-1% 0%, -1% 0%, -100% 100%, -1% 100%);
+  transition: clip-path 0.4s cubic-bezier(0.25, 0, 0, 1);
+  z-index: -1;
+  pointer-events: none;
+}
+.filed-btn:hover {
+  color: var(--filed-ink);
+}
+.filed-btn:hover::after {
+  clip-path: polygon(0% 0%, 200% 0%, 100% 100%, 0% 100%);
+}
+.filed-btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background-image:
+    linear-gradient(to right, var(--filed-fill) 8px, transparent 8px, transparent calc(100% - 8px), var(--filed-fill) calc(100% - 8px)),
+    linear-gradient(to right, var(--filed-fill) 8px, transparent 8px, transparent calc(100% - 8px), var(--filed-fill) calc(100% - 8px)),
+    linear-gradient(to bottom, var(--filed-fill) 8px, transparent 8px, transparent calc(100% - 8px), var(--filed-fill) calc(100% - 8px)),
+    linear-gradient(to bottom, var(--filed-fill) 8px, transparent 8px, transparent calc(100% - 8px), var(--filed-fill) calc(100% - 8px));
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  z-index: 2;
+  pointer-events: none;
+  transition: inset 0.25s cubic-bezier(0.25, 0, 0, 1);
+}
+.filed-btn:hover::before { inset: -3px; }
+.filed-btn:active::before { inset: 3px; transition-duration: 0.12s; }
+.filed-btn:disabled { cursor: default; opacity: var(--disabled-opacity); }
+@media (prefers-reduced-motion: reduce) {
+  .filed-btn, .filed-btn::after, .filed-btn::before { transition: none; }
+}
+
 /* TVA label utility — uppercase-tracked mono (eyebrows, buttons, table heads) */
 @utility tva-label {
   font-family: var(--font-label);

@@ -7,6 +7,7 @@ import { PendingDecisions } from "@/components/contract/PendingDecisions";
 import { AutonomyClause } from "@/components/contract/AutonomyClause";
 import { LoopDiagram } from "@/components/loop/LoopDiagram";
 import { SkillsReference } from "@/components/docs/SkillsReference";
+import { ButtonReference } from "@/components/docs/ButtonReference";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
@@ -18,6 +19,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     AutonomyClause,
     LoopDiagram,
     SkillsReference,
+    ButtonReference,
     ...components,
   } as MDXComponents;
 }

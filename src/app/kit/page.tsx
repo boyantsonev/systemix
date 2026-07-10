@@ -11,18 +11,19 @@ import {
 } from "@/components/landing/sections";
 import { SectionTrack, TrackedLink, InstallCommand } from "@/components/systemix/LandingEvents";
 import { INIT_COMMAND, KIT_CHECKOUT_URL } from "@/lib/landing/content";
+import { Button } from "@/components/ui/button";
 
-// The €99 downloadable Full Kit — the whole context engine, packaged to own.
+// The €99 downloadable Learning Kit — the whole context engine, packaged to own.
 export const metadata: Metadata = {
-  title: "Systemix Full Kit — the AI-native design-system context engine, €99 to download",
+  title: "Systemix Learning Kit — the AI-native design system that learns, €99 to download",
   description:
-    "The complete AI-native design-system kit: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files. No subscription, no lock-in.",
+    "The complete AI-native design system that learns: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files. No subscription, no lock-in.",
   alternates: { canonical: "/kit" },
 };
 
 const METRICS = [
   { value: "€99", label: "once — not per month" },
-  { value: "Full kit", label: "engine · docs · skills · workflows" },
+  { value: "Learning Kit", label: "engine · docs · skills · workflows" },
   { value: "Day 1", label: "running, ghost mode on" },
   { value: "Lifetime", label: "updates to the kit" },
 ];
@@ -48,8 +49,8 @@ const PRICING_BULLETS = [
 // Refund-policy question deliberately omitted until the policy is set.
 const FAQ = [
   { q: "Is this a subscription?", a: "No. Pay once, download it, keep every file." },
-  { q: "What's the difference from the free skills?", a: "Every skill is free to use. The Kit is the whole thing packaged — engine, app setup, and workflows — as one download you own, set up to run on day one." },
-  { q: "Do I get updates?", a: "Yes, lifetime updates to the Kit." },
+  { q: "What's the difference from the free skills?", a: "Every skill is free to use. The Learning Kit is the whole thing packaged — engine, app setup, and workflows — as one download you own, set up to run on day one." },
+  { q: "Do I get updates?", a: "Yes, lifetime updates to the Learning Kit." },
   { q: "Which AI tools?", a: "Claude Code, Cursor, Codex." },
   { q: "Can I use it on client projects?", a: "Yes. The files are yours to keep or hand off." },
 ];
@@ -59,9 +60,9 @@ function KitJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: "Systemix Full Kit",
+    name: "Systemix Learning Kit",
     description:
-      "The complete AI-native design-system context engine: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files.",
+      "The complete AI-native design system that learns: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files.",
     brand: { "@type": "Brand", name: "Systemix" },
     offers: {
       "@type": "Offer",
@@ -87,8 +88,8 @@ export default function KitPage() {
         <SectionTrack name="kit-hero">
           <section className="border-b border-border/60 py-24 sm:py-28">
             <div className="mx-auto max-w-5xl px-6 text-center">
-              <Eyebrow>Full Kit · download · pay once</Eyebrow>
-              <h1 className="mx-auto max-w-3xl text-[2.5rem] font-bold leading-[1.1] sm:text-[3rem] [text-shadow:var(--glow-head)]">
+              <Eyebrow>Learning Kit · download · pay once</Eyebrow>
+              <h1 className="mx-auto max-w-3xl text-[2rem] font-bold leading-[1.12] sm:text-[3rem] sm:leading-[1.1] [text-shadow:var(--glow-head)]">
                 The whole context engine. Yours to download.
               </h1>
               <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-muted-foreground">
@@ -96,14 +97,11 @@ export default function KitPage() {
                 workflows — packaged to run on your AI coding tool on day one.
               </p>
               <div className="mt-9 flex flex-col items-center gap-4">
-                <TrackedLink
-                  href={KIT_CHECKOUT_URL}
-                  event="kit_requested"
-                  location="kit-hero"
-                  className="tva-label rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-                >
-                  Get the Full Kit — €99
-                </TrackedLink>
+                <Button variant="secondary" size="lg" asChild>
+                  <TrackedLink href={KIT_CHECKOUT_URL} event="kit_requested" location="kit-hero">
+                    Get the Learning Kit — €99
+                  </TrackedLink>
+                </Button>
                 <div className="flex flex-col items-center gap-2">
                   <InstallCommand cmd={INIT_COMMAND} location="kit" />
                   <p className="font-mono text-[11px] text-muted-foreground/70">
@@ -160,7 +158,7 @@ export default function KitPage() {
           <Section>
             <div className="mx-auto max-w-md">
               <div className="rounded-[var(--radius-screen)] border border-primary bg-card p-8 text-center shadow-[var(--shadow-panel)]">
-                <p className="tva-label mb-4 text-[10px] text-muted-foreground">Full Kit</p>
+                <p className="tva-label mb-4 text-[10px] text-muted-foreground">Learning Kit</p>
                 <p className="text-[2.5rem] font-bold leading-none">€99</p>
                 <p className="tva-label mt-2 text-[10px] text-highlight">download · pay once</p>
                 <p className="mt-4 text-[14px] font-medium text-foreground">
@@ -171,14 +169,11 @@ export default function KitPage() {
                     <li key={b}>· {b}</li>
                   ))}
                 </ul>
-                <TrackedLink
-                  href={KIT_CHECKOUT_URL}
-                  event="kit_requested"
-                  location="kit-pricing"
-                  className="tva-label mt-7 block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-                >
-                  Get the Full Kit
-                </TrackedLink>
+                <Button variant="secondary" size="lg" className="mt-7 w-full" asChild>
+                  <TrackedLink href={KIT_CHECKOUT_URL} event="kit_requested" location="kit-pricing">
+                    Get the Learning Kit
+                  </TrackedLink>
+                </Button>
                 <p className="mt-4 text-[12px] text-muted-foreground">
                   Not sure yet? Start free with{" "}
                   <code className="font-mono text-[11px]">{INIT_COMMAND}</code>.

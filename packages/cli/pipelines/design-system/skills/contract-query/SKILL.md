@@ -60,7 +60,7 @@ Rationale:
 
 If no file matches:
 1. List all available token slugs and component slugs (one per line)
-2. Say: "No contract found for '<query>'. Available contracts listed above."
+2. Say: "No contract found for '`<query>`'. Available contracts listed above."
 
 ## Notes
 

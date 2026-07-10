@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import { usePostHog } from "posthog-js/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // The Readiness Audit request form (Rung 1). Fires `audit_requested` (the funnel
 // metric) and opens a pre-filled email — the honest zero-infra delivery, matching
@@ -51,48 +60,47 @@ export function AuditRequestForm() {
     );
   }
 
-  const inputCls =
-    "mt-1.5 w-full rounded-lg border border-border/60 bg-background px-3.5 py-2.5 text-[14px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-foreground/40";
-
   return (
     <form onSubmit={submit} className="flex flex-col gap-4 rounded-xl border border-border/60 bg-card p-6">
       <label className="block">
         <span className="text-[13px] font-medium text-foreground">Repo or site URL</span>
-        <input
+        <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           required
           placeholder="github.com/you/app  ·  or  app.yourdomain.com"
-          className={inputCls}
+          className="mt-1.5"
         />
       </label>
       <label className="block">
         <span className="text-[13px] font-medium text-foreground">Email</span>
-        <input
+        <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           placeholder="you@company.com"
-          className={inputCls}
+          className="mt-1.5"
         />
       </label>
       <label className="block">
         <span className="text-[13px] font-medium text-foreground">How are you building right now?</span>
-        <select value={qualifier} onChange={(e) => setQualifier(e.target.value)} className={inputCls}>
-          {QUALIFIERS.map((q) => (
-            <option key={q} value={q}>
-              {q}
-            </option>
-          ))}
-        </select>
+        <Select value={qualifier} onValueChange={setQualifier}>
+          <SelectTrigger className="mt-1.5 w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {QUALIFIERS.map((q) => (
+              <SelectItem key={q} value={q}>
+                {q}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </label>
-      <button
-        type="submit"
-        className="mt-1 rounded-full bg-foreground px-5 py-3 text-[14px] font-medium text-background transition-opacity hover:opacity-90"
-      >
+      <Button type="submit" variant="default" size="lg" className="mt-1">
         Request the report →
-      </button>
+      </Button>
       <p className="text-center font-mono text-[11px] text-muted-foreground/50">
         €249 · one-time · emailed in 24–48h
       </p>

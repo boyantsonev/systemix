@@ -17,13 +17,14 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 ## Actions & input
 
 ### Button
-- **Anatomy:** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
-- **Variants:** `solid` (primary fill) · `default`/ghost (bordered) · `subtle` (muted) · `danger` (destructive).
-- **Sizes:** `sm` 8/11px · base 12/16px · `lg` 15/22px.
-- **States:** default (border `--line-hot`) · hover (fill +8% brightness, `--glow-strong`) · focus-visible (`--ring`/`--glow-focus`) · active (translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
-- **Tokens:** `--primary`/`--primary-foreground`, `--destructive`, `--border`, `--radius`, `--glow-*`.
-- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (solid primary uses paired `-foreground` ink — verified 4.9:1 light); state signaled by fill+shadow+position, not color alone.
-- **Do / Don't:** Do keep one `solid` primary per view. Don't ship two competing primaries or hover-only affordances.
+- **Anatomy (`default`/`secondary`, the "filed" style):** corner-bracket frame · diagonal hatch fill · diagonal solid-fill wipe on hover · `--font-mono` uppercase-tracked label. Deliberately unlayered CSS (`.filed-btn`) so it outranks the component's own Tailwind utilities; owns only its chrome, composes with every `size`.
+- **Anatomy (`solid`/`outline`/`ghost`/`link`/`destructive`):** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
+- **Variants:** `default` (flagship filed style, cream — `--foreground`/`--background`, inverts across themes) · `secondary` (filed style, amber — `--primary`/`--primary-foreground`, a second prominent action alongside `default`) · `solid` (plain flat amber fill, no bracket, for dense controls) · `outline` (bordered) · `ghost` (borderless subtle) · `link` (text-only) · `destructive`.
+- **Sizes:** `xs` · `sm` · `default` (base) · `lg`. `default`/`secondary` aren't for icon-only buttons — use `ghost`/`outline`.
+- **States:** default (filed bracket+hatch, flat fill, or border, per variant) · hover (filed: diagonal wipe + bracket expands; `solid`: opacity shift + `--glow-strong` bloom) · focus-visible (`--glow-focus`) · active (filed: bracket contracts; all: translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
+- **Tokens:** `--foreground`/`--background`, `--primary`/`--primary-foreground`, `--destructive`, `--border`, `--radius`, `--glow-*`.
+- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (filed ink is the paired `-foreground`/`-ink` token — verified 4.9:1 light); state signaled by fill/wipe+shadow+position, not color alone.
+- **Do / Don't:** Do keep one `default` (filed, cream) as the standout per view — a `secondary` (filed, amber) can sit alongside it. Don't put two `default`s side by side or rely on hover-only affordances.
 
 ### Checkbox
 - **Anatomy:** native `input[type=checkbox]` + label.
@@ -48,8 +49,8 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 
 ### Text input
 - **Anatomy:** field container · value (`--font-mono`) · label · optional error message.
-- **States:** default (`--input` border) · focus (`--glow-focus`, border `--primary`) · error (`--destructive` border + `.msg`) · disabled (`--disabled-opacity`) · placeholder (`--fg-dim`).
-- **Tokens:** `--input`, `--primary`, `--destructive`, `--bg-3`, `--radius`, `--glow-focus`.
+- **States:** default (`--input` border) · focus (`--glow-focus`, border `--primary`) · error (`--destructive` border + `.msg`) · disabled (`--disabled-opacity`) · placeholder (`--muted-foreground`).
+- **Tokens:** `--input`, `--primary`, `--destructive`, `--radius`, `--glow-focus`.
 - **Accessibility:** every field has a programmatic `<label>`; error text linked via `aria-describedby` and `aria-invalid="true"`; never signal error by border color alone (include the message).
 - **Do / Don't:** Do keep labels visible. Don't use placeholder as the only label.
 
@@ -57,10 +58,10 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 - Same tokens/states as Text input; adds `resize: vertical`, `min-height`. Accessibility identical. Do provide a sensible min-height; don't disable resize without reason.
 
 ### Select
-- **Anatomy:** native `select` (or Radix Select) styled as Text input.
-- **States:** mirror Text input; add open/expanded when using Radix.
-- **Tokens:** as Text input; menu uses `--popover`/`--shadow-pop`.
-- **Accessibility:** labelled; for custom (Radix) selects, preserve typeahead, arrow navigation, and `aria-expanded`.
+- **Anatomy:** Radix Select (`SelectTrigger`/`SelectContent`/`SelectItem`), styled as Text input.
+- **States:** mirror Text input; add open/expanded.
+- **Tokens:** as Text input (`--input`, `--primary`, `--glow-focus`, `--disabled-opacity`); menu uses `--popover`/`--shadow-pop`.
+- **Accessibility:** labelled; preserves Radix's built-in typeahead, arrow navigation, and `aria-expanded`.
 - **Do / Don't:** Do use for 6+ options. Don't use for 2–3 exclusive options — use Radio/segmented.
 
 ### Slider (range)

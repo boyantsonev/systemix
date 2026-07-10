@@ -5,19 +5,31 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  // TVA button spec (components.md): --font-label uppercase-tracked, token radius
-  // (rectangles, not pills), disabled at --disabled-opacity, focus = glow ring.
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-[family-name:var(--font-label)] uppercase tracking-[0.06em] text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-[var(--disabled-opacity)] [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive [text-shadow:none]",
+  // TVA button spec (design.md §6.2 / components.md): --font-label uppercase-
+  // tracked, token radius (rectangles, not pills), disabled at
+  // --disabled-opacity, focus = --glow-focus, active = translateY(1px) w/ no
+  // shadow. Hover bloom (--glow-strong) is per-variant below (filled only).
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-[family-name:var(--font-label)] uppercase tracking-[0.06em] text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-[var(--disabled-opacity)] [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:shadow-[var(--glow-focus)] active:translate-y-px active:shadow-none aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive [text-shadow:none]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        // The flagship style (globals.css .filed-btn): corner-bracket frame +
+        // diagonal wipe on hover. Owns only its own chrome (frame, wipe, hatch,
+        // color inversion, type) — box dimensions still come from `size` below.
+        default: "filed-btn",
+        // Same filed-btn chrome, amber instead of cream — a second prominent
+        // action alongside the one true `default` flagship (e.g. a pricing
+        // tier's CTA next to a hero that already carries the default).
+        secondary: "filed-btn filed-btn--secondary",
+        // The plain filled button — for the rare case that shouldn't carry
+        // the bracket frame (e.g. inside a dense control like a settings
+        // dialog).
+        solid:
+          "bg-primary text-primary-foreground shadow-[var(--glow-soft)] hover:bg-primary/90 hover:shadow-[var(--glow-strong)]",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

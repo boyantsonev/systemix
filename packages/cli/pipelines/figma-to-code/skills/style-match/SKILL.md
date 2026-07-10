@@ -89,7 +89,7 @@ EXTRA COLORS (not mapped — show up to 8)
 ```
 
 Ask the user:
-> These are the tokens I can map from <url>. Shall I:
+> These are the tokens I can map from `<url>`. Shall I:
 > A) Apply all mapped tokens
 > B) Let me select which tokens to apply
 > C) Cancel
@@ -142,7 +142,7 @@ For each confirmed token change:
    - Add a `style-source` frontmatter field: the URL
 
 3. **Write Hermes rationale** to the contract prose body:
-   > This token was updated by /style-match on <date>. The new value `<value>` was extracted from `<url>`. The previous value was `<old_value>`. The visual intent was to match the look and feel of the source site. Figma has not been updated — this is code-side only. Run /sync-to-figma to propagate.
+   > This token was updated by /style-match on `<date>`. The new value `<value>` was extracted from `<url>`. The previous value was `<old_value>`. The visual intent was to match the look and feel of the source site. Figma has not been updated — this is code-side only. Run /sync-to-figma to propagate.
 
    Write this even without Ollama running (it's a template, not an LLM call).
 

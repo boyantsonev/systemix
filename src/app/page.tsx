@@ -41,18 +41,19 @@ export default function LandingPage() {
           <SectionTrack name="stack">
             <StackStrip />
           </SectionTrack>
-          <ScrollEffect variant="crt-geo" intensity="calm" tint="primary" height={140} />
           <SectionTrack name="statement">
             <Statement />
           </SectionTrack>
-          <ScrollEffect variant="ascii-wave" intensity="soft" tint="highlight" height={180} />
           <SectionTrack name="deep-dives">
             <FeatureDeepDives />
           </SectionTrack>
           <SectionTrack name="audiences">
             <Audiences />
           </SectionTrack>
-          <ScrollEffect variant="dither-field" intensity="calm" tint="primary" height={160} />
+          <ScrollEffect variant="dither-field" intensity="calm" tint="primary" height={140} />
+          {/* The live artifact as proof (not the lead) — the real running file,
+              honest by construction. It shows raw experiment state, so it sits
+              after the plain-language explainers, not before them. */}
           <SectionTrack name="loop">
             <TheLoop />
           </SectionTrack>
@@ -65,7 +66,6 @@ export default function LandingPage() {
           <SectionTrack name="faq">
             <FaqSection />
           </SectionTrack>
-          <ScrollEffect variant="crt-geo" intensity="soft" tint="primary" height={140} />
           <SectionTrack name="bottom-cta">
             <BottomCTA />
           </SectionTrack>
