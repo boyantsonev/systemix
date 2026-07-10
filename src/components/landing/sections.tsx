@@ -415,14 +415,11 @@ export function BrandCloneHook() {
             Your colors, type scale, and radius — scraped from your live site, mapped to design
             tokens. A reviewable diff, not a redesign.
           </p>
-          <TrackedLink
-            href={brandClone.cta.href}
-            event="brand_clone_request"
-            location="brand-clone"
-            className="tva-label mt-5 block rounded-md bg-primary px-5 py-3 text-center text-[12px] text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            {brandClone.cta.label}
-          </TrackedLink>
+          <Button variant="secondary" size="lg" className="mt-5 w-full" asChild>
+            <TrackedLink href={brandClone.cta.href} event="brand_clone_request" location="brand-clone">
+              {brandClone.cta.label}
+            </TrackedLink>
+          </Button>
           <p className="mt-4 text-[11px] text-muted-foreground/70">{brandClone.note}</p>
         </div>
       </div>
@@ -505,19 +502,16 @@ export function Services() {
                 <InstallCommand cmd={t.cta.command} />
               </div>
             ) : (
-              <TrackedLink
-                href={t.cta.href}
-                event={t.cta.event}
-                location={`pricing-${t.key}`}
-                className={cn(
-                  "tva-label mt-5 inline-block rounded-md px-4 py-2.5 text-center text-[11px] transition-opacity hover:opacity-85",
-                  t.highlight
-                    ? "bg-primary text-primary-foreground shadow-[var(--glow-soft)]"
-                    : "border border-border text-foreground hover:border-primary",
-                )}
+              <Button
+                variant={t.highlight ? "secondary" : "outline"}
+                size="sm"
+                className="mt-5"
+                asChild
               >
-                {t.cta.label}
-              </TrackedLink>
+                <TrackedLink href={t.cta.href} event={t.cta.event} location={`pricing-${t.key}`}>
+                  {t.cta.label}
+                </TrackedLink>
+              </Button>
             )}
           </div>
         ))}

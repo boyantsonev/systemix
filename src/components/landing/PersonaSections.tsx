@@ -6,6 +6,7 @@ import { LoopDiagram } from "@/components/loop/LoopDiagram";
 import { Eyebrow, Lead, Section, SectionHeading } from "@/components/landing/sections";
 import { getLatestSnapshot, getTrend } from "@/lib/state/drift-history";
 import { PERSONA_TAG, type PersonaContent } from "@/lib/landing/personas";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
@@ -17,8 +18,7 @@ function heroEvent(href: string): string | null {
 export function PersonaHero({ persona }: { persona: PersonaContent }) {
   const { hero } = persona;
   const event = heroEvent(hero.primaryCta.href);
-  const ctaClass =
-    "inline-block rounded-full bg-foreground px-6 py-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90";
+  const ctaClass = buttonVariants({ variant: "primary", size: "lg" });
 
   return (
     <section className="relative">
@@ -136,15 +136,16 @@ function OutcomesCard({ persona }: { persona: PersonaContent }) {
         are live, your signals wired, and the loop is yours — files in your repo,
         no platform to churn from.
       </p>
-      <TrackedLink
-        href="mailto:boyan.works@gmail.com?subject=Systemix%20sprint"
-        event="book_a_call"
-        location={`persona-proof-${persona.key}`}
-        persona={persona.key}
-        className="mt-5 inline-block rounded-full bg-foreground px-5 py-2.5 text-[12px] font-medium text-background transition-opacity hover:opacity-90"
-      >
-        Book a scoping call →
-      </TrackedLink>
+      <Button variant="primary" size="sm" className="mt-5" asChild>
+        <TrackedLink
+          href="mailto:boyan.works@gmail.com?subject=Systemix%20sprint"
+          event="book_a_call"
+          location={`persona-proof-${persona.key}`}
+          persona={persona.key}
+        >
+          Book a scoping call →
+        </TrackedLink>
+      </Button>
     </div>
   );
 }
@@ -281,12 +282,11 @@ export function PersonaGuideCta({ persona }: { persona: PersonaContent }) {
           Want the step-by-step? The {persona.label.toLowerCase()} guide walks the
           whole loop in ten minutes.
         </p>
-        <Link
-          href={persona.guideHref}
-          className="mt-5 inline-block rounded-full border border-border/60 px-5 py-2.5 text-[13px] font-medium text-foreground transition-colors hover:border-foreground"
-        >
-          Read the {persona.label.toLowerCase()} guide →
-        </Link>
+        <Button variant="outline" size="sm" className="mt-5" asChild>
+          <Link href={persona.guideHref}>
+            Read the {persona.label.toLowerCase()} guide →
+          </Link>
+        </Button>
       </div>
     </Section>
   );

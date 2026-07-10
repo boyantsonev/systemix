@@ -18,12 +18,12 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 
 ### Button
 - **Anatomy:** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
-- **Variants:** `solid` (primary fill) · `default`/ghost (bordered) · `subtle` (muted) · `danger` (destructive).
-- **Sizes:** `sm` 8/11px · base 12/16px · `lg` 15/22px.
-- **States:** default (border `--line-hot`) · hover (fill +8% brightness, `--glow-strong`) · focus-visible (`--ring`/`--glow-focus`) · active (translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
-- **Tokens:** `--primary`/`--primary-foreground`, `--destructive`, `--border`, `--radius`, `--glow-*`.
-- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (solid primary uses paired `-foreground` ink — verified 4.9:1 light); state signaled by fill+shadow+position, not color alone.
-- **Do / Don't:** Do keep one `solid` primary per view. Don't ship two competing primaries or hover-only affordances.
+- **Variants:** `primary` (white/cream fill — `--foreground`/`--background`) · `secondary` (amber fill — `--primary`/`--primary-foreground`) · `outline` (bordered) · `ghost` (borderless subtle) · `link` (text-only) · `destructive`.
+- **Sizes:** `xs` · `sm` · `default` (base) · `lg`.
+- **States:** default (fill or border, per variant) · hover (opacity shift + `--glow-strong` bloom on filled variants) · focus-visible (`--glow-focus`) · active (translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
+- **Tokens:** `--foreground`/`--background`, `--primary`/`--primary-foreground`, `--destructive`, `--border`, `--radius`, `--glow-*`.
+- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (filled variants use paired ink — verified 4.9:1 light); state signaled by fill+shadow+position, not color alone.
+- **Do / Don't:** Do keep one filled (`primary` or `secondary`) action as the standout per view. Don't ship two competing filled buttons in the same cluster or hover-only affordances.
 
 ### Checkbox
 - **Anatomy:** native `input[type=checkbox]` + label.
@@ -48,8 +48,8 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 
 ### Text input
 - **Anatomy:** field container · value (`--font-mono`) · label · optional error message.
-- **States:** default (`--input` border) · focus (`--glow-focus`, border `--primary`) · error (`--destructive` border + `.msg`) · disabled (`--disabled-opacity`) · placeholder (`--fg-dim`).
-- **Tokens:** `--input`, `--primary`, `--destructive`, `--bg-3`, `--radius`, `--glow-focus`.
+- **States:** default (`--input` border) · focus (`--glow-focus`, border `--primary`) · error (`--destructive` border + `.msg`) · disabled (`--disabled-opacity`) · placeholder (`--muted-foreground`).
+- **Tokens:** `--input`, `--primary`, `--destructive`, `--radius`, `--glow-focus`.
 - **Accessibility:** every field has a programmatic `<label>`; error text linked via `aria-describedby` and `aria-invalid="true"`; never signal error by border color alone (include the message).
 - **Do / Don't:** Do keep labels visible. Don't use placeholder as the only label.
 
@@ -57,10 +57,10 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 - Same tokens/states as Text input; adds `resize: vertical`, `min-height`. Accessibility identical. Do provide a sensible min-height; don't disable resize without reason.
 
 ### Select
-- **Anatomy:** native `select` (or Radix Select) styled as Text input.
-- **States:** mirror Text input; add open/expanded when using Radix.
-- **Tokens:** as Text input; menu uses `--popover`/`--shadow-pop`.
-- **Accessibility:** labelled; for custom (Radix) selects, preserve typeahead, arrow navigation, and `aria-expanded`.
+- **Anatomy:** Radix Select (`SelectTrigger`/`SelectContent`/`SelectItem`), styled as Text input.
+- **States:** mirror Text input; add open/expanded.
+- **Tokens:** as Text input (`--input`, `--primary`, `--glow-focus`, `--disabled-opacity`); menu uses `--popover`/`--shadow-pop`.
+- **Accessibility:** labelled; preserves Radix's built-in typeahead, arrow navigation, and `aria-expanded`.
 - **Do / Don't:** Do use for 6+ options. Don't use for 2–3 exclusive options — use Radio/segmented.
 
 ### Slider (range)

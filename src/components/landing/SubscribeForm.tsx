@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 type State = 'idle' | 'loading' | 'success' | 'error'
 
@@ -37,14 +38,14 @@ export function SubscribeForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 w-full max-w-sm mx-auto">
-      <input
+      <Input
         ref={inputRef}
         type="email"
         required
         placeholder="you@company.com"
-        className="flex-1 h-10 px-3 text-[14px] bg-background border border-border rounded-none text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+        className="flex-1"
       />
-      <Button type="submit" disabled={state === 'loading'} size="default">
+      <Button type="submit" variant="secondary" disabled={state === 'loading'} size="default">
         {state === 'loading' ? '…' : 'Subscribe'}
       </Button>
     </form>

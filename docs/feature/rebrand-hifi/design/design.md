@@ -166,7 +166,7 @@ All configuration is attribute-driven on the root element and can be wired to a 
 `:root` = light, `.dark` = dark (shadcn's default class). Light is a *daylight printout* (warm paper, glow→soft shadow, sweep hidden, scanlines faint) — **not** a naive inversion. The terminal panel stays a lit dark screen in both, preserving the CRT identity with the lights on.
 
 ### 5.2 Radius dial (`data-radius`)
-`sharp` (0), `soft` (5/10px — default, current look), `round` (10/20px).
+`sharp` (0 — default, current look), `soft` (5/10px), `round` (10/20px).
 
 ### 5.3 Type dial (`data-type`)
 | Value | Pairing | Character | Heading case |
@@ -194,22 +194,22 @@ Every component in this system is documented with: **Anatomy** (parts), **Varian
 
 **Anatomy:** container (border + fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
 
-**Variants:** `solid` (primary fill), `default/ghost` (bordered), `subtle` (muted border/text), `danger` (destructive).
-**Sizes:** `sm` (8/11px), base (12/16px), `lg` (15/22px).
+**Variants:** `primary` (white/cream fill — `--foreground`/`--background`, inverts automatically across themes), `secondary` (amber fill — `--primary`/`--primary-foreground`), `outline` (bordered), `ghost` (borderless subtle), `link` (text-only), `destructive`.
+**Sizes:** `xs`, `sm`, `default` (base), `lg`.
 
 **States**
 
 | State | Treatment | Token |
 |---|---|---|
-| Default | transparent/fill + `--line-hot` border | `--primary`, `--border` |
-| Hover | fill brightens ~8%, `--shadow-strong` bloom | `--glow-strong` |
-| Focus-visible | focus ring | `--ring` / `--glow-focus` |
+| Default | fill (`primary`/`secondary`) or border (`outline`) | `--foreground`/`--background`, `--primary`, `--border` |
+| Hover | opacity shift + `--glow-strong` bloom (filled variants) | `--glow-strong` |
+| Focus-visible | glow ring | `--glow-focus` |
 | Active | translateY(1px), shadow removed | — |
 | Disabled | `opacity: var(--disabled-opacity)`, no pointer events | `--disabled-opacity` |
 
 **Accessibility:** min 44×44px hit target for touch; focus-visible ring must be present (never `outline:none` without a replacement); label contrast ≥4.5:1 (solid primary uses dark ink on light theme, verified 4.9:1); state is conveyed by more than color (fill + shadow + position).
 
-**Do / Don't:** Do keep one `solid` primary per view. Don't use two competing primaries; don't rely on hover-only affordances for touch.
+**Do / Don't:** Do keep one filled (`primary` or `secondary`) action as the standout per view. Don't use two competing filled buttons in the same cluster; don't rely on hover-only affordances for touch.
 
 ### 6.3 Alert / Callout
 

@@ -11,6 +11,7 @@ import {
 } from "@/components/landing/sections";
 import { SectionTrack, TrackedLink, InstallCommand } from "@/components/systemix/LandingEvents";
 import { INIT_COMMAND, KIT_CHECKOUT_URL } from "@/lib/landing/content";
+import { Button } from "@/components/ui/button";
 
 // The €99 downloadable Full Kit — the whole context engine, packaged to own.
 export const metadata: Metadata = {
@@ -95,14 +96,11 @@ export default function KitPage() {
                 workflows — packaged to run on your AI coding tool on day one.
               </p>
               <div className="mt-9 flex flex-col items-center gap-4">
-                <TrackedLink
-                  href={KIT_CHECKOUT_URL}
-                  event="kit_requested"
-                  location="kit-hero"
-                  className="tva-label rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-                >
-                  Get the Full Kit — €99
-                </TrackedLink>
+                <Button variant="secondary" size="lg" asChild>
+                  <TrackedLink href={KIT_CHECKOUT_URL} event="kit_requested" location="kit-hero">
+                    Get the Full Kit — €99
+                  </TrackedLink>
+                </Button>
                 <div className="flex flex-col items-center gap-2">
                   <InstallCommand cmd={INIT_COMMAND} />
                   <p className="font-mono text-[11px] text-muted-foreground/70">
@@ -170,14 +168,11 @@ export default function KitPage() {
                     <li key={b}>· {b}</li>
                   ))}
                 </ul>
-                <TrackedLink
-                  href={KIT_CHECKOUT_URL}
-                  event="kit_requested"
-                  location="kit-pricing"
-                  className="tva-label mt-7 block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-                >
-                  Get the Full Kit
-                </TrackedLink>
+                <Button variant="secondary" size="lg" className="mt-7 w-full" asChild>
+                  <TrackedLink href={KIT_CHECKOUT_URL} event="kit_requested" location="kit-pricing">
+                    Get the Full Kit
+                  </TrackedLink>
+                </Button>
                 <p className="mt-4 text-[12px] text-muted-foreground">
                   Not sure yet? Start free with{" "}
                   <code className="font-mono text-[11px]">{INIT_COMMAND}</code>.

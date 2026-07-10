@@ -10,6 +10,7 @@ import {
 } from "@/components/landing/sections";
 import { SectionTrack, TrackedLink } from "@/components/systemix/LandingEvents";
 import { AuditRequestForm } from "@/components/landing/AuditRequestForm";
+import { Button } from "@/components/ui/button";
 
 // The €249 AI-Readiness Audit — an automated, me-in-the-loop readiness report
 // (the readiness-audit skill is the engine), scored 0–100 and emailed in 24–48h.
@@ -36,12 +37,9 @@ export default function AuditPage() {
                 Send us your repo. You get back a scored readiness report — the drift, the slop, an
                 opportunity ranking, and the exact setup to make your agents follow a system.
               </p>
-              <a
-                href="#form"
-                className="tva-label mt-9 inline-block rounded-md bg-primary px-6 py-3 text-[12px] text-primary-foreground shadow-[var(--glow-soft)] transition-opacity hover:opacity-90"
-              >
-                Request the audit
-              </a>
+              <Button variant="secondary" size="lg" className="mt-9" asChild>
+                <a href="#form">Request the audit</a>
+              </Button>
             </div>
           </section>
         </SectionTrack>
@@ -63,12 +61,9 @@ export default function AuditPage() {
                   A readiness score 0–100 across six dimensions, the drift + slop map, an opportunity
                   ranking, and the exact setup to fix it.
                 </p>
-                <a
-                  href="#form"
-                  className="tva-label mt-6 block rounded-md bg-primary px-5 py-3 text-center text-[11px] text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  Request the audit
-                </a>
+                <Button variant="secondary" size="sm" className="mt-6 w-full" asChild>
+                  <a href="#form">Request the audit</a>
+                </Button>
               </div>
               <div className="flex flex-col rounded-[var(--radius-screen)] border border-border bg-card p-7 shadow-[var(--shadow-panel)]">
                 <p className="tva-label mb-3 text-[10px] text-muted-foreground">Full Kit</p>
@@ -78,14 +73,11 @@ export default function AuditPage() {
                   Want to fix it yourself? The Full Kit is the whole context engine, downloadable —
                   files yours to keep.
                 </p>
-                <TrackedLink
-                  href="/kit"
-                  event="cross_promo_click"
-                  location="audit-to-kit"
-                  className="tva-label mt-6 block rounded-md border border-border px-5 py-3 text-center text-[11px] text-foreground transition-colors hover:border-primary"
-                >
-                  Get the Kit →
-                </TrackedLink>
+                <Button variant="outline" size="sm" className="mt-6 w-full" asChild>
+                  <TrackedLink href="/kit" event="cross_promo_click" location="audit-to-kit">
+                    Get the Kit →
+                  </TrackedLink>
+                </Button>
               </div>
             </div>
           </Section>
