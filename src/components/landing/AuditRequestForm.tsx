@@ -98,7 +98,7 @@ export function AuditRequestForm() {
           </SelectContent>
         </Select>
       </label>
-      <Button type="submit" variant="primary" size="lg" className="mt-1">
+      <Button type="submit" variant="default" size="lg" className="mt-1">
         Request the report →
       </Button>
       <p className="text-center font-mono text-[11px] text-muted-foreground/50">

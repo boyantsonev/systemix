@@ -18,7 +18,7 @@ function heroEvent(href: string): string | null {
 export function PersonaHero({ persona }: { persona: PersonaContent }) {
   const { hero } = persona;
   const event = heroEvent(hero.primaryCta.href);
-  const ctaClass = buttonVariants({ variant: "primary", size: "lg" });
+  const ctaClass = buttonVariants({ variant: "default", size: "lg" });
 
   return (
     <section className="relative">
@@ -136,7 +136,7 @@ function OutcomesCard({ persona }: { persona: PersonaContent }) {
         are live, your signals wired, and the loop is yours — files in your repo,
         no platform to churn from.
       </p>
-      <Button variant="primary" size="sm" className="mt-5" asChild>
+      <Button variant="secondary" size="sm" className="mt-5" asChild>
         <TrackedLink
           href="mailto:boyan.works@gmail.com?subject=Systemix%20sprint"
           event="book_a_call"

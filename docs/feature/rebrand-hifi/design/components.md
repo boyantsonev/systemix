@@ -17,13 +17,14 @@ Legend for tokens: semantic tokens (`--primary`, `--destructive`, …) are defin
 ## Actions & input
 
 ### Button
-- **Anatomy:** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
-- **Variants:** `primary` (white/cream fill — `--foreground`/`--background`) · `secondary` (amber fill — `--primary`/`--primary-foreground`) · `outline` (bordered) · `ghost` (borderless subtle) · `link` (text-only) · `destructive`.
-- **Sizes:** `xs` · `sm` · `default` (base) · `lg`.
-- **States:** default (fill or border, per variant) · hover (opacity shift + `--glow-strong` bloom on filled variants) · focus-visible (`--glow-focus`) · active (translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
+- **Anatomy (`default`/`secondary`, the "filed" style):** corner-bracket frame · diagonal hatch fill · diagonal solid-fill wipe on hover · `--font-mono` uppercase-tracked label. Deliberately unlayered CSS (`.filed-btn`) so it outranks the component's own Tailwind utilities; owns only its chrome, composes with every `size`.
+- **Anatomy (`solid`/`outline`/`ghost`/`link`/`destructive`):** container (border + optional fill) · label (`--font-label`, uppercase-tracked) · optional leading/trailing icon.
+- **Variants:** `default` (flagship filed style, cream — `--foreground`/`--background`, inverts across themes) · `secondary` (filed style, amber — `--primary`/`--primary-foreground`, a second prominent action alongside `default`) · `solid` (plain flat amber fill, no bracket, for dense controls) · `outline` (bordered) · `ghost` (borderless subtle) · `link` (text-only) · `destructive`.
+- **Sizes:** `xs` · `sm` · `default` (base) · `lg`. `default`/`secondary` aren't for icon-only buttons — use `ghost`/`outline`.
+- **States:** default (filed bracket+hatch, flat fill, or border, per variant) · hover (filed: diagonal wipe + bracket expands; `solid`: opacity shift + `--glow-strong` bloom) · focus-visible (`--glow-focus`) · active (filed: bracket contracts; all: translateY 1px, no shadow) · disabled (`--disabled-opacity`, no pointer events).
 - **Tokens:** `--foreground`/`--background`, `--primary`/`--primary-foreground`, `--destructive`, `--border`, `--radius`, `--glow-*`.
-- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (filled variants use paired ink — verified 4.9:1 light); state signaled by fill+shadow+position, not color alone.
-- **Do / Don't:** Do keep one filled (`primary` or `secondary`) action as the standout per view. Don't ship two competing filled buttons in the same cluster or hover-only affordances.
+- **Accessibility:** ≥44×44px touch target; visible focus ring always; label ≥4.5:1 (filed ink is the paired `-foreground`/`-ink` token — verified 4.9:1 light); state signaled by fill/wipe+shadow+position, not color alone.
+- **Do / Don't:** Do keep one `default` (filed, cream) as the standout per view — a `secondary` (filed, amber) can sit alongside it. Don't put two `default`s side by side or rely on hover-only affordances.
 
 ### Checkbox
 - **Anatomy:** native `input[type=checkbox]` + label.

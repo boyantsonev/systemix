@@ -13,9 +13,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          "bg-foreground text-background shadow-[var(--glow-soft)] hover:bg-foreground/90 hover:shadow-[var(--glow-strong)]",
-        secondary:
+        // The flagship style (globals.css .filed-btn): corner-bracket frame +
+        // diagonal wipe on hover. Owns only its own chrome (frame, wipe, hatch,
+        // color inversion, type) — box dimensions still come from `size` below.
+        default: "filed-btn",
+        // Same filed-btn chrome, amber instead of cream — a second prominent
+        // action alongside the one true `default` flagship (e.g. a pricing
+        // tier's CTA next to a hero that already carries the default).
+        secondary: "filed-btn filed-btn--secondary",
+        // The plain filled button — for the rare case that shouldn't carry
+        // the bracket frame (e.g. inside a dense control like a settings
+        // dialog).
+        solid:
           "bg-primary text-primary-foreground shadow-[var(--glow-soft)] hover:bg-primary/90 hover:shadow-[var(--glow-strong)]",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
@@ -37,7 +46,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "secondary",
+      variant: "default",
       size: "default",
     },
   }
@@ -45,7 +54,7 @@ const buttonVariants = cva(
 
 function Button({
   className,
-  variant = "secondary",
+  variant = "default",
   size = "default",
   asChild = false,
   ...props

@@ -18,7 +18,7 @@ import type { VariantProps } from "class-variance-authority";
 type Variant = NonNullable<VariantProps<typeof buttonVariants>["variant"]>;
 type Size = NonNullable<VariantProps<typeof buttonVariants>["size"]>;
 
-const VARIANTS: Variant[] = ["primary", "secondary", "outline", "ghost", "link", "destructive"];
+const VARIANTS: Variant[] = ["default", "secondary", "solid", "outline", "ghost", "link", "destructive"];
 const SIZES: Size[] = ["xs", "sm", "default", "lg"];
 const ICON_SIZES: Size[] = ["icon-xs", "icon-sm", "icon", "icon-lg"];
 
@@ -51,9 +51,9 @@ export function ButtonReference() {
               </Button>
             </Row>
           ))}
-          <Row label="icon sizes">
+          <Row label="icon sizes (outline/ghost only — filed isn't for icon-only buttons)">
             {ICON_SIZES.map((size) => (
-              <Button key={size} variant="secondary" size={size}>
+              <Button key={size} variant="outline" size={size}>
                 <ArrowRightIcon />
               </Button>
             ))}

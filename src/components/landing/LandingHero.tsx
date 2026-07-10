@@ -4,6 +4,8 @@ import { usePostHog } from "posthog-js/react";
 import { useVariant } from "@/lib/useVariant";
 import { hero, GITHUB_URL, INIT_COMMAND } from "@/lib/landing/content";
 import { InstallCommand } from "@/components/systemix/LandingEvents";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 // The hero's copy cell — rendered as the left column of the HeroRow grid
 // (sections.tsx). Clean paper/ink per spec v1.1: no CRT on text surfaces.
@@ -30,7 +32,7 @@ export function LandingHero() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => ph.capture("hero_cta_click", { cta: "github", variant: variantKey })}
-            className="tva-label rounded-md border border-border px-4 py-2.5 text-[11px] text-foreground transition-colors hover:border-primary"
+            className={cn(buttonVariants({ size: "lg" }))}
           >
             View on GitHub
           </a>
