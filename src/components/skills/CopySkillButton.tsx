@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { useCopySkill } from "@/components/skills/useCopySkill";
 
-// The dossier-btn primary CTA on a skill's /skills/[slug] detail page.
+// The filed-btn (default Button variant) primary CTA on a skill's
+// /skills/[slug] detail page.
 export function CopySkillButton({ slug, className }: { slug: string; className?: string }) {
   const { state, copy } = useCopySkill(slug);
 
@@ -16,7 +17,7 @@ export function CopySkillButton({ slug, className }: { slug: string; className?:
       type="button"
       onClick={copy}
       disabled={state === "loading"}
-      className={cn(buttonVariants({ variant: "dossier" }), "h-auto", className)}
+      className={cn(buttonVariants({ size: "lg" }), className)}
     >
       {label}
     </button>

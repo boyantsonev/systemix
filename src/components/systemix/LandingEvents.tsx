@@ -4,6 +4,8 @@ import { usePostHog } from "posthog-js/react";
 import { useEffect, useRef, useState } from "react";
 import { useVariant } from "@/lib/useVariant";
 import { AUDIT_COMMAND } from "@/lib/landing/content";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 // ── Install command with copy button ──────────────────────────────────────────
 
@@ -27,14 +29,23 @@ export function InstallCommand({ cmd = AUDIT_COMMAND }: { cmd?: string } = {}) {
   return (
     <div
       onClick={copy}
-      className="inline-flex items-center gap-3 font-mono text-[13px] bg-muted/60 border border-border/60 rounded-lg px-4 py-2.5 cursor-pointer hover:bg-muted transition-colors select-none"
+      className="inline-flex items-center gap-3 font-mono text-[13px] bg-muted/60 border border-border/60 rounded-lg py-2.5 pl-4 pr-1.5 cursor-pointer hover:bg-muted transition-colors select-none"
       title="Click to copy"
     >
       <span className="text-muted-foreground/40">$</span>
       <span className="text-foreground/80">{cmd}</span>
-      <span className="text-[10px] text-muted-foreground/40 ml-1">
-        {copied ? "copied!" : "copy"}
-      </span>
+      {/* The copy affordance itself is the filed-btn (default Button variant) —
+          stopPropagation so clicking it doesn't also fire the parent div's copy. */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          copy();
+        }}
+        className={cn(buttonVariants({ size: "xs" }), "ml-1")}
+      >
+        {copied ? "COPIED ✓" : "COPY"}
+      </button>
     </div>
   );
 }

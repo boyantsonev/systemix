@@ -32,7 +32,7 @@ export function LandingHero() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => ph.capture("hero_cta_click", { cta: "github", variant: variantKey })}
-            className={cn(buttonVariants({ variant: "dossier" }), "h-auto")}
+            className={cn(buttonVariants({ size: "lg" }))}
           >
             View on GitHub
           </a>

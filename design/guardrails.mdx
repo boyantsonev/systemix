@@ -12,8 +12,7 @@ renders whatever it finds.
 
 - ★ **No raw hex in components or styles.** Reference a semantic token
   (`bg-primary`, `text-success`, `var(--highlight)`). Exceptions: the token
-  source (`globals.css`), brand marks (`brand-nodes.tsx`), and product mockups
-  (`DeepDiveMockups.tsx`).
+  source (`globals.css`) and product mockups (`DeepDiveMockups.tsx`).
 - ★ **No raw Tailwind palette classes** (`text-blue-500`, `bg-emerald-400`, …).
   The system has no blue — and even warm palette classes bypass the theme.
   Status is `--success` / `--warning` / `--destructive`; brand amber is
@@ -28,7 +27,9 @@ renders whatever it finds.
   `tva-label` utility).
 - Radius from the dial: `rounded-md` / `rounded-lg` / `--radius-screen` for
   large panels. No hardcoded pixel radii.
-- One `solid` primary action per view. Buttons are rectangles, not pills.
+- One high-emphasis primary action per view (`filed`, the default Button
+  variant). Buttons are rectangles, not pills. `filed` isn't for icon-only
+  buttons — keep using `ghost`/`outline` for those.
 
 ## Effects
 

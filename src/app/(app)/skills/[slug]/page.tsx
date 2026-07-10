@@ -26,7 +26,7 @@ export default async function SkillDossierPage({ params }: { params: Promise<{ s
         </Link>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+      <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
         <div className="mx-auto flex max-w-3xl flex-col gap-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>

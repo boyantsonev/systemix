@@ -11,7 +11,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        // The flagship style (globals.css .filed-btn): corner-bracket frame +
+        // diagonal wipe on hover. Owns only its own chrome (frame, wipe, hatch,
+        // color inversion, type) — box dimensions still come from `size` below.
+        default: "filed-btn",
+        // The old plain filled button — kept for the rare case that needs it
+        // (e.g. inside a dense control that shouldn't carry the bracket frame).
+        solid: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
@@ -21,10 +27,6 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        // Corner-bracket frame + diagonal wipe on hover (globals.css .dossier-btn).
-        // Owns its own layout/color/typography — neutralize the base string's
-        // conflicting utilities so .dossier-btn's CSS is the only source of truth.
-        dossier: "dossier-btn rounded-none normal-case tracking-normal bg-transparent",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

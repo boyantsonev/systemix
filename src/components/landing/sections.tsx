@@ -637,7 +637,7 @@ export function BottomCTA() {
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(buttonVariants({ variant: "dossier" }), "h-auto")}
+            className={cn(buttonVariants({ size: "lg" }))}
           >
             ★ Star on GitHub
           </a>

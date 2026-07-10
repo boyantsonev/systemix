@@ -6,8 +6,8 @@ export type CopySkillState = "idle" | "loading" | "copied" | "error";
 
 // Shared fetch+clipboard logic for "copy skill" — fetches the full SKILL.md
 // body via /api/skills/<slug> and copies it. Used by the /skills/[slug]
-// dossier page (dossier-btn CTA) and the /config graph's node inspector
-// (NodeCardPanel), which previously duplicated this logic inline.
+// dossier page (its "Copy skill.md" CTA) and the /config graph's node
+// inspector (NodeCardPanel), which previously duplicated this logic inline.
 export function useCopySkill(slug: string) {
   const [state, setState] = useState<CopySkillState>("idle");
 

@@ -535,20 +535,21 @@
   }
 }
 
-/* Dossier button — corner-bracket frame, diagonal solid-fill wipe on hover.
-   The skills dossier's primary CTA (CopySkillButton). Colors reference
-   --foreground/--background so it inverts correctly in both themes.
+/* Filed button — corner-bracket frame, diagonal solid-fill wipe on hover.
+   The Button component's DEFAULT variant (button.tsx): the flagship CTA
+   style app-wide. Colors reference --foreground/--background so it inverts
+   correctly in both themes.
    Deliberately UNLAYERED (outside @layer base/utilities): it must outrank
-   the Button component's shared Tailwind utility classes (text-sm, px-4
-   py-2, rounded-md, …) that the "dossier" variant can't fully strip via
-   className alone — unlayered CSS always wins over any @layer'd utility
-   regardless of source order. */
-.dossier-btn {
+   the Button component's shared Tailwind utility classes (text-sm,
+   rounded-md, …) — unlayered CSS always wins over any @layer'd utility
+   regardless of source order.
+   Owns only its own chrome (frame, wipe, hatch, color inversion, type) —
+   deliberately does NOT set display/gap/padding/height, so it composes
+   correctly with every `size` variant (h-9 px-4 py-2, h-8 px-3, …) instead
+   of only working at one fixed dimension. */
+.filed-btn {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
+  border-radius: 0;
   /* --font-mono is a Tailwind @theme inline token (inlined into utilities at
      build time, not a real runtime custom property) — reference the
      underlying next/font variable it resolves from instead. */
@@ -567,7 +568,7 @@
   isolation: isolate;
   transition: color 0.2s ease 0.15s;
 }
-.dossier-btn::after {
+.filed-btn::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -577,13 +578,13 @@
   z-index: -1;
   pointer-events: none;
 }
-.dossier-btn:hover {
+.filed-btn:hover {
   color: var(--background);
 }
-.dossier-btn:hover::after {
+.filed-btn:hover::after {
   clip-path: polygon(0% 0%, 200% 0%, 100% 100%, 0% 100%);
 }
-.dossier-btn::before {
+.filed-btn::before {
   content: "";
   position: absolute;
   inset: -1px;
@@ -599,11 +600,11 @@
   pointer-events: none;
   transition: inset 0.25s cubic-bezier(0.25, 0, 0, 1);
 }
-.dossier-btn:hover::before { inset: -3px; }
-.dossier-btn:active::before { inset: 3px; transition-duration: 0.12s; }
-.dossier-btn:disabled { cursor: default; opacity: var(--disabled-opacity); }
+.filed-btn:hover::before { inset: -3px; }
+.filed-btn:active::before { inset: 3px; transition-duration: 0.12s; }
+.filed-btn:disabled { cursor: default; opacity: var(--disabled-opacity); }
 @media (prefers-reduced-motion: reduce) {
-  .dossier-btn, .dossier-btn::after, .dossier-btn::before { transition: none; }
+  .filed-btn, .filed-btn::after, .filed-btn::before { transition: none; }
 }
 
 /* TVA label utility — uppercase-tracked mono (eyebrows, buttons, table heads) */

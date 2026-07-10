@@ -36,11 +36,10 @@ components:
     rounded: screen
   crt-panel:
     rounded: screen
-  dossier-btn:
+  filed-btn:
     textColor: foreground
     typography: mono
     rounded: "0"
-    padding: "14px 20px"
 ---
 
 # TVA · Amber Mainframe — the Systemix design system
@@ -113,8 +112,8 @@ overlay, never scanlines over long-form text.
 
 Radius is dial-driven (`data-radius`: `sharp` · `soft` · `round`), never
 hardcoded per component. Large panels and the terminal use `--radius-screen`
-(double the base radius). Buttons are rectangles, not pills — one `solid`
-primary action per view.
+(double the base radius). Buttons are rectangles, not pills — one
+high-emphasis primary action per view.
 
 ## Components
 
@@ -124,24 +123,29 @@ elevation, theme-independent `--screen-*` colors so it stays a lit tube in
 both light and dark mode. All other components are plain panel cards on the
 semantic token set above — see source for the full inventory.
 
-**`dossier-btn`** — the emphasis CTA (marketing "View on GitHub" / "Star on
-GitHub", the skill dossier's "Copy skill.md"): a sharp-cornered, corner-
-bracket frame with a diagonal solid-fill wipe on hover, set in
+**`filed-btn`** — the flagship CTA style, `variant="default"` on the shared
+shadcn `Button` (`src/components/ui/button.tsx`): a sharp-cornered,
+corner-bracket frame with a diagonal solid-fill wipe on hover, set in
 `--font-mono` uppercase-tracked type rather than the usual `--font-label`.
-Built as `variant="dossier"` on the shared shadcn `Button`
-(`src/components/ui/button.tsx`) — on top of shadcn, not instead of it — with
-its visual rules living in `globals.css` as a plain, deliberately unlayered
-`.dossier-btn` class (Tailwind's `@layer utilities` always outranks
-`@layer base`, so a bespoke effect this specific has to sit outside both to
-reliably win the cascade). Reserve it for the single highest-emphasis action
-on a view, same rule as `solid` — never two dossier-btns side by side.
+Built on top of shadcn, not instead of it — its visual rules live in
+`globals.css` as a plain, deliberately unlayered `.filed-btn` class
+(Tailwind's `@layer utilities` always outranks `@layer base`, so a bespoke
+effect this specific has to sit outside both to reliably win the cascade).
+It owns only its chrome (frame, wipe, hatch, color inversion, type), not box
+dimensions — those still come from the Button's `size` prop, so `filed-btn`
+composes correctly at any size. The plain filled style it replaced as the
+default lives on as `variant="solid"`, for the rare case that shouldn't
+carry the bracket frame (e.g. a dense control inside a settings dialog).
+`filed-btn` isn't meant for icon-only buttons — those keep using `ghost`/
+`outline` as before. Reserve it for the single highest-emphasis action on a
+view — never two `filed-btn`s side by side.
 
 ## Do's and Don'ts
 
 - **Do** reference a semantic token (`bg-primary`, `text-success`,
   `var(--highlight)`) for color. **Don't** use raw hex in components or
-  styles — exceptions: the token source (`globals.css`), brand marks
-  (`brand-nodes.tsx`), and product mockups (`DeepDiveMockups.tsx`).
+  styles — exceptions: the token source (`globals.css`) and product mockups
+  (`DeepDiveMockups.tsx`).
 - **Don't** use raw Tailwind palette classes (`text-blue-500`,
   `bg-emerald-400`, …) — the system has no blue, and even warm palette
   classes bypass the theme.
