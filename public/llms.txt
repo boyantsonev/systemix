@@ -24,7 +24,7 @@ instead of decaying.
 
 ## Getting started
 
-- Free: `npx @systemix/cli init` scaffolds the automation (and optionally a design
+- Free: `npx @getsystemix/cli init` scaffolds the automation (and optionally a design
   system) in your repo, ghost mode on.
 - Full Kit (€99, pay once): the whole AI-native design-system context engine,
   downloadable — engine, docs, app setup, skills, and workflows. No

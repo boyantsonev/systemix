@@ -334,7 +334,7 @@ async function pollFigma(projectRoot, dryRun) {
   } catch {}
 
   if (!figmaToken) {
-    console.log("  [figma] No token in ~/.systemix/config.json — skipping. Run `npx @systemix/cli init` to set.");
+    console.log("  [figma] No token in ~/.systemix/config.json — skipping. Run `npx @getsystemix/cli init` to set.");
     return;
   }
 

@@ -49,7 +49,7 @@ The single most important v-next change: **`init` must scaffold a vendored, self
 ### Not started (1 in v1)
 | Component | Disposition | Note |
 |---|---|---|
-| TokenGuard Phase 10 — distribution (npm publish, auto-register, Marketplace) | **PROMOTE P3 → P0** | Publishing `@systemix/cli` so `npx systemix init` works in an arbitrary client repo is no longer a distant nicety — it **is** the embedded distribution path. Critical path for v-next. |
+| TokenGuard Phase 10 — distribution (npm publish, auto-register, Marketplace) | **PROMOTE P3 → P0** | Publishing `@getsystemix/cli` so `npx systemix init` works in an arbitrary client repo is no longer a distant nicety — it **is** the embedded distribution path. Critical path for v-next. |
 
 ---
 

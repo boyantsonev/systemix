@@ -1,5 +1,5 @@
 {
-  "name": "@systemix/cli",
+  "name": "@getsystemix/cli",
   "version": "0.2.0",
   "description": "Agentic design system ops for Claude Code — install pipelines in one command.",
   "keywords": [

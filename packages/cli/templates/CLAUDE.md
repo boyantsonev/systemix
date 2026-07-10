@@ -25,12 +25,12 @@ the interface consistent** — no drift, no duplicate components, no slop.
 
 ## Recall before building (the memory is the point)
 Before any product/UI change, recall what this repo has already learned:
-`npx @systemix/cli experiment learnings --recent 5` (or the MCP `experiment_learnings`).
+`npx @getsystemix/cli experiment learnings --recent 5` (or the MCP `experiment_learnings`).
 **Don't contradict a high-confidence learning without flagging it to the human.**
 Cite learning ids in PR descriptions; when a change builds on a prior learning,
-backlink it: `npx @systemix/cli experiment used <prior-id> --by <id>`. The full
+backlink it: `npx @getsystemix/cli experiment used <prior-id> --by <id>`. The full
 evidence digest (learnings + running experiments + goals + ODI ranking) is
-`npx @systemix/cli propose context`.
+`npx @getsystemix/cli propose context`.
 
 ## Where it grows (the loop, optional)
 Once the system holds, close a learning loop in `experiments/`:

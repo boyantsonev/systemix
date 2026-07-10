@@ -169,14 +169,14 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     loop: {
       heading: "Your operational loop",
       steps: [
-        { label: "Scaffold", note: "npx @systemix/cli init — files in your repo, no lock-in" },
+        { label: "Scaffold", note: "npx @getsystemix/cli init — files in your repo, no lock-in" },
         { label: "Build the variant", note: "ship it through the seam, wire the event" },
         { label: "Catch drift", note: "/drift-report before it reaches review" },
       ],
     },
     setup: {
       heading: "How you set up",
-      skills: ["npx @systemix/cli init", "/init-experiment", "/measure", "/drift-report"],
+      skills: ["npx @getsystemix/cli init", "/init-experiment", "/measure", "/drift-report"],
       body: "Three doors, one set of files: the CLI in CI, MCP for any agent, Claude Code skills for human-in-the-loop. Pick per task.",
     },
     signals: {
@@ -365,7 +365,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     setup: {
       heading: "How an agent connects",
-      skills: ["npx @systemix/cli init", "the systemix-mcp server", "experiment_* · contract_*"],
+      skills: ["npx @getsystemix/cli init", "the systemix-mcp server", "experiment_* · contract_*"],
       body: "MCP over the same MDX files humans edit. Any MCP-capable agent drives the full loop — no bespoke integration, no proprietary API.",
     },
     signals: {

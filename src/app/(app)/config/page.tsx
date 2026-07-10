@@ -33,7 +33,7 @@ export default function ConfigPage() {
             graph, the runtime feed, and the decision queue.
           </p>
           <code className="inline-block rounded-lg border px-3 py-1.5 font-mono text-sm text-foreground">
-            npx @systemix/cli init
+            npx @getsystemix/cli init
           </code>
         </div>
       </div>

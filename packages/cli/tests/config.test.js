@@ -82,7 +82,7 @@ describe("loadConfig", () => {
 
   test("throws a helpful error when not initialised", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "sx-config-"));
-    expect(() => loadConfig(dir)).toThrow(/@systemix\/cli init/);
+    expect(() => loadConfig(dir)).toThrow(/@getsystemix\/cli init/);
     fs.rmSync(dir, { recursive: true, force: true });
   });
 });

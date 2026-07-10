@@ -1,7 +1,7 @@
 "use strict";
 
-// npx @systemix/cli evidence pull [--hypothesis <id>] [--all]
-// npx @systemix/cli evidence close <id> --decision promote|iterate|kill
+// npx @getsystemix/cli evidence pull [--hypothesis <id>] [--all]
+// npx @getsystemix/cli evidence close <id> --decision promote|iterate|kill
 
 const skillUpdate = require("./skill-update");
 //
@@ -417,7 +417,7 @@ async function experimentPull(args) {
   const allFlag    = args.includes("--all");
 
   if (!fs.existsSync(EXPERIMENTS_DIR)) {
-    console.log("\n  No experiments/ directory. Run: npx @systemix/cli init\n");
+    console.log("\n  No experiments/ directory. Run: npx @getsystemix/cli init\n");
     return;
   }
 
@@ -483,7 +483,7 @@ async function experimentPull(args) {
     console.log("     ✓ card → .systemix/queue.json\n");
   }
 
-  console.log("  Review + decide on Home (/config), or:  npx @systemix/cli evidence close <id> --decision promote\n");
+  console.log("  Review + decide on Home (/config), or:  npx @getsystemix/cli evidence close <id> --decision promote\n");
 }
 
 // `evidence pull` is the deterministic experiment path. (It was an Ollama-based
@@ -504,7 +504,7 @@ async function experiment(args) {
 async function close(args) {
   const id = args[0];
   if (!id) {
-    console.log("\n  Usage: npx @systemix/cli evidence close <experiment-id> --decision promote|iterate|kill\n");
+    console.log("\n  Usage: npx @getsystemix/cli evidence close <experiment-id> --decision promote|iterate|kill\n");
     return;
   }
   const decisionIdx = args.indexOf("--decision");
@@ -689,7 +689,7 @@ async function check() {
     console.log(`     ${count > 0 ? "✓" : "·"} ${count} $pageview event(s) in the last 24h`);
     console.log(
       count > 0
-        ? "\n  Capture is live. Run: npx @systemix/cli evidence engagement pull\n"
+        ? "\n  Capture is live. Run: npx @getsystemix/cli evidence engagement pull\n"
         : "\n  Connected, but no pageviews yet — confirm NEXT_PUBLIC_POSTHOG_KEY is set in Vercel and deployed.\n",
     );
   } catch (err) {
@@ -723,9 +723,9 @@ async function evidence(args) {
     evidence check                       Verify PostHog creds + whether events are arriving
 
   Examples:
-    npx @systemix/cli evidence experiment pull --days 30
-    npx @systemix/cli evidence engagement pull --days 30
-    npx @systemix/cli evidence close landing-live-loop-2026-06 --decision promote
+    npx @getsystemix/cli evidence experiment pull --days 30
+    npx @getsystemix/cli evidence engagement pull --days 30
+    npx @getsystemix/cli evidence close landing-live-loop-2026-06 --decision promote
 `);
   }
 }

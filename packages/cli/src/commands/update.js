@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * npx @systemix/cli update
+ * npx @getsystemix/cli update
  * Check for and apply SKILL.md updates from the package registry.
  * Since skills ship with the npm package, "update" means checking
  * the installed package version vs latest on npm and re-running
@@ -23,7 +23,7 @@ const PROJECT_SKILLS = path.join(process.cwd(), '.claude', 'skills');
 const SKILLS_DIR = fs.existsSync(PROJECT_SKILLS)
   ? PROJECT_SKILLS
   : path.join(os.homedir(), '.claude', 'skills');
-const PACKAGE_NAME = '@systemix/cli';
+const PACKAGE_NAME = '@getsystemix/cli';
 
 function parseFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
@@ -71,11 +71,11 @@ async function update(args) {
 systemix update — Check and apply SKILL.md updates
 
 Usage:
-  npx @systemix/cli update                    Check npm + skill-pack updates, apply
-  npx @systemix/cli update --check            Dry run — show what would change
-  npx @systemix/cli update --force            Re-install all skills regardless of version
-  npx @systemix/cli update --packs-only       Only refresh external skill packs
-  npx @systemix/cli update <pack-name>        Refresh a specific skill pack
+  npx @getsystemix/cli update                    Check npm + skill-pack updates, apply
+  npx @getsystemix/cli update --check            Dry run — show what would change
+  npx @getsystemix/cli update --force            Re-install all skills regardless of version
+  npx @getsystemix/cli update --packs-only       Only refresh external skill packs
+  npx @getsystemix/cli update <pack-name>        Refresh a specific skill pack
 
 Options:
   --check        Report available updates without applying
@@ -97,14 +97,14 @@ Options:
   // ── packs-only / targeted pack: skip npm check entirely ────────────────────
   if (packsOnly || packFilter) {
     await updateSkillPacks({ checkOnly, force, packFilter, skillsDir: SKILLS_DIR });
-    console.log('\n  Run `npx @systemix/cli doctor` to verify your setup.');
+    console.log('\n  Run `npx @getsystemix/cli doctor` to verify your setup.');
     return;
   }
 
   // Check installed skills
   const installed = getInstalledSkills();
   if (installed.length === 0) {
-    console.log('No skills installed. Run: npx @systemix/cli add figma-to-code');
+    console.log('No skills installed. Run: npx @getsystemix/cli add figma-to-code');
     return;
   }
 
@@ -157,7 +157,7 @@ Options:
       console.log('\nSkills updated successfully');
     } catch (err) {
       console.error('\nUpdate failed:', err.message);
-      console.error('  Try: npx @systemix/cli add figma-to-code');
+      console.error('  Try: npx @getsystemix/cli add figma-to-code');
       process.exit(1);
     }
   }
@@ -172,7 +172,7 @@ Options:
   // ── Skill-packs fetch phase (always runs for full update) ──────────────────
   await updateSkillPacks({ checkOnly, force, packFilter: null, skillsDir: SKILLS_DIR });
 
-  console.log('\n  Run `npx @systemix/cli doctor` to verify your setup.');
+  console.log('\n  Run `npx @getsystemix/cli doctor` to verify your setup.');
 }
 
 /**

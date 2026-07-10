@@ -167,14 +167,14 @@ async function add(workflowName) {
       console.log(`  ${p.name.padEnd(24)} ${p.description}${aliasSuffix}`);
     });
     console.log(`  ${"token-guard".padEnd(24)} MCP proxy auto-register + token cache layer  (alias: guard)`);
-    console.log(`\nUsage: npx @systemix/cli workflow add <workflow>\n`);
+    console.log(`\nUsage: npx @getsystemix/cli workflow add <workflow>\n`);
     return;
   }
 
   const pipelineDir = path.join(PIPELINES_DIR, resolved);
   if (!fs.existsSync(pipelineDir)) {
     console.error(`\n✗ Workflow "${workflowName}" not found.\n`);
-    console.log("Run `npx @systemix/cli add` to see available workflows.\n");
+    console.log("Run `npx @getsystemix/cli add` to see available workflows.\n");
     process.exit(1);
   }
 

@@ -1,7 +1,7 @@
 /**
  * token-guard.js — BAST-82
  *
- * Subcommand: npx @systemix/cli token-guard [status|reset|remove]
+ * Subcommand: npx @getsystemix/cli token-guard [status|reset|remove]
  *
  *   status  — doctor checks: cache dir, proxy registered, runs dir
  *   reset   — clear .systemix/cache/ and .systemix/runs/
@@ -42,12 +42,12 @@ function status() {
   // 1. Cache directory
   const cacheExists = fs.existsSync(CACHE_DIR);
   console.log(`  ${cacheExists ? "✓" : "✗"} Cache directory     ${CACHE_DIR}`);
-  if (!cacheExists) console.log("    Run 'npx @systemix/cli add token-guard' to initialise.");
+  if (!cacheExists) console.log("    Run 'npx @getsystemix/cli add token-guard' to initialise.");
 
   // 2. Runs directory
   const runsExists = fs.existsSync(RUNS_DIR);
   console.log(`  ${runsExists ? "✓" : "✗"} Runs directory      ${RUNS_DIR}`);
-  if (!runsExists) console.log("    Run 'npx @systemix/cli add token-guard' to initialise.");
+  if (!runsExists) console.log("    Run 'npx @getsystemix/cli add token-guard' to initialise.");
 
   // 3. Proxy registration across detected clients
   const clients = detectClients();
@@ -62,7 +62,7 @@ function status() {
       }
       const registered = isRegistered(client.configPath);
       console.log(`    ${registered ? "✓" : "✗"}  ${client.name.padEnd(20)} ${registered ? "proxy registered" : "proxy NOT registered"}`);
-      if (!registered) console.log(`       Run 'npx @systemix/cli add token-guard' to register.`);
+      if (!registered) console.log(`       Run 'npx @getsystemix/cli add token-guard' to register.`);
     }
 
     // 4. systemix-mcp server registration
@@ -74,7 +74,7 @@ function status() {
       }
       const serverRegistered = isMcpServerRegistered(client.configPath);
       console.log(`    ${serverRegistered ? "✓" : "✗"}  ${client.name.padEnd(20)} ${serverRegistered ? "systemix-mcp registered" : "systemix-mcp NOT registered"}`);
-      if (!serverRegistered) console.log(`       Run 'npx @systemix/cli init' to register.`);
+      if (!serverRegistered) console.log(`       Run 'npx @getsystemix/cli init' to register.`);
     }
   }
 
@@ -141,16 +141,16 @@ async function remove() {
   }
 
   console.log("\n  Proxy unregistered.\n");
-  console.log("  Re-run 'npx @systemix/cli add token-guard' to restore.\n");
+  console.log("  Re-run 'npx @getsystemix/cli add token-guard' to restore.\n");
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 const SUBCOMMAND_HELP = `
   Usage:
-    npx @systemix/cli token-guard status    Doctor checks for TokenGuard
-    npx @systemix/cli token-guard reset     Clear cache and runs directories
-    npx @systemix/cli token-guard remove    Unregister proxy from all MCP clients
+    npx @getsystemix/cli token-guard status    Doctor checks for TokenGuard
+    npx @getsystemix/cli token-guard reset     Clear cache and runs directories
+    npx @getsystemix/cli token-guard remove    Unregister proxy from all MCP clients
 `;
 
 async function tokenGuard(args = []) {

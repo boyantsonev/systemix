@@ -104,7 +104,7 @@ in `systemix.config.yaml`):
 
 Print it as one ready-to-act line and say plainly the wizard will let them change any of it:
 ```
-→ Recommended setup: npx @systemix/cli init
+→ Recommended setup: npx @getsystemix/cli init
    design: scaffold (seed from this audit) · signals: PostHog · autonomy: ghost · self-improve: on
 ```
 For a **mature** repo, recommend `design: existing` and name the path to point `design.source` at.
