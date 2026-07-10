@@ -100,15 +100,34 @@ function appendLearning(
 
   const lines = text.split("\n");
   const idx = lines.findIndex((l) => l.trim() === "## Memory");
-  let insertAt = idx + 1;
-  while (insertAt < lines.length && lines[insertAt].trim() === "") insertAt++;
-  if (lines[insertAt] && lines[insertAt].includes("*No entries yet.*")) {
-    lines.splice(insertAt, 1, bullet);
-  } else {
-    lines.splice(insertAt, 0, bullet, "");
+  let end = lines.findIndex((l, i) => i > idx && l.startsWith("## "));
+  if (end === -1) end = lines.length;
+  const section = lines.slice(idx + 1, end);
+
+  // Intro = leading prose before the first bullet or the placeholder (kept
+  // verbatim); stops at whichever comes first, so neither the placeholder nor
+  // an already-written bullet is ever mistaken for intro text.
+  let i = 0;
+  while (i < section.length && section[i].trim() === "") i++;
+  const intro: string[] = [];
+  while (
+    i < section.length &&
+    section[i].trim() !== "" &&
+    !section[i].startsWith("- ") &&
+    !section[i].includes("*No entries yet.*")
+  ) {
+    intro.push(section[i]);
+    i++;
   }
+
+  // Existing entries — the placeholder paragraph and any other prose are dropped.
+  const existing = section.filter((l) => l.startsWith("- "));
+
+  const rebuilt = ["## Memory", "", ...(intro.length ? [...intro, ""] : []), bullet, ...existing, ""];
+  const out = [...lines.slice(0, idx), ...rebuilt, ...lines.slice(end)].join("\n");
+
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, lines.join("\n"), "utf8");
+  fs.writeFileSync(file, out, "utf8");
 }
 
 function pushQueueCard(

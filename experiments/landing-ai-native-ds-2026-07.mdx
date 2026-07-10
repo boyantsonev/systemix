@@ -8,7 +8,7 @@ goal: consultancy-leads
 hypothesis: 'Leading the landing with what Systemix concretely is — an AI-native design system built on the learning loop (rationale in MDX, skills that update around your workflow, lives in Claude) — plus a named consultancy ladder (DS build sprint, design partner) converts the founder better than the abstract loop-memory pitch, which is a burden to understand.'
 given: a founder (or anyone who owns a design system) lands on Systemix from a feed and gives the hero five seconds
 conclusion: 'the design-system-first hero engages a meaningfully higher share of visitors (hero CTA clicks per visitor) than the loop-abstraction hero, and the consultancy ladder produces its first design-partner inquiry'
-status: running
+status: complete
 metric: hero-cta-click-rate
 variants:
   control: loop-abstraction hero ('Your shipping memory') + generic sprint tiers
@@ -17,32 +17,32 @@ workflow:
   steps:
     - id: reposition
       kind: input
-      label: "the repositioning bet"
+      label: the repositioning bet
       note: given
     - id: frame
       kind: agent
-      label: "frame the hypothesis"
+      label: frame the hypothesis
       note: ICP · JTBD · metric
       agent: hermes
     - id: copy
       kind: tool
-      label: "write the variant copy"
+      label: write the variant copy
       note: hero + services ladder
     - id: ship
       kind: tool
-      label: "ship at 100%"
+      label: ship at 100%
       note: variant_b via the seam
     - id: measure
       kind: tool
-      label: "measure"
+      label: measure
       note: hero_cta_click before/after
     - id: decide
       kind: human
-      label: "decide"
+      label: decide
       note: HITL card
     - id: learn
       kind: agent
-      label: "write the learning"
+      label: write the learning
       note: LEARNINGS.md
       agent: hermes
   edges:
@@ -59,13 +59,13 @@ workflow:
     - from: decide
       to: learn
 posthog-event: hero_cta_click
-result: null
-decision: null
+result: No evidence ever pulled — the hero copy was extended/succeeded by landing-rebrand-hifi-2026-07 on the same seam before this bet could be measured.
+decision: iterate
 confidence: null
 evidence-posthog: null
 evidence-social: null
 created: '2026-07-05'
-review-by: '2026-08-04'
+review-by: '2026-10-08'
 ---
 
 ## Why this hypothesis

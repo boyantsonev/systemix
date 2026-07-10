@@ -3,42 +3,42 @@ type: experiment
 id: landing-live-loop-2026-06
 section: landing
 icp: pre-pmf-founder
-jtbd: "know whether an idea is worth a sprint before building it"
+jtbd: know whether an idea is worth a sprint before building it
 goal: consultancy-leads
-hypothesis: "Seeing Systemix's own loop running live — real experiments rendered as their AI workflows — converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch or a hands-on trial."
-given: "a pre-PMF founder lands on Systemix with a half-formed idea and an agent-heavy stack"
-conclusion: "founders who see the live, dogfooded loop book a call at a meaningfully higher rate than those who only get the feature pitch"
-status: running
+hypothesis: 'Seeing Systemix''s own loop running live — real experiments rendered as their AI workflows — converts the daily-shipping founder to a consultancy conversation, earlier than a feature pitch or a hands-on trial.'
+given: a pre-PMF founder lands on Systemix with a half-formed idea and an agent-heavy stack
+conclusion: 'founders who see the live, dogfooded loop book a call at a meaningfully higher rate than those who only get the feature pitch'
+status: complete
 metric: book-a-call-rate
 variants:
-  control: "a feature-list pitch of what Systemix does"
-  variant_b: "the live, dogfooded loop — the /experiments surface showing real experiments as their AI workflows"
+  control: a feature-list pitch of what Systemix does
+  variant_b: 'the live, dogfooded loop — the /experiments surface showing real experiments as their AI workflows'
 workflow:
   steps:
     - id: idea
       kind: input
-      label: "a raw idea"
+      label: a raw idea
       note: given
     - id: frame
       kind: agent
-      label: "frame the hypothesis"
+      label: frame the hypothesis
       note: ICP · JTBD · metric
       agent: hermes
     - id: build
       kind: tool
-      label: "build the variant"
+      label: build the variant
       note: prototype
     - id: measure
       kind: tool
-      label: "measure"
+      label: measure
       note: PostHog event
     - id: decide
       kind: human
-      label: "decide"
+      label: decide
       note: HITL card
     - id: learn
       kind: agent
-      label: "write the learning"
+      label: write the learning
       note: LEARNINGS.md
       agent: hermes
   edges:
@@ -53,14 +53,14 @@ workflow:
     - from: decide
       to: learn
 posthog-event: book_a_call
-result: null
-decision: null
-confidence: null
+result: '6 visitors, 1 book_a_call event (16.7%) over a 30-day window — no real control/variant split was ever configured in code, and the sample is far below the 100-visitor confidence threshold. Insufficient signal to act on.'
+decision: no-action
+confidence: 0.2
 evidence-posthog:
-  fetched_at: "2026-07-05"
-  source: "live"
+  fetched_at: '2026-07-05'
+  source: live
   window_days: 30
-  event: "book_a_call"
+  event: book_a_call
   samples: 1
   variants:
     control: 1
@@ -69,8 +69,8 @@ evidence-posthog:
   event_persons: 1
   rate: 0.1667
 evidence-social: null
-created: 2026-06-18
-review-by: null
+created: '2026-06-18'
+review-by: '2026-10-08'
 ---
 
 ## Why this hypothesis

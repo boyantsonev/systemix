@@ -47,11 +47,18 @@ export function appendMemoryEntry(raw: string, entry: MemoryEntry): string | nul
 
   const section = lines.slice(start + 1, end);
 
-  // Intro = the first non-empty paragraph after the heading (kept verbatim).
+  // Intro = leading prose before the first bullet or the placeholder (kept
+  // verbatim); stops at whichever comes first, so neither the placeholder nor
+  // an already-written bullet is ever mistaken for intro text.
   let i = 0;
   while (i < section.length && section[i].trim() === "") i++;
   const intro: string[] = [];
-  while (i < section.length && section[i].trim() !== "") {
+  while (
+    i < section.length &&
+    section[i].trim() !== "" &&
+    !section[i].startsWith("- ") &&
+    !section[i].includes("*No entries yet.*")
+  ) {
     intro.push(section[i]);
     i++;
   }
@@ -62,8 +69,7 @@ export function appendMemoryEntry(raw: string, entry: MemoryEntry): string | nul
   const rebuilt = [
     "## Memory",
     "",
-    ...intro,
-    "",
+    ...(intro.length ? [...intro, ""] : []),
     renderMemoryLine(entry),
     ...existing,
     "",

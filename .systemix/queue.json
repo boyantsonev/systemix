@@ -168,6 +168,26 @@
         "note": null,
         "resolvedBy": "dashboard"
       }
+    },
+    {
+      "id": "decision-landing-live-loop-2026-06-1783680824644",
+      "type": "decision",
+      "experimentId": "landing-live-loop-2026-06",
+      "decision": "no-action",
+      "confidence": 0.2,
+      "summary": "6 visitors, 1 book_a_call event (16.7%) over a 30-day window — no real control/variant split was ever configured in code, and the sample is far below the 100-visitor confidence threshold. Insufficient signal to act on.",
+      "status": "pending",
+      "requestedAt": "2026-07-10T10:53:44.644Z"
+    },
+    {
+      "id": "decision-landing-ai-native-ds-2026-07-1783681174659",
+      "type": "decision",
+      "experimentId": "landing-ai-native-ds-2026-07",
+      "decision": "iterate",
+      "confidence": null,
+      "summary": "No evidence ever pulled — the hero copy was extended/succeeded by landing-rebrand-hifi-2026-07 on the same seam before this bet could be measured.",
+      "status": "pending",
+      "requestedAt": "2026-07-10T10:59:34.659Z"
     }
   ]
 }
