@@ -33,6 +33,15 @@ function getServerConfig(projectRoot = process.cwd()) {
     // Monorepo dev fallback — __dirname is packages/cli/src/installers/
     mcpServerPath = path.resolve(__dirname, "../../../mcp-server/dist/index.js");
   }
+  // A path inside the npx cache (~/.npm/_npx/<hash>/…) is ephemeral — it
+  // disappears when the cache is pruned, breaking the stored registration.
+  // Register the package through npx instead so it re-resolves on every launch.
+  if (mcpServerPath.split(path.sep).includes("_npx")) {
+    return {
+      command: "npx",
+      args: ["-y", "systemix-mcp-server", "--project-root", projectRoot],
+    };
+  }
   return {
     command: "node",
     args: [mcpServerPath, "--project-root", projectRoot],
