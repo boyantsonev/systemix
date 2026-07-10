@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   // the local app; the UI renders play buttons disabled off this same 503.
   if (process.env.VERCEL) {
     return NextResponse.json(
-      { error: "Skill runs execute in the local app — npx systemix init" },
+      { error: "Skill runs execute in the local app — npx @systemix/cli init" },
       { status: 503, headers: CORS_HEADERS }
     );
   }

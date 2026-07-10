@@ -1,5 +1,10 @@
 # copy-kit.md — AI Kit page (`/kit`)
 
+> **Superseded.** Pricing here ($299/$249) is stale — the Kit ships at €99.
+> "npx systemix init" is also stale post-rename — see `src/lib/landing/content.ts`
+> (`INIT_COMMAND`) for the current install command. Treat `src/app/kit/page.tsx`
+> as the source of truth, not this file.
+
 > The closest LaunchKit clone. The offer: pay once, own it forever. Lead with what you skip, not what's inside.
 
 ---

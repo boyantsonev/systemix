@@ -56,7 +56,7 @@ export function MobileNav({ className }: { className?: string }) {
             <Button variant="outline" size="sm" asChild className="w-full">
               <TrackedLink
                 href={nav.cta.href}
-                event="book_a_call"
+                event="github_star_click"
                 location="nav-mobile"
                 className="flex items-center justify-center gap-1.5"
               >

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: "Systemix Learning Kit — the AI-native design system that learns, €99 to download",
   description:
     "The complete AI-native design system that learns: engine, docs, app setup, skills, and workflows — downloadable, pay once, own the files. No subscription, no lock-in.",
+  alternates: { canonical: "/kit" },
 };
 
 const METRICS = [
@@ -102,7 +103,7 @@ export default function KitPage() {
                   </TrackedLink>
                 </Button>
                 <div className="flex flex-col items-center gap-2">
-                  <InstallCommand cmd={INIT_COMMAND} />
+                  <InstallCommand cmd={INIT_COMMAND} location="kit" />
                   <p className="font-mono text-[11px] text-muted-foreground/70">
                     or start free — every skill, no download
                   </p>

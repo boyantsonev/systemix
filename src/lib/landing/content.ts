@@ -11,8 +11,8 @@
 // Copy decks: docs/feature/rebrand-hifi/ · SEO: seo-gtm-brief.md
 
 export const GITHUB_URL = "https://github.com/boyantsonev/systemix-poc";
-export const AUDIT_COMMAND = "npx systemix audit";
-export const INIT_COMMAND = "npx systemix init";
+export const AUDIT_COMMAND = "npx @systemix/cli audit";
+export const INIT_COMMAND = "npx @systemix/cli init";
 export const BRAND_CLONE_MAILTO =
   "mailto:boyan.works@gmail.com?subject=Brand%20clone%20request";
 export const KIT_MAILTO = "mailto:boyan.works@gmail.com?subject=Systemix%20AI%20Kit";
@@ -53,7 +53,7 @@ export const hero = {
       body: "Systemix watches what you ship, catches drift, and proposes fixes your team approves. Your system learns instead of decaying.",
     },
     variant_b: {
-      h1: "Your design system, but it learns.",
+      h1: "Your design system rots. This one learns.",
       body: "An AI-native design system that learns from the signals it gets: every release it catches what drifted, proposes the fix, and remembers why.",
     },
   } satisfies Record<"control" | "variant_b", HeroVariant>,
@@ -162,7 +162,7 @@ export const proof = {
 export const credibility = {
   label: "Who's behind it",
   heading: "Built by a two-person studio that got tired of watching design systems rot.",
-  body: "Systemix runs its own site. Every headline you're reading was proposed by it, measured, and kept because it won. We ship what we sell.",
+  body: "Systemix runs its own site. Every headline you're reading is a live, running bet — proposed by the automation, and you can watch it get decided.",
   cta: { label: "See it running →", href: "/experiments" },
   links: [
     { label: "GitHub →", href: GITHUB_URL },
@@ -284,7 +284,7 @@ export const faq = {
     },
     {
       q: "I don't have a design system yet — can I use this?",
-      a: "Yes. npx systemix init scaffolds one and starts watching from day one. Wire PostHog later if you want evidence; it runs without it, and catches drift on its own.",
+      a: "Yes. npx @systemix/cli init scaffolds one and starts watching from day one. Wire PostHog later if you want evidence; it runs without it, and catches drift on its own.",
     },
     {
       q: "Is it really open source?",

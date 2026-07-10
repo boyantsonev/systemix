@@ -9,7 +9,7 @@ test.describe("Landing (velocity-gap)", () => {
     await expect(
       page.getByRole("heading", { name: /you ship every day/i }),
     ).toBeVisible();
-    await expect(page.getByText("npx systemix init").first()).toBeVisible();
+    await expect(page.getByText("npx @systemix/cli init").first()).toBeVisible();
   });
 
   test("surfaces section shows Config · System · Atlas", async ({ page }) => {

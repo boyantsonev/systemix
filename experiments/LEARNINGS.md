@@ -11,8 +11,5 @@ review-by date. Newest first. Nothing is hand-written.
 
 ## Memory
 
-Memory is written only from closed experiments — every entry cites the experiment
-that earned it, with a confidence and a review-by date. Entries are appended when a
-decision is approved; nothing is hand-written.
-
-*No entries yet.* The first entry lands when the first experiment closes.
+- **2026-07-10 · Don't leave two experiments open on the same seam — close or explicitly supersede the prior one in the same PR that ships the next variant, or the loop's own memory can't tell which bet actually produced a result.** — confidence — · from [landing-ai-native-ds-2026-07], decision: iterate. No evidence ever pulled — the hero copy was extended/succeeded by landing-rebrand-hifi-2026-07 on the same seam before this bet could be measured. Review by: 2026-10-08. Used by: —
+- **2026-07-10 · Low-traffic landing bets on this site don't reach real statistical confidence without either substantially more traffic or an actual feature-flagged split — treat single-digit-visitor closes as evidence of insufficient signal, not as proof of a winner or loser.** — confidence 0.2 · from [landing-live-loop-2026-06], decision: no-action. 6 visitors, 1 book_a_call event (16.7%) over a 30-day window — no real control/variant split was ever configured in code, and the sample is far below the 100-visitor confidence threshold. Insufficient signal to act on. Review by: 2026-10-08. Used by: —

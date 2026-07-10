@@ -215,7 +215,7 @@ function writeCrontab(content) {
  * Adds a systemix-managed marker so entries can be listed/removed later.
  *
  * @param {string} cronExpr  e.g. "0 22 * * *"
- * @param {string} command   e.g. "npx systemix sync --incremental"
+ * @param {string} command   e.g. "npx @systemix/cli sync --incremental"
  */
 function writeCronEntry(cronExpr, command) {
   const existing = readCrontab();

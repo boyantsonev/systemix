@@ -126,7 +126,7 @@ export function LandingNav() {
             <Button variant="outline" size="sm" asChild className="hidden md:inline-flex">
               <TrackedLink
                 href={nav.cta.href}
-                event="book_a_call"
+                event="github_star_click"
                 location="nav"
                 className="flex items-center gap-1.5"
               >
@@ -507,7 +507,7 @@ export function Services() {
             <p className="mt-4 flex-1 text-[13px] leading-relaxed text-muted-foreground">{t.body}</p>
             {"command" in t.cta ? (
               <div className="mt-5">
-                <InstallCommand cmd={t.cta.command} />
+                <InstallCommand cmd={t.cta.command} location={`pricing-${t.key}`} />
               </div>
             ) : (
               <Button
@@ -626,15 +626,17 @@ export function BottomCTA() {
           {bottomCta.body}
         </p>
         <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-          <InstallCommand cmd={INIT_COMMAND} />
-          <a
+          <InstallCommand cmd={INIT_COMMAND} location="bottom-cta" />
+          <TrackedLink
             href={GITHUB_URL}
+            event="github_star_click"
+            location="bottom-cta"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(buttonVariants({ size: "lg" }))}
           >
             ★ Star on GitHub
-          </a>
+          </TrackedLink>
         </div>
         <p className="mt-7 font-mono text-[12px] text-muted-foreground/70">{bottomCta.fineprint}</p>
       </div>

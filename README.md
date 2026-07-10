@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Systemix
 
-## Getting Started
+Systemix keeps your design system from rotting. It watches what you ship,
+catches where design and code drift apart, proposes a fix with AI, you
+approve it, and it remembers the reason — so your system gets sharper every
+release instead of decaying.
 
-First, run the development server:
+Live: **https://getsystemix.vercel.app** · this site runs on Systemix itself.
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx @systemix/cli init
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Scaffolds an instance into your repo: the validation loop (`experiments/`),
+the loop skills in `.claude/skills/`, and your topology in
+`systemix.config.yaml`. Ghost mode by default — it suggests, it never
+touches your code without approval.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Three doors into the same files: Claude Code slash-command skills, the
+`systemix` CLI (`systemix experiment new|list|measure|close|learnings`), or
+an MCP connector (`experiment_*` tools) — pick whichever fits your workflow.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What's in this repo
 
-## Learn More
+This is the monorepo behind Systemix:
 
-To learn more about Next.js, take a look at the following resources:
+| Path | What it is |
+|---|---|
+| `src/` | The Next.js app — getsystemix.vercel.app, and the reference instance this product dogfoods on itself |
+| `packages/cli/` | The `@systemix/cli` package — `npx @systemix/cli init` scaffolds an instance into any repo |
+| `packages/mcp-server/` | The file-backed MCP server exposing the loop (`experiment_*`, `contract_*`, HITL) to any MCP client |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See `packages/cli/README.md` for the full CLI command reference.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT — see [LICENSE](LICENSE).

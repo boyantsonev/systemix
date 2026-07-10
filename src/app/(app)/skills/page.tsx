@@ -27,7 +27,7 @@ export default function SkillsPage() {
       <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto flex max-w-4xl flex-col gap-10">
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Workflows are the CLI packs (<code className="font-mono text-[12px]">npx systemix
+            Workflows are the CLI packs (<code className="font-mono text-[12px]">npx @systemix/cli
             workflow add &lt;name&gt;</code>) — each installs a roster of Claude Code skills.
             Rendered live from the package manifests, so this page can&apos;t drift from the code.
           </p>

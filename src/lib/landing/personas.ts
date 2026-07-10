@@ -100,7 +100,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     sharedSections: ["loop", "trust", "services"],
     guideHref: "/docs/guides/business",
     job: {
-      heading: "Your job in the loop",
+      heading: "Your job in the automation",
       body: "Frame the bet and make the call. You decide what's worth testing and, when the evidence lands, whether it ships — from receipts, not opinion.",
     },
     loop: {
@@ -120,7 +120,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
       heading: "Your data-flow",
       produces: ["goals", "close decisions"],
       consumes: ["the weekly synthesis", "LEARNINGS.md"],
-      body: "You put outcomes in; the loop hands you evidence back, so the next sprint starts from what the last one proved.",
+      body: "You put outcomes in; the automation hands you evidence back, so the next sprint starts from what the last one proved.",
     },
     feedsMeta: "You own the Hypothesis and Ideate steps — every bet starts and every learning is judged against a goal you set.",
   },
@@ -163,27 +163,27 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     sharedSections: ["doors", "loop", "trust"],
     guideHref: "/docs/guides/engineers",
     job: {
-      heading: "Your job in the loop",
+      heading: "Your job in the automation",
       body: "Build the thing and keep the code true to the system. You ship the variant and hold the line on tokens, drift, and the contract.",
     },
     loop: {
       heading: "Your operational loop",
       steps: [
-        { label: "Scaffold", note: "npx systemix init — files in your repo, no lock-in" },
+        { label: "Scaffold", note: "npx @systemix/cli init — files in your repo, no lock-in" },
         { label: "Build the variant", note: "ship it through the seam, wire the event" },
         { label: "Catch drift", note: "/drift-report before it reaches review" },
       ],
     },
     setup: {
       heading: "How you set up",
-      skills: ["npx systemix init", "/init-experiment", "/measure", "/drift-report"],
+      skills: ["npx @systemix/cli init", "/init-experiment", "/measure", "/drift-report"],
       body: "Three doors, one set of files: the CLI in CI, MCP for any agent, Claude Code skills for human-in-the-loop. Pick per task.",
     },
     signals: {
       heading: "Your data-flow",
       produces: ["tokens", "component contracts", "the built variant"],
       consumes: ["drift reports", "evidence", "decisions"],
-      body: "Tokens are canonical in your CSS; the loop writes decisions back into the contract next to the code.",
+      body: "Tokens are canonical in your CSS; the automation writes decisions back into the contract next to the code.",
     },
     feedsMeta: "You own the Build and Document steps — you make the bet real and write the decision back where the next change reads it.",
   },
@@ -226,7 +226,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     sharedSections: ["brandClone", "loop", "trust"],
     guideHref: "/docs/guides/designers",
     job: {
-      heading: "Your job in the loop",
+      heading: "Your job in the automation",
       body: "Hold the rationale and catch the drift. You decide what the system should look like and why — and you're the first to see when reality diverges.",
     },
     loop: {
@@ -289,7 +289,7 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     sharedSections: ["loop", "services", "trust"],
     guideHref: "/docs/guides/marketers",
     job: {
-      heading: "Your job in the loop",
+      heading: "Your job in the automation",
       body: "Run the experiments and read the numbers. You turn every headline, CTA, and funnel into a measured bet and evaluate what actually converted.",
     },
     loop: {
@@ -352,8 +352,8 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     sharedSections: ["doors", "trust"],
     guideHref: "/docs/guides/agents",
     job: {
-      heading: "The agent's job in the loop",
-      body: "Operate the design system as machine-readable context — read it before acting, act on it, and write evidence back. Agents are a participant in the loop, not just a way to reach it.",
+      heading: "The agent's job in the automation",
+      body: "Operate the design system as machine-readable context — read it before acting, act on it, and write evidence back. Agents are a participant in the automation, not just a way to reach it.",
     },
     loop: {
       heading: "The agent's operational loop",
@@ -365,14 +365,14 @@ export const personaContent: Record<PersonaKey, PersonaContent> = {
     },
     setup: {
       heading: "How an agent connects",
-      skills: ["npx systemix init", "the systemix-mcp server", "experiment_* · contract_*"],
+      skills: ["npx @systemix/cli init", "the systemix-mcp server", "experiment_* · contract_*"],
       body: "MCP over the same MDX files humans edit. Any MCP-capable agent drives the full loop — no bespoke integration, no proprietary API.",
     },
     signals: {
       heading: "The agent's data-flow",
       produces: ["evidence records", "emitted events", "HITL task cards"],
       consumes: ["tokens", "component contracts", "drift lists", "learnings"],
-      body: "An agent both reads and writes the context layer — which is why it's an owner in the loop, not a tool list. Guardrails hold: agents propose, humans close.",
+      body: "An agent both reads and writes the context layer — which is why it's an owner in the automation, not a tool list. Guardrails hold: agents propose, humans close.",
     },
     feedsMeta: "Agents own the Evaluate and Document steps — they synthesize evidence and write it back into the context every other persona reads.",
   },

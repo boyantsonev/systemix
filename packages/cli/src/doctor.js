@@ -53,7 +53,7 @@ async function doctor() {
   if (fs.existsSync(systemixDir) && fs.statSync(systemixDir).isDirectory()) {
     results.push({ icon: "✅", label: ".systemix/ directory", level: "ok" });
   } else {
-    results.push({ icon: "❌", label: ".systemix/ directory — not found, run: npx systemix init", level: "error" });
+    results.push({ icon: "❌", label: ".systemix/ directory — not found, run: npx @systemix/cli init", level: "error" });
   }
 
   // 2. project-context.json with figma.fileKey
@@ -68,9 +68,9 @@ async function doctor() {
   if (fileKey) {
     results.push({ icon: "✅", label: `project-context.json (fileKey: ${fileKey})`, level: "ok" });
   } else if (fs.existsSync(projectContextPath)) {
-    results.push({ icon: "❌", label: "project-context.json — missing figma.fileKey, run: npx systemix init", level: "error" });
+    results.push({ icon: "❌", label: "project-context.json — missing figma.fileKey, run: npx @systemix/cli init", level: "error" });
   } else {
-    results.push({ icon: "❌", label: "project-context.json — not found, run: npx systemix init", level: "error" });
+    results.push({ icon: "❌", label: "project-context.json — not found, run: npx @systemix/cli init", level: "error" });
   }
 
   // 3. tokens.bridge.json exists + is fresh (<7 days)
@@ -147,11 +147,11 @@ async function doctor() {
   } else if (installedSkills.length > 0) {
     results.push({
       icon: "⚠️ ",
-      label: `${installedSkills.length}/${REQUIRED_SKILLS.length} skills installed — missing: ${missingSkills.join(", ")}, run: npx systemix add figma-to-code`,
+      label: `${installedSkills.length}/${REQUIRED_SKILLS.length} skills installed — missing: ${missingSkills.join(", ")}, run: npx @systemix/cli add figma-to-code`,
       level: "warn"
     });
   } else {
-    results.push({ icon: "❌", label: `0/${REQUIRED_SKILLS.length} skills installed — run: npx systemix add figma-to-code`, level: "error" });
+    results.push({ icon: "❌", label: `0/${REQUIRED_SKILLS.length} skills installed — run: npx @systemix/cli add figma-to-code`, level: "error" });
   }
 
   // 8. Node.js version >= 18

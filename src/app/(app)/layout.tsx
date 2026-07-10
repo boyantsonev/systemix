@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shell/AppSidebar";
@@ -7,6 +8,13 @@ import { contractSource } from "@/lib/contract-source";
 import { experimentsSource } from "@/lib/experiments-source";
 import { designSource } from "@/lib/design-source";
 import { loadSkillPacks } from "@/lib/skills-catalog";
+
+// This whole surface is app UI (config, contract, design, skills), not
+// marketing content — keep it out of the index. /experiments overrides this
+// (it's the public dogfood proof wall) via its own layout metadata.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 // The unified app shell (ADR-022): one sidebar + one header across the product
 // surfaces. Every surface the instance has is visible in the sidebar tree —

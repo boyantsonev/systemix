@@ -1,13 +1,13 @@
 "use strict";
 
 /**
- * npx systemix social-signal
+ * npx @systemix/cli social-signal
  *
  * Log a social post's engagement metrics into PostHog and append them to the
  * linked hypothesis contract so growth-audit can include them in evidence summaries.
  *
  * Usage:
- *   npx systemix social-signal \
+ *   npx @systemix/cli social-signal \
  *     --platform linkedin \
  *     --url https://linkedin.com/posts/... \
  *     --hypothesis hero-vp-icp-match-2026-04 \
@@ -208,7 +208,7 @@ async function socialSignal(args) {
     }
   } else {
     console.log("  -  POSTHOG_API_KEY not set — skipping PostHog capture.");
-    console.log("     Run `npx systemix init` or set POSTHOG_API_KEY to enable.\n");
+    console.log("     Run `npx @systemix/cli init` or set POSTHOG_API_KEY to enable.\n");
   }
 
   // ── patch hypothesis MDX ──────────────────────────────────────────────────
