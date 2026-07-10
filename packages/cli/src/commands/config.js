@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * npx systemix config show
+ * npx @systemix/cli config show
  * Pretty-print the active instance topology from systemix.config.yaml.
  */
 
@@ -64,8 +64,8 @@ async function config(args) {
     return;
   }
   console.error(`\n  Unknown config subcommand: ${sub}\n`);
-  console.log("  Usage: npx systemix config show\n");
-  console.log("  To change config: edit systemix.config.yaml, or run `npx systemix init --reconfigure`.\n");
+  console.log("  Usage: npx @systemix/cli config show\n");
+  console.log("  To change config: edit systemix.config.yaml, or run `npx @systemix/cli init --reconfigure`.\n");
   process.exit(1);
 }
 

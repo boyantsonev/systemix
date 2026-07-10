@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 /**
- * Reads systemix.config.yaml — the instance topology written by `npx systemix init`
+ * Reads systemix.config.yaml — the instance topology written by `npx @systemix/cli init`
  * (ADR-008). Server-only (uses fs). Mirrors the CLI parser in packages/cli/src/config.js;
  * the file is a small, fixed YAML subset so we parse it directly rather than add a dep.
  */
@@ -15,7 +15,7 @@ export interface InstanceSignal {
   [key: string]: unknown;
 }
 
-/** Instance vocabulary for the Workflow Atlas (consumed by `npx systemix atlas build`
+/** Instance vocabulary for the Workflow Atlas (consumed by `npx @systemix/cli atlas build`
  * and the /atlas surface). Not editable in the Config UI — round-tripped verbatim. */
 export interface InstanceAtlas {
   personas?: string[];
@@ -237,7 +237,7 @@ export function serializeInstanceConfig(cfg: InstanceConfig): string {
   const lines: string[] = [
     "# systemix.config.yaml — your instance topology. Committed; contains NO secrets.",
     "# Secrets (Figma/PostHog keys) live in ~/.systemix/config.json or env vars.",
-    "# Edit in the Config layer (/config) or re-run `npx systemix init` to regenerate.",
+    "# Edit in the Config layer (/config) or re-run `npx @systemix/cli init` to regenerate.",
     `version: ${cfg.version ?? 1}`,
     "surfaces:",
     ...(cfg.surfaces ?? []).map((s) => `  - ${s}`),

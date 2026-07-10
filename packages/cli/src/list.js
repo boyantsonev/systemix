@@ -22,7 +22,7 @@ function list() {
 
   console.log("\nInstalled skills:\n");
   if (!fs.existsSync(SKILLS_DIR)) {
-    console.log("  (none — run `npx systemix add <workflow>` to install)\n");
+    console.log("  (none — run `npx @systemix/cli add <workflow>` to install)\n");
     return;
   }
 

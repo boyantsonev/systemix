@@ -7,7 +7,10 @@ import { AUDIT_COMMAND } from "@/lib/landing/content";
 
 // ── Install command with copy button ──────────────────────────────────────────
 
-export function InstallCommand({ cmd = AUDIT_COMMAND }: { cmd?: string } = {}) {
+export function InstallCommand({
+  cmd = AUDIT_COMMAND,
+  location = "hero",
+}: { cmd?: string; location?: string } = {}) {
   const ph = usePostHog();
   // A/B seam: create a `landing-hero` multivariate flag in PostHog to split this.
   const variant = useVariant("landing-hero");
@@ -16,10 +19,13 @@ export function InstallCommand({ cmd = AUDIT_COMMAND }: { cmd?: string } = {}) {
   function copy() {
     navigator.clipboard.writeText(cmd).then(() => {
       setCopied(true);
-      ph.capture("install_command_copied", { location: "hero", variant });
-      // hero-cta-click-rate is experiment landing-ai-native-ds-2026-07's metric:
-      // every hero CTA fires hero_cta_click, disambiguated by `cta`.
-      ph.capture("hero_cta_click", { cta: "install", variant });
+      ph.capture("install_command_copied", { location, variant });
+      // hero-cta-click-rate is experiment landing-ai-native-ds-2026-07's metric —
+      // only fire it from the actual hero, or non-hero copies (kit, pricing,
+      // bottom CTA) pollute a metric that's scoped to one section.
+      if (location === "hero") {
+        ph.capture("hero_cta_click", { cta: "install", variant });
+      }
       setTimeout(() => setCopied(false), 2000);
     });
   }
@@ -49,6 +55,8 @@ export function TrackedLink({
   location,
   persona,
   className,
+  target,
+  rel,
   children,
 }: {
   href: string;
@@ -57,6 +65,8 @@ export function TrackedLink({
   /** Which /for/<persona> page fired this — a breakdown property, never a new event name. */
   persona?: string;
   className?: string;
+  target?: string;
+  rel?: string;
   children: React.ReactNode;
 }) {
   const ph = usePostHog();
@@ -67,6 +77,8 @@ export function TrackedLink({
     <a
       href={href}
       className={className}
+      target={target}
+      rel={rel}
       onClick={() => ph?.capture(event, { location, variant, ...(persona ? { persona } : {}) })}
     >
       {children}

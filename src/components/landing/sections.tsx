@@ -123,7 +123,7 @@ export function LandingNav() {
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
             <Button variant="outline" size="sm" asChild>
-              <TrackedLink href={nav.cta.href} event="book_a_call" location="nav">
+              <TrackedLink href={nav.cta.href} event="github_star_click" location="nav">
                 {nav.cta.label}
               </TrackedLink>
             </Button>
@@ -502,7 +502,7 @@ export function Services() {
             <p className="mt-4 flex-1 text-[13px] leading-relaxed text-muted-foreground">{t.body}</p>
             {"command" in t.cta ? (
               <div className="mt-5">
-                <InstallCommand cmd={t.cta.command} />
+                <InstallCommand cmd={t.cta.command} location={`pricing-${t.key}`} />
               </div>
             ) : (
               <TrackedLink
@@ -624,15 +624,17 @@ export function BottomCTA() {
           {bottomCta.body}
         </p>
         <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-          <InstallCommand cmd={INIT_COMMAND} />
-          <a
+          <InstallCommand cmd={INIT_COMMAND} location="bottom-cta" />
+          <TrackedLink
             href={GITHUB_URL}
+            event="github_star_click"
+            location="bottom-cta"
             target="_blank"
             rel="noopener noreferrer"
             className="tva-label rounded-md border border-border px-5 py-2.5 text-[12px] text-foreground transition-colors hover:border-primary"
           >
             ★ Star on GitHub
-          </a>
+          </TrackedLink>
         </div>
         <p className="mt-7 font-mono text-[12px] text-muted-foreground/70">{bottomCta.fineprint}</p>
       </div>

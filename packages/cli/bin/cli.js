@@ -29,36 +29,36 @@ const HELP = `
   systemix — agentic design system ops for Claude Code
 
   Usage:
-    npx systemix audit                   Install the zero-setup design-system audit skill
-    npx systemix design [show|feed|init] Read the design system + HITL feed; init = greenfield interview
-    npx systemix init                    Interactive setup wizard (run once per project)
-    npx systemix init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
-    npx systemix init --global-mcp       Also register systemix-mcp in the global Claude Desktop config
-    npx systemix mcp register [--force]  (Re-)register systemix-mcp; --global includes Claude Desktop
-    npx systemix config show             Print the active instance topology
-    npx systemix workflow add <name>     Install a workflow into this repo's .claude/skills/
-    npx systemix workflow list           List available workflows
-    npx systemix add <name>              Alias for: workflow add
-    npx systemix update                  Check npm + skill-pack updates and apply
-    npx systemix update --packs-only     Only refresh external skill packs
-    npx systemix update <pack-name>      Refresh a specific skill pack
-    npx systemix list                    Show installed skills and workflows
-    npx systemix doctor                  Health check for all dependencies
-    npx systemix sync [options]          Sync design tokens and components
-    npx systemix schedule [sub]          Schedule workflow runs to off-peak windows
-    npx systemix token-profile [dir]     Scan for token inefficiency patterns
-    npx systemix tokens                  Convert globals.css → .systemix/tokens.bridge.json
-    npx systemix watch                   Continuous Hermes run — watch CSS + poll Figma
-    npx systemix social-signal           Log social post metrics into PostHog + hypothesis contract
-    npx systemix token-guard [sub]       Manage TokenGuard (status|reset|remove)
-    npx systemix evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
-    npx systemix experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
-    npx systemix goal <sub>              Declare what experiments are for: new|list (experiments/goals/)
-    npx systemix loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
-    npx systemix propose <sub>           Engine generate stage: context|queue — propose the next bet (HITL approve)
-    npx systemix skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
+    npx @systemix/cli audit                   Install the zero-setup design-system audit skill
+    npx @systemix/cli design [show|feed|init] Read the design system + HITL feed; init = greenfield interview
+    npx @systemix/cli init                    Interactive setup wizard (run once per project)
+    npx @systemix/cli init --reconfigure      Re-run the wizard, overwrite systemix.config.yaml
+    npx @systemix/cli init --global-mcp       Also register systemix-mcp in the global Claude Desktop config
+    npx @systemix/cli mcp register [--force]  (Re-)register systemix-mcp; --global includes Claude Desktop
+    npx @systemix/cli config show             Print the active instance topology
+    npx @systemix/cli workflow add <name>     Install a workflow into this repo's .claude/skills/
+    npx @systemix/cli workflow list           List available workflows
+    npx @systemix/cli add <name>              Alias for: workflow add
+    npx @systemix/cli update                  Check npm + skill-pack updates and apply
+    npx @systemix/cli update --packs-only     Only refresh external skill packs
+    npx @systemix/cli update <pack-name>      Refresh a specific skill pack
+    npx @systemix/cli list                    Show installed skills and workflows
+    npx @systemix/cli doctor                  Health check for all dependencies
+    npx @systemix/cli sync [options]          Sync design tokens and components
+    npx @systemix/cli schedule [sub]          Schedule workflow runs to off-peak windows
+    npx @systemix/cli token-profile [dir]     Scan for token inefficiency patterns
+    npx @systemix/cli tokens                  Convert globals.css → .systemix/tokens.bridge.json
+    npx @systemix/cli watch                   Continuous Hermes run — watch CSS + poll Figma
+    npx @systemix/cli social-signal           Log social post metrics into PostHog + hypothesis contract
+    npx @systemix/cli token-guard [sub]       Manage TokenGuard (status|reset|remove)
+    npx @systemix/cli evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
+    npx @systemix/cli experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
+    npx @systemix/cli goal <sub>              Declare what experiments are for: new|list (experiments/goals/)
+    npx @systemix/cli loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
+    npx @systemix/cli propose <sub>           Engine generate stage: context|queue — propose the next bet (HITL approve)
+    npx @systemix/cli skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
 
-  Workflows (install with: npx systemix workflow add <name>):
+  Workflows (install with: npx @systemix/cli workflow add <name>):
     design-system                        Product A — Figma↔code token sync (6 skills)
     hypothesis-validation                Product B — ship → measure → loop (4 skills)
     figma-to-code  (alias: figma)        Full 18-skill pipeline
@@ -75,13 +75,13 @@ const HELP = `
     --schedule <when>                    Defer run to off-peak window
 
   Examples:
-    npx systemix workflow add design-system
-    npx systemix workflow add hypothesis-validation
-    npx systemix init
-    npx systemix init --defaults
-    npx systemix sync --dry-run
-    npx systemix sync --incremental --budget 20000
-    npx systemix watch
+    npx @systemix/cli workflow add design-system
+    npx @systemix/cli workflow add hypothesis-validation
+    npx @systemix/cli init
+    npx @systemix/cli init --defaults
+    npx @systemix/cli sync --dry-run
+    npx @systemix/cli sync --incremental --budget 20000
+    npx @systemix/cli watch
 
   Learn more: https://getsystemix.vercel.app
 `;
@@ -115,7 +115,7 @@ async function main() {
         await add(undefined);
       } else {
         console.error(`\n  Unknown workflow subcommand: ${args[0]}\n`);
-        console.log("  Usage: npx systemix workflow add <name>\n");
+        console.log("  Usage: npx @systemix/cli workflow add <name>\n");
         process.exit(1);
       }
       break;

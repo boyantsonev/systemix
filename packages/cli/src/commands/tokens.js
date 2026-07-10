@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 
 /**
- * npx systemix tokens
+ * npx @systemix/cli tokens
  *
  * Converts src/app/globals.css oklch variables → .systemix/tokens.bridge.json
  * Delegates to the project's `npm run tokens` script, or spawns tsx directly
@@ -28,7 +28,7 @@ async function tokens(args) {
     console.error(
       "\n  ✗  No token converter found in this project.\n" +
       "     Expected: scripts/token-converter.ts  OR  \"tokens\" in package.json scripts\n" +
-      "     Is this a Systemix project? Run `npx systemix init` first.\n"
+      "     Is this a Systemix project? Run `npx @systemix/cli init` first.\n"
     );
     process.exit(1);
   }

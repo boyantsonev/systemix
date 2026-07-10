@@ -2,7 +2,7 @@
 
 /**
  * Loads and validates systemix.config.yaml — the instance topology written by
- * `npx systemix init` (ADR-008). This is the Orchestrator's boot read: surfaces,
+ * `npx @systemix/cli init` (ADR-008). This is the Orchestrator's boot read: surfaces,
  * signals, Hermes autonomy/thresholds, self-improvement mode, and trust tiers.
  *
  * The config is a small, fixed YAML subset (2-space nested maps + simple scalar
@@ -108,7 +108,7 @@ function validateConfig(cfg) {
   if (missing.length) {
     throw new Error(
       `${CONFIG_FILE} is missing required key(s): ${missing.join(", ")}. ` +
-      `Re-run \`npx systemix init\` to regenerate it.`
+      `Re-run \`npx @systemix/cli init\` to regenerate it.`
     );
   }
   if (!Array.isArray(cfg.surfaces)) throw new Error(`${CONFIG_FILE}: "surfaces" must be a list.`);
@@ -122,7 +122,7 @@ function validateConfig(cfg) {
 function loadConfig(projectRoot) {
   const p = configPath(projectRoot);
   if (!fs.existsSync(p)) {
-    throw new Error(`No ${CONFIG_FILE} found in this repo. Run \`npx systemix init\` to create an instance.`);
+    throw new Error(`No ${CONFIG_FILE} found in this repo. Run \`npx @systemix/cli init\` to create an instance.`);
   }
   const cfg = parseSimpleYaml(fs.readFileSync(p, "utf8"));
   return validateConfig(cfg);

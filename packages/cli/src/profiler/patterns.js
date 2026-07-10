@@ -33,7 +33,7 @@ module.exports = [
     estimatedWastePerRun: null,
     matchGlobal: (projectRoot) =>
       !fs.existsSync(path.join(projectRoot, '.systemix', 'cache')),
-    fix: 'Run: npx systemix add token-guard'
+    fix: 'Run: npx @systemix/cli add token-guard'
   },
   {
     id: 'missing-node-map',

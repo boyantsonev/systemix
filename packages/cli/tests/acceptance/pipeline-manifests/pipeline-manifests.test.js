@@ -3,7 +3,7 @@
 /**
  * Guard: every pipeline manifest must agree with the skills on disk.
  *   - install integrity — every skill a manifest advertises exists on disk, so
- *     `npx systemix add <pipeline>` (which reads manifest.skills then copies each
+ *     `npx @systemix/cli add <pipeline>` (which reads manifest.skills then copies each
  *     skill dir) can never fail mid-copy. This is the door the `add` command rides.
  *   - no orphans — every skills/<dir> is advertised, so dead skills don't ship.
  *
@@ -43,7 +43,7 @@ describe("pipeline manifests match the skills on disk", () => {
   });
 
   it.each(pipelines)(
-    "%s — every manifest skill exists on disk (npx systemix add can't break)",
+    "%s — every manifest skill exists on disk (npx @systemix/cli add can't break)",
     (p) => {
       const missing = manifestSkills(p).filter(
         (skill) => !fs.existsSync(path.join(PIPELINES_DIR, p, "skills", skill, "SKILL.md"))

@@ -25,7 +25,7 @@ Standing record.
 
 ## Engagement Log
 
-_No snapshots yet — run \`npx systemix evidence engagement pull\`._
+_No snapshots yet — run \`npx @systemix/cli evidence engagement pull\`._
 `;
 
 let root, prevCwd, prevEnv;

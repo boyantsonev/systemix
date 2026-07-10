@@ -62,7 +62,7 @@ export function SkillRunner({
             title={
               runsEnabled
                 ? def.description
-                : "Skill runs execute in the local app — npx systemix init"
+                : "Skill runs execute in the local app — npx @systemix/cli init"
             }
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[12px] transition-colors",
@@ -80,7 +80,7 @@ export function SkillRunner({
       {error ? <p className="mt-2 font-mono text-[11px] text-destructive">{error}</p> : null}
       {!runsEnabled ? (
         <p className="mt-2 font-mono text-[11px] text-muted-foreground/60">
-          Skill runs execute in the local app — <code>npx systemix init</code>
+          Skill runs execute in the local app — <code>npx @systemix/cli init</code>
         </p>
       ) : null}
       <RunProgressSheet

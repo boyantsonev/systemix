@@ -24,7 +24,7 @@ instead of decaying.
 
 ## Getting started
 
-- Free: `npx systemix init` scaffolds the automation (and optionally a design
+- Free: `npx @systemix/cli init` scaffolds the automation (and optionally a design
   system) in your repo, ghost mode on.
 - Full Kit (€99, pay once): the whole AI-native design-system context engine,
   downloadable — engine, docs, app setup, skills, and workflows. No
@@ -39,5 +39,5 @@ instead of decaying.
 - Docs: https://getsystemix.vercel.app/docs
 - GitHub: https://github.com/boyantsonev/systemix-poc
 - The live feed (dogfood): https://getsystemix.vercel.app/experiments —
-  this site runs on Systemix; its headlines are proposed, measured, and kept
-  by the automation.
+  this site runs on Systemix; every headline is a live, running bet you can
+  watch the automation propose and decide.

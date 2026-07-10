@@ -1,5 +1,13 @@
 # SEO · GTM · Conversion brief — Systemix rebrand
 
+> **Partially superseded.** Per-page titles/meta in §3 and the positioning
+> line in §1 are still broadly accurate — verify against the live pages
+> before citing. Pricing references ($299/$249 Kit, free `/audit`) are
+> stale: Kit is €99, `/audit` is a paid €249 AI-Readiness Audit. §5's GTM
+> channel plan and §6's conversion levers are still the current strategy —
+> see the 2026-07-10 growth/SEO audit for a gap analysis of what's actually
+> shipped against this brief.
+
 Keep it simple. One clear head term per page, plain language everywhere, and let the dogfood ("the site runs on Systemix") do the persuading.
 
 ---

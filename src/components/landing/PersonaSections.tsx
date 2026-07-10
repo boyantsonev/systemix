@@ -86,7 +86,7 @@ function DriftTeaser() {
         <p className="font-mono text-[12px] text-muted-foreground">
           No drift snapshots yet — the first audit of this site lands here when
           the drift report runs. Honest by construction: this card reads the
-          same file the loop writes.
+          same file the automation writes.
         </p>
       </div>
     );
@@ -133,7 +133,7 @@ function OutcomesCard({ persona }: { persona: PersonaContent }) {
       </p>
       <p className="text-[14px] leading-relaxed text-muted-foreground">
         Session one clones your brand into tokens. By end of week your experiments
-        are live, your signals wired, and the loop is yours — files in your repo,
+        are live, your signals wired, and the automation is yours — files in your repo,
         no platform to churn from.
       </p>
       <TrackedLink
@@ -263,7 +263,7 @@ export function PersonaMetaLane({ persona }: { persona: PersonaContent }) {
   return (
     <Section>
       <div className="max-w-3xl">
-        <Eyebrow>Where you sit in the loop</Eyebrow>
+        <Eyebrow>Where you sit in the automation</Eyebrow>
         <Lead>{persona.feedsMeta}</Lead>
       </div>
       <LoopDiagram variant="meta" highlightPersona={PERSONA_TAG[persona.key]} className="mt-10" />

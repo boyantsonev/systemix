@@ -1,5 +1,9 @@
 # copy-landing.md — Systemix landing (`/`)
 
+> **Superseded.** This deck predates later landing rewrites (2026-07-08/09/10).
+> Pricing, hero copy, and section structure below no longer match what's live.
+> Treat `src/lib/landing/content.ts` as the source of truth, not this file.
+
 > Voice: plain, short, outcome-first. Say the benefit before the mechanism. No "contracts / drift / self-training layer" as a first word — translate to what it does for the reader. Model the discipline: if a line can lose words and keep its meaning, cut them.
 > **Plain-English product definition (north star for every line below):** *Systemix stops your design system from rotting. It watches what you ship, catches where design and code drift apart, proposes a fix with AI, you approve it, and it remembers the reason — so your system gets sharper every release instead of decaying.*
 

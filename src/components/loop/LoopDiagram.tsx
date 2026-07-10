@@ -137,7 +137,7 @@ function Horizontal({ steps, gated, highlight, hasOwners }: { steps: LoopStep[];
       role="img"
       aria-label={
         hasOwners
-          ? "The Systemix meta-loop: hypothesis, build, measure, evaluate, ideate, document — the personas who own each step shown as chips, with your approval after framing a bet and after evaluating it. The loop feeds its own next hypothesis."
+          ? "The Systemix meta-loop: hypothesis, build, measure, evaluate, ideate, document — the personas who own each step shown as chips, with your approval after framing a bet and after evaluating it. The automation feeds its own next hypothesis."
           : "The Systemix loop: propose, build, measure, learn — with your approval before building and before recording a learning. Learnings feed the next proposal."
       }
       className="hidden w-full sm:block"

@@ -105,7 +105,7 @@ export default function KitPage() {
                   Get the Full Kit — €99
                 </TrackedLink>
                 <div className="flex flex-col items-center gap-2">
-                  <InstallCommand cmd={INIT_COMMAND} />
+                  <InstallCommand cmd={INIT_COMMAND} location="kit" />
                   <p className="font-mono text-[11px] text-muted-foreground/70">
                     or start free — every skill, no download
                   </p>

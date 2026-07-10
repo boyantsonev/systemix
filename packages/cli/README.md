@@ -8,7 +8,7 @@ durable memory. Systemix is that loop: **ship → measure → learn → decide**
 every experiment a plain MDX file in your repo and every closed decision a cited
 line in `experiments/LEARNINGS.md`.
 
-`npx systemix init` scaffolds an instance into your repo: the loop (`experiments/`)
+`npx @systemix/cli init` scaffolds an instance into your repo: the loop (`experiments/`)
 plus the loop skills in **`.claude/skills/`** (project-scoped, committed,
 CI-reproducible), and your topology in **`systemix.config.yaml`**.
 
@@ -16,7 +16,7 @@ CI-reproducible), and your topology in **`systemix.config.yaml`**.
 
 ```bash
 # in your project root
-npx systemix init
+npx @systemix/cli init
 ```
 
 The wizard sets up your instance:
@@ -55,15 +55,15 @@ write the same `experiments/` files:
 ## Commands
 
 ```bash
-npx systemix init [--reconfigure]    # setup wizard (--reconfigure overwrites config)
-npx systemix experiment <sub>        # drive the loop: new | list | measure | close | learnings | audit
-npx systemix evidence check          # verify PostHog is wired + collecting
-npx systemix config show             # print the active instance topology
-npx systemix list                    # installed skills + available workflows
-npx systemix doctor                  # health check (skills, MCP server, signals)
-npx systemix sync [--dry-run]        # design-token sync (optional design substrate)
-npx systemix tokens                  # convert globals.css → tokens bridge cache
-npx systemix update                  # check + apply npm / skill-pack updates
+npx @systemix/cli init [--reconfigure]    # setup wizard (--reconfigure overwrites config)
+npx @systemix/cli experiment <sub>        # drive the loop: new | list | measure | close | learnings | audit
+npx @systemix/cli evidence check          # verify PostHog is wired + collecting
+npx @systemix/cli config show             # print the active instance topology
+npx @systemix/cli list                    # installed skills + available workflows
+npx @systemix/cli doctor                  # health check (skills, MCP server, signals)
+npx @systemix/cli sync [--dry-run]        # design-token sync (optional design substrate)
+npx @systemix/cli tokens                  # convert globals.css → tokens bridge cache
+npx @systemix/cli update                  # check + apply npm / skill-pack updates
 ```
 
 ## How it runs

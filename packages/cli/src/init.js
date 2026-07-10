@@ -138,7 +138,7 @@ function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier
   const L = [];
   L.push("# systemix.config.yaml — your instance topology. Committed; contains NO secrets.");
   L.push("# Secrets (Figma/PostHog keys) live in ~/.systemix/config.json or env vars.");
-  L.push("# Edit by hand or re-run `npx systemix init` to regenerate.");
+  L.push("# Edit by hand or re-run `npx @systemix/cli init` to regenerate.");
   L.push("version: 1");
   L.push("surfaces:");
   for (const s of surfaces) L.push(`  - ${s}`);
@@ -383,7 +383,7 @@ async function init(opts = {}) {
   console.log("  The scheduled engine needs two GitHub repo secrets: POSTHOG_API_KEY +");
   console.log("  POSTHOG_PROJECT_ID (evidence) and ANTHROPIC_API_KEY (the weekly propose");
   console.log("  cron in .github/workflows/systemix-engine.yml) — without them the runs skip gracefully.");
-  console.log("  Run `npx systemix doctor` to verify all dependencies.\n");
+  console.log("  Run `npx @systemix/cli doctor` to verify all dependencies.\n");
 }
 
 module.exports = { init };

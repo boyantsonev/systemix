@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import Link from "next/link";
 
-const INSTALL_CMD = "npx systemix init";
+const INSTALL_CMD = "npx @systemix/cli init";
 
 export function InstallStrip() {
   const [copied, setCopied] = useState(false);

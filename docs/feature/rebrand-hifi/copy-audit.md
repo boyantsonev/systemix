@@ -1,5 +1,9 @@
 # copy-audit.md — Audit request page (`/audit`)
 
+> **Superseded.** The audit shipped as a paid, human-reviewed AI-Readiness
+> Audit (€249, emailed in 24–48h) — not the free/instant magnet described
+> below. Treat `src/app/audit/page.tsx` as the source of truth, not this file.
+
 > getdesign.md/request clone: a lead magnet. Dark, focused, one job — get the 3-field form filled. Free audit as the hook; cross-sell the Kit.
 
 ---

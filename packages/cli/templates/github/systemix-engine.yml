@@ -7,7 +7,7 @@ name: Systemix Engine — propose next bet
 # nothing ships until /write-variants and a merged PR.
 # Requires repo secret: ANTHROPIC_API_KEY. Without it the run skips (no PR) —
 # the same graceful "not-wired" posture as an unconnected signal.
-# Installed by `npx systemix init`; the /propose-experiment skill lives in
+# Installed by `npx @systemix/cli init`; the /propose-experiment skill lives in
 # .claude/skills/ (committed), so the prompt is just the slash command.
 
 on:
@@ -45,7 +45,7 @@ jobs:
           # arbitrary bash. All queue writes go through the validated CLI door.
           claude_args: >-
             --max-turns 15
-            --allowedTools "Bash(npx systemix propose:*),Read,Glob,Grep"
+            --allowedTools "Bash(npx @systemix/cli propose:*),Read,Glob,Grep"
 
       - name: Open PR with the proposal card
         if: steps.gate.outputs.wired == 'true'
