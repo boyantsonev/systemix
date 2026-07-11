@@ -7,6 +7,18 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3001,
       "autoPort": true
+    },
+    {
+      "name": "systemix-app",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "packages/app/server/index.js",
+        "--project-root",
+        ".",
+        "--port",
+        "4415"
+      ],
+      "port": 4415
     }
   ]
 }
