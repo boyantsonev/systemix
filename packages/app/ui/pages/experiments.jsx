@@ -1,6 +1,6 @@
 // #/experiments — list with expandable detail + LEARNINGS memory.
 import React, { useState } from 'react'
-import { useApp } from '../app.jsx'
+import { GuideNote, useApp } from '../app.jsx'
 import { asJson, fmtDate, mdToHtml, useApi } from '../lib.js'
 
 const STATUS_CLASS = {
@@ -10,7 +10,7 @@ const STATUS_CLASS = {
 }
 
 export default function Experiments() {
-  const { view } = useApp()
+  const { view, home } = useApp()
   const { data, error, loading } = useApi('/api/experiments')
   const [openFile, setOpenFile] = useState(null)
   if (loading) return <div className="empty-note">Loading…</div>
@@ -24,9 +24,10 @@ export default function Experiments() {
       <h1>Experiments</h1>
 
       {experiments.length === 0 && (
-        <div className="empty-note">
-          No experiments yet — start one with <code>/init-experiment</code>.
-        </div>
+        <GuideNote
+          hint={home?.setup?.find((s) => s.id === 'experiment')?.hint ?? 'no experiments yet — frame the first bet'}
+          command="/init-experiment"
+        />
       )}
 
       <div className="exp-list">

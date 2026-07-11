@@ -1,10 +1,10 @@
 // #/tokens — swatches + table (human) / raw css + generated files (machine).
 import React from 'react'
-import { useApp } from '../app.jsx'
+import { GuideNote, useApp } from '../app.jsx'
 import { groupByPrefix, looksLikeColor, parseTokenBlocks, useApi } from '../lib.js'
 
 export default function Tokens() {
-  const { view } = useApp()
+  const { view, home } = useApp()
   const { data, error, loading } = useApi('/api/tokens')
   if (loading) return <div className="empty-note">Loading…</div>
   if (error) return <div className="empty-note">Failed to load tokens: {error.error}</div>
@@ -25,10 +25,16 @@ export default function Tokens() {
   }
 
   if (!data.css) {
+    const item = home?.setup?.find((s) => s.id === 'tokens')
     return (
-      <div className="empty-note">
-        No token file at <code>{data.cssPath}</code>.
-      </div>
+      <>
+        <div className="eyebrow">Tokens</div>
+        <h1>Design tokens</h1>
+        <GuideNote
+          hint={`no token file at ${data.cssPath} — ${item?.hint ?? 'scaffold design/ via init, or set design.tokens in systemix.config.yaml'}`}
+          command={item?.command ?? 'npx @getsystemix/cli init'}
+        />
+      </>
     )
   }
 

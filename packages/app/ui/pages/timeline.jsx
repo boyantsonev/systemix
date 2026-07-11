@@ -1,10 +1,10 @@
 // #/timeline — the sacred timeline: drift score over time, branches (critical
 // runs) forking off and getting pruned, token commits on a second track.
 import React from 'react'
-import { useApp } from '../app.jsx'
+import { GuideNote, useApp } from '../app.jsx'
 import { asJson, useApi } from '../lib.js'
 
-const RED = '#c74b43'
+const RED = 'var(--red)'
 
 const ts = (v) => new Date(v).getTime()
 const fmtDT = (v) => {
@@ -108,8 +108,9 @@ function layout(snapshots, commits) {
 }
 
 export default function Timeline() {
-  const { view } = useApp()
+  const { view, home } = useApp()
   const { data, error, loading } = useApi('/api/drift')
+  const driftItem = home?.setup?.find((s) => s.id === 'drift')
   if (loading) return <div className="empty-note">Loading…</div>
   if (error) return <div className="empty-note">Failed to load drift history: {error.error}</div>
 
@@ -130,9 +131,10 @@ export default function Timeline() {
       <>
         <div className="eyebrow">Timeline</div>
         <h1>Sacred timeline</h1>
-        <div className="empty-note">
-          no drift history yet — run <code>npx @getsystemix/cli drift scan</code>
-        </div>
+        <GuideNote
+          hint={driftItem?.hint ?? 'no drift snapshots yet — run the first scan'}
+          command={driftItem?.command ?? 'npx @getsystemix/cli drift scan'}
+        />
       </>
     )
   }
@@ -182,9 +184,10 @@ export default function Timeline() {
       )}
 
       {!snapshots.length && (
-        <div className="empty-note">
-          no drift history yet — run <code>npx @getsystemix/cli drift scan</code>
-        </div>
+        <GuideNote
+          hint={driftItem?.hint ?? 'no drift snapshots yet — run the first scan'}
+          command={driftItem?.command ?? 'npx @getsystemix/cli drift scan'}
+        />
       )}
 
       <div className="card tl-svg-wrap">

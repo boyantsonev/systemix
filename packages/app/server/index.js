@@ -9,12 +9,14 @@ import { fileURLToPath } from 'node:url'
 
 import {
   loadConfig,
+  loadDesign,
   loadDoc,
   loadDocsManifest,
   loadDrift,
   loadExperiments,
   loadHome,
   loadQueue,
+  loadSkills,
   loadTokens,
   resolveQueueItem,
 } from './lib/instance.js'
@@ -80,6 +82,8 @@ async function handleApi(req, res, url) {
     const { config } = loadConfig(ROOT)
     return json(res, 200, loadTokens(ROOT, config))
   }
+  if (p === '/api/design') return json(res, 200, loadDesign(ROOT))
+  if (p === '/api/skills') return json(res, 200, loadSkills(ROOT))
   if (p === '/api/experiments') return json(res, 200, loadExperiments(ROOT))
   if (p === '/api/queue') return json(res, 200, loadQueue(ROOT))
   const resolveMatch = p.match(/^\/api\/queue\/([\w.-]+)\/resolve$/)

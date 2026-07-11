@@ -1,6 +1,7 @@
-// #/ — instance snapshot: context, counts, autonomy + signals, quick links.
+// #/ — instance snapshot: setup checklist, context, counts, autonomy +
+// signals, quick links.
 import React from 'react'
-import { useApp } from '../app.jsx'
+import { CopyCmd, useApp } from '../app.jsx'
 import { asJson } from '../lib.js'
 
 export default function Home() {
@@ -16,13 +17,15 @@ export default function Home() {
     )
   }
 
-  const { context, counts, autonomy, signals, latestDrift } = home
+  const { context, counts, autonomy, signals, latestDrift, setup } = home
   const driftScore = latestDrift?.score ?? latestDrift?.count ?? null
 
   return (
     <>
       <div className="eyebrow">Instance</div>
       <h1>{home.instance}</h1>
+
+      {setup && <SetupCard setup={setup} />}
 
       <div className="card">
         <div className="eyebrow">Context</div>
@@ -68,12 +71,45 @@ export default function Home() {
       <div className="card">
         <div className="eyebrow">Quick links</div>
         <div className="chip-row">
+          <a className="chip chip-link" href="#/design">Overview</a>
           <a className="chip chip-link" href="#/tokens">Tokens</a>
           <a className="chip chip-link" href="#/experiments">Experiments</a>
           <a className="chip chip-link" href="#/queue">Queue</a>
+          <a className="chip chip-link" href="#/skills">Skills</a>
         </div>
       </div>
     </>
+  )
+}
+
+// The buddy checklist — done items collapse to calm green squares; todos get
+// the hint + a copyable next command.
+function SetupCard({ setup }) {
+  const todo = setup.filter((i) => !i.done)
+  return (
+    <div className="card">
+      <div className="eyebrow">Setup</div>
+      {todo.length === 0 ? (
+        <div className="setup-all-done">
+          <span className="setup-square done" /> all set — the loop is fully wired
+        </div>
+      ) : (
+        <ul className="setup-list">
+          {setup.map((item) => (
+            <li key={item.id} className={item.done ? 'setup-item done' : 'setup-item'}>
+              <span className={item.done ? 'setup-square done' : 'setup-square todo'} />
+              <span className="setup-label">{item.label}</span>
+              {!item.done && (
+                <span className="setup-next">
+                  <span className="setup-hint">{item.hint}</span>
+                  {item.command && <CopyCmd command={item.command} />}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   )
 }
 
