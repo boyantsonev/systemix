@@ -45,5 +45,7 @@ that wraps `systemix loop` (propose-only, HITL like all self-modification).
 
 ## Where things are
 - `design/DESIGN.md` — the design system: `tokens.css` (canonical) + `guardrails.mdx` (rules)
+- `docs/manifest.json` — the component-docs inventory (agent entry point; `npx @getsystemix/cli docs sync`)
 - `.systemix/queue.json` — the HITL decision queue (proposals wait here for a human)
 - `experiments/` — the optional learning loop: `<id>.mdx` + `goals/` + `LEARNINGS.md`
+- the local app — `npx @getsystemix/cli app` (docs with human/machine views · tokens · experiments · the HITL queue)

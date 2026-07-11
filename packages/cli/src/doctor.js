@@ -154,7 +154,18 @@ async function doctor() {
     results.push({ icon: "❌", label: `0/${REQUIRED_SKILLS.length} skills installed — run: npx @getsystemix/cli add figma-to-code`, level: "error" });
   }
 
-  // 8. Node.js version >= 18
+  // 8. Local app (@getsystemix/app) — optional, powers `systemix app`
+  {
+    const { resolveAppServer } = require("./commands/app");
+    const appServer = resolveAppServer();
+    if (appServer) {
+      results.push({ icon: "✅", label: "@getsystemix/app resolvable — run: npx @getsystemix/cli app", level: "ok" });
+    } else {
+      results.push({ icon: "⚠️ ", label: "@getsystemix/app not installed — the local app is optional; install with: npm i -D @getsystemix/app", level: "warn" });
+    }
+  }
+
+  // 9. Node.js version >= 18
   const nodeVersion = process.version; // e.g. "v20.11.0"
   const nodeMajor = parseInt(nodeVersion.slice(1).split(".")[0], 10);
   if (nodeMajor >= 18) {

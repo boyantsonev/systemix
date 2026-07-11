@@ -1,0 +1,33 @@
+{
+  "name": "@getsystemix/app",
+  "version": "0.1.0",
+  "description": "The systemix per-instance local app — design-system docs (human/machine), tokens, experiments and the HITL queue, served over your repo's own files.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boyantsonev/systemix-poc.git",
+    "directory": "packages/app"
+  },
+  "type": "module",
+  "main": "server/index.js",
+  "files": [
+    "server",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "node server/index.js",
+    "test": "node --test server/test"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "vite": "^5.4.0"
+  }
+}

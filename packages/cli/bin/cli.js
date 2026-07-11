@@ -22,6 +22,8 @@ const { skills } = require("../src/commands/skills");
 const { mcp } = require("../src/commands/mcp");
 const { audit } = require("../src/commands/audit");
 const { design } = require("../src/commands/design");
+const { docs } = require("../src/commands/docs");
+const { app } = require("../src/commands/app");
 
 const [, , command, ...args] = process.argv;
 
@@ -54,6 +56,8 @@ const HELP = `
     npx @getsystemix/cli evidence <sub>          PostHog evidence → HITL queue: experiment|engagement|close|check
     npx @getsystemix/cli experiment <sub>        Drive the loop: new|list|measure|close|learnings|audit
     npx @getsystemix/cli goal <sub>              Declare what experiments are for: new|list (experiments/goals/)
+    npx @getsystemix/cli app [--port 4400] [--open]  The local instance app: docs (human/machine) · tokens · experiments · HITL queue
+    npx @getsystemix/cli docs <sub>              Component docs contract: sync [--check] | new <Name> --group <g>
     npx @getsystemix/cli loop [<id>]             Ralph runner — advance running experiments to decision-ready (HITL close)
     npx @getsystemix/cli propose <sub>           Engine generate stage: context|queue — propose the next bet (HITL approve)
     npx @getsystemix/cli skills sync [--global]  Refresh installed loop skills from the CLI's bundled source
@@ -158,6 +162,12 @@ async function main() {
       break;
     case "goal":
       await goal(args);
+      break;
+    case "app":
+      await app(args);
+      break;
+    case "docs":
+      await docs(args);
       break;
     case "loop":
       await loop(args);
