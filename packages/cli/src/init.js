@@ -134,7 +134,7 @@ function scaffoldDesign(projectRoot) {
 }
 
 // Build systemix.config.yaml — the instance topology (committed; no secrets). See ADR-008.
-function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier = 0, siMode }) {
+function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier = 0, siMode, context = null }) {
   const L = [];
   L.push("# systemix.config.yaml — your instance topology. Committed; contains NO secrets.");
   L.push("# Secrets (Figma/PostHog keys) live in ~/.systemix/config.json or env vars.");
@@ -145,6 +145,20 @@ function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier
   if (surfaces.length === 0) L.push("  []");
   L.push("design:");
   L.push(`  source: ${designSource || "none"}   # 'design' (scaffolded) · a path to an existing DS · 'none' (loop only)`);
+  L.push("context:");
+  L.push("  # why this design system exists — read by the engine (propose) and the local app's Home");
+  L.push(`  product: ${context?.product ? JSON.stringify(context.product) : '""   # TODO: what product/service does it serve?'}`);
+  L.push(`  icp: ${context?.icp ? JSON.stringify(context.icp) : '""   # TODO: who is it for?'}`);
+  if (context?.problems?.length) {
+    L.push("  problems:");
+    for (const p of context.problems) L.push(`    - ${JSON.stringify(p)}`);
+  } else {
+    L.push("  problems: []   # e.g. [drift, no-docs, slow-prototyping, agent-chaos, multi-platform]");
+  }
+  L.push(`  use_case: ${context?.use_case ?? "all"}   # product-ui · marketing · research-prototypes · agent-ui · all`);
+  L.push("app:");
+  L.push("  preview:");
+  L.push('    url: ""   # your dev server for component previews in `npx @getsystemix/cli app` (e.g. http://localhost:3000)');
   L.push("signals:");
   L.push("  posthog:");
   L.push(`    enabled: ${signals.posthog.enabled}`);
@@ -171,6 +185,53 @@ function buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier
   L.push("  orchestrator_tier: 0   # Ghost Mode at init — never executes autonomously without config");
   L.push("  hermes_tier: 0   # ghost-at-init — every instance starts safe; raising the dial is a queued decision (the covenant)");
   return L.join("\n") + "\n";
+}
+
+// ── context → substrate mirrors ───────────────────────────────────────────────
+
+/** Mirror the init context answers into the scaffolded design/DESIGN.md frontmatter. */
+function mirrorContextIntoDesign(projectRoot, context) {
+  if (!context || (!context.icp && !context.product)) return;
+  const designMd = path.join(projectRoot, layout.rel.design, "DESIGN.md");
+  if (!fs.existsSync(designMd)) return;
+  let md = fs.readFileSync(designMd, "utf8");
+  if (context.icp) md = md.replace(/^icp: .*$/m, `icp: ${JSON.stringify(context.icp)}`);
+  if (context.product) md = md.replace(/^description: .*$/m, `description: ${JSON.stringify(context.product)}`);
+  fs.writeFileSync(designMd, md, "utf8");
+}
+
+/** Seed one goal from the top design problem — humans give goals; this just turns their stated pain into the first one. */
+function seedGoalFromContext(projectRoot, context) {
+  const problem = context?.problems?.[0];
+  if (!problem) return;
+  const slug = problem.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "design-problem";
+  const goalPath = path.join(projectRoot, "experiments", "goals", `fix-${slug}.mdx`);
+  if (fs.existsSync(goalPath)) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const lines = [
+    "---",
+    "type: goal",
+    `id: fix-${slug}`,
+    `title: ${JSON.stringify(`Fix: ${problem}`)}`,
+    "order: 1",
+    `given: ${context.product ? JSON.stringify(context.product) : "null"}`,
+    "goal-type: surface",
+    `icp: ${context.icp ? JSON.stringify(context.icp) : "null"}`,
+    "status: active",
+    "success-criteria: null   # TODO: how will you know this is fixed?",
+    "kill-if: null",
+    `created: ${today}`,
+    "---",
+    "",
+    `# Fix: ${problem}`,
+    "",
+    "Seeded from your init context (the top design problem you named). Refine the",
+    "success criteria, then let the engine propose experiments against it.",
+    "",
+  ];
+  fs.mkdirSync(path.dirname(goalPath), { recursive: true });
+  fs.writeFileSync(goalPath, lines.join("\n"), "utf8");
+  console.log(`  ✓  experiments/goals/fix-${slug}.mdx  (seeded from your top design problem)`);
 }
 
 // ── main ──────────────────────────────────────────────────────────────────────
@@ -278,6 +339,24 @@ async function init(opts = {}) {
   const siMode = { "1": "off", "2": "audit", "3": "tuning", "4": "auto" }[siAns] || "audit";
   console.log();
 
+  // ── Context — why does this design system exist? ───────────────────────────
+  // Captured last so scripted/default runs stay sequence-compatible; every
+  // question is skippable. Feeds the engine (propose digest), the local app's
+  // Home, and the /document + /init-experiment skills.
+  console.log("  Context — why does this design system exist? (Enter skips any question)\n");
+  const ctxProduct = ((await ask("  What product/service does it serve? (one line): ")) || "").trim() || null;
+  const ctxIcp     = ((await ask("  Who is it for — the ICP? (one line): ")) || "").trim() || null;
+  const ctxProblemsRaw = ((await ask("  Design problems today (comma-sep — e.g. drift, no-docs, slow-prototyping, agent-chaos, multi-platform): ")) || "").trim();
+  const ctxProblems = ctxProblemsRaw ? ctxProblemsRaw.split(",").map(s => s.trim()).filter(Boolean) : [];
+  console.log("\n  What is the design system expected to do?");
+  console.log("    (1) ship product UI  (2) marketing surfaces  (3) research prototypes  (4) agent-generated UI  (5) all\n");
+  const ucAns = ((await ask("  Choice [5]: ")) || "").trim() || "5";
+  const ctxUseCase = { "1": "product-ui", "2": "marketing", "3": "research-prototypes", "4": "agent-ui", "5": "all" }[ucAns] || "all";
+  const context = { product: ctxProduct, icp: ctxIcp, problems: ctxProblems, use_case: ctxUseCase };
+  if (ctxProduct || ctxIcp || ctxProblems.length) console.log("\n  ✓  Context captured — the engine and the local app read it from systemix.config.yaml");
+  else console.log("\n  -  Skipped. Add it under `context:` in systemix.config.yaml (or re-run init --reconfigure) — the engine reasons from it.");
+  console.log();
+
   // ── Install skills (project-scoped) ───────────────────────────────────────
   const projectSkillsDir = projectSkillsDirFor(projectRoot);
   console.log("  Installing skills into .claude/skills/ ...\n");
@@ -288,9 +367,11 @@ async function init(opts = {}) {
   // ── Scaffold the loop (always) + the design substrate (when scaffolding) ──
   console.log("  Setting up experiments/ (the loop)...\n");
   scaffoldExperiments(projectRoot, siMode !== "off");
+  seedGoalFromContext(projectRoot, context);
   scaffoldEngineWorkflow(projectRoot);
   if (designMode === "scaffold") {
     scaffoldDesign(projectRoot);
+    mirrorContextIntoDesign(projectRoot, context);
   } else if (designMode === "existing") {
     console.log(`  -  design/: using your existing design system${designSource ? ` at ${designSource}` : " (set design.source later)"}`);
   } else {
@@ -338,7 +419,7 @@ async function init(opts = {}) {
   if (fs.existsSync(configYamlPath) && !opts.reconfigure) {
     console.log("  -  systemix.config.yaml exists — left as-is (re-run with --reconfigure to overwrite)");
   } else {
-    fs.writeFileSync(configYamlPath, buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier, siMode }), "utf8");
+    fs.writeFileSync(configYamlPath, buildConfigYaml({ surfaces, designSource, signals, autonomy, hermesTier, siMode, context }), "utf8");
     console.log(`  ✓  systemix.config.yaml${opts.reconfigure ? " (reconfigured)" : ""}`);
   }
 
@@ -374,6 +455,7 @@ async function init(opts = {}) {
     console.log(`    hypothesis-validation /init-experiment <experiment-id>`);
   }
   console.log(`    config                systemix.config.yaml (your topology)`);
+  console.log(`    local app             npx @getsystemix/cli app   (docs · tokens · experiments · HITL queue)`);
   console.log(`    the loop              experiments/ — LEARNINGS.md is the synthesized memory`);
   if (doDesign) {
     console.log(`    design substrate      ${designMode === "existing" ? (designSource ?? "(set design.source)") : "design/DESIGN.md"}`);
