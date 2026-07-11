@@ -3,6 +3,7 @@
 // MCP use (three-doors parity): no new state, no new semantics. Fresh
 // projectRoot-scoped ports of the POC's src/lib readers (queue-store,
 // drift-history, learnings) — follow-up: extract a shared instance-lib.
+import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
@@ -154,7 +155,30 @@ export function resolveQueueItem(root, id, { action, note, resolvedBy }) {
 }
 
 export function loadDrift(root) {
-  return readJson(path.join(root, '.systemix', 'drift-history.json'), { snapshots: [] })
+  const raw = readJson(path.join(root, '.systemix', 'drift-history.json'), { snapshots: [] })
+  const snapshots = Array.isArray(raw) ? raw : (raw.snapshots ?? [])
+  // the other strand of the sacred timeline: canonical-token history from git
+  let tokensLog = []
+  try {
+    const { config } = loadConfig(root)
+    const tokensPath = config?.design?.tokens ?? 'design/tokens.css'
+    const out = execFileSync(
+      'git',
+      ['log', '--follow', '--format=%h\t%aI\t%s', '--max-count=60', '--', tokensPath],
+      { cwd: root, encoding: 'utf8', timeout: 5000 }
+    )
+    tokensLog = out
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => {
+        const [hash, date, ...subject] = line.split('\t')
+        return { hash, date, subject: subject.join('\t') }
+      })
+  } catch {
+    tokensLog = [] // not a git repo / git unavailable — the timeline renders snapshots only
+  }
+  return { snapshots, tokensLog }
 }
 
 export function loadHome(root) {

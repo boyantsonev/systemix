@@ -5,6 +5,7 @@ import Doc from './pages/doc.jsx'
 import Experiments from './pages/experiments.jsx'
 import Home from './pages/home.jsx'
 import Queue from './pages/queue.jsx'
+import Timeline from './pages/timeline.jsx'
 import Tokens from './pages/tokens.jsx'
 
 export const AppContext = createContext(null)
@@ -55,6 +56,7 @@ export default function App() {
 function PageFor({ route }) {
   if (route === '/' || route === '') return <Home />
   if (route === '/tokens') return <Tokens />
+  if (route === '/timeline') return <Timeline />
   const doc = route.match(/^\/docs\/([a-z0-9-]+)$/)
   if (doc) return <Doc slug={doc[1]} />
   if (route === '/experiments') return <Experiments />
@@ -114,6 +116,10 @@ function Sidebar({ route }) {
         <div className="nav-children">
           <a className={route === '/tokens' ? 'nav-item active' : 'nav-item'} href="#/tokens">
             Tokens
+          </a>
+          <a className={route === '/timeline' ? 'nav-item active' : 'nav-item'} href="#/timeline">
+            Timeline
+            {(home?.latestDrift?.critical ?? 0) > 0 && <span className="nav-dot-amber" aria-label="critical drift" />}
           </a>
           {manifest ? (
             <DocsTree manifest={manifest} activeSlug={activeSlug} />
