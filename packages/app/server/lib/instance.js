@@ -40,6 +40,220 @@ export function loadDocsManifest(root) {
   return readJson(path.join(root, 'docs', 'manifest.json'), null)
 }
 
+// ---- theme — the app wears the instance's skin -----------------------------
+// Parse the instance's canonical tokens css and resolve the semantic aliases
+// for both scopes (:root = light, .dark = overlay). Values stay as authored
+// (oklch is fine — browsers render it); we only flatten var() chains.
+
+const tokensCssPath = (config) => config?.design?.tokens ?? 'design/tokens.css'
+
+function parseCssVars(css) {
+  const root = {}
+  const dark = {}
+  const blockRe = /(:root|\.dark)\s*\{([^}]*)\}/g
+  let m
+  while ((m = blockRe.exec(String(css ?? '')))) {
+    const target = m[1] === '.dark' ? dark : root
+    const varRe = /--([\w-]+)\s*:\s*([^;]+);/g
+    let v
+    while ((v = varRe.exec(m[2]))) target[`--${v[1]}`] = v[2].trim()
+  }
+  return { root, dark }
+}
+
+function resolveVars(value, lookup, depth = 0) {
+  if (!value || depth > 8 || !value.includes('var(')) return value
+  return value.replace(/var\((--[\w-]+)(?:\s*,\s*([^()]+))?\)/g, (whole, name, fallback) => {
+    const next = lookup(name)
+    if (next != null) return resolveVars(next, lookup, depth + 1)
+    return fallback ? resolveVars(fallback.trim(), lookup, depth + 1) : whole
+  })
+}
+
+// semantic key -> candidate custom properties (first hit wins)
+const THEME_KEYS = {
+  background: ['--background'],
+  foreground: ['--foreground'],
+  card: ['--card'],
+  muted: ['--muted'],
+  mutedForeground: ['--muted-foreground'],
+  border: ['--border'],
+  primary: ['--primary'],
+  primaryForeground: ['--primary-foreground'],
+  secondary: ['--secondary'],
+  accent: ['--accent'],
+  ring: ['--ring'],
+  success: ['--success'],
+  warning: ['--warning'],
+  danger: ['--danger', '--destructive'],
+}
+
+export function loadTheme(root, config) {
+  const cssPath = tokensCssPath(config)
+  const css = readText(path.join(root, cssPath))
+  if (css == null) return null
+  const vars = parseCssVars(css)
+  const scopes = {
+    light: (name) => vars.root[name],
+    dark: (name) => vars.dark[name] ?? vars.root[name], // .dark overlays :root
+  }
+  const theme = { source: cssPath, light: {}, dark: {} }
+  for (const [scope, lookup] of Object.entries(scopes)) {
+    for (const [key, candidates] of Object.entries(THEME_KEYS)) {
+      const cssVar = candidates.find((c) => lookup(c) != null)
+      if (!cssVar) continue
+      const resolved = resolveVars(lookup(cssVar), lookup)
+      if (resolved && !resolved.includes('var(')) theme[scope][key] = resolved
+    }
+  }
+  return Object.keys(theme.light).length ? theme : null
+}
+
+// ---- setup — the buddy checklist -------------------------------------------
+// Ordered, computed from the instance files. Each item: {id, label, done,
+// hint, command}. The UI renders todos as guided next steps.
+
+export function loadSetup(root, config) {
+  const exists = (...p) => fs.existsSync(path.join(root, ...p))
+  const signalsOn = Object.values(config?.signals ?? {}).some((s) => s?.enabled)
+  const drift = readJson(path.join(root, '.systemix', 'drift-history.json'), null)
+  const driftCount = Array.isArray(drift) ? drift.length : (drift?.snapshots?.length ?? 0)
+  let experimentCount = 0
+  try {
+    experimentCount = fs
+      .readdirSync(path.join(root, 'experiments'))
+      .filter((f) => f.endsWith('.mdx') && !f.startsWith('_')).length
+  } catch {
+    experimentCount = 0
+  }
+  return [
+    {
+      id: 'config',
+      label: 'Instance config',
+      done: exists('systemix.config.yaml'),
+      hint: 'no systemix.config.yaml — initialize the instance',
+      command: 'npx @getsystemix/cli init',
+    },
+    {
+      id: 'context',
+      label: 'Context captured',
+      done: Boolean(config?.context && Object.keys(config.context).length),
+      hint: 'the config has no context block — rerun the init interview',
+      command: 'npx @getsystemix/cli init --reconfigure',
+    },
+    {
+      id: 'tokens',
+      label: 'Design tokens',
+      done: exists(tokensCssPath(config)),
+      hint: 'scaffold design/ via init, or set design.tokens in systemix.config.yaml',
+      command: 'npx @getsystemix/cli init',
+    },
+    {
+      id: 'design-md',
+      label: 'DESIGN.md',
+      done: exists('design', 'DESIGN.md'),
+      hint: 'no design/DESIGN.md — the design-system source of truth',
+      command: 'npx @getsystemix/cli init',
+    },
+    {
+      id: 'guardrails',
+      label: 'Guardrails',
+      done: exists('design', 'guardrails.mdx'),
+      hint: 'no design/guardrails.mdx — the rules drift checks enforce',
+      command: 'npx @getsystemix/cli init',
+    },
+    {
+      id: 'docs',
+      label: 'Docs manifest',
+      done: exists('docs', 'manifest.json'),
+      hint: 'no docs/manifest.json — sync the component docs',
+      command: 'npx @getsystemix/cli docs sync',
+    },
+    {
+      id: 'experiment',
+      label: 'First experiment',
+      done: experimentCount > 0,
+      hint: 'no experiments yet — frame the first bet',
+      command: '/init-experiment',
+    },
+    {
+      id: 'signals',
+      label: 'Signals on',
+      done: signalsOn,
+      hint: 'no signal enabled — wire a data source so experiments can measure',
+      command: '/connect-signal',
+    },
+    {
+      id: 'drift',
+      label: 'Drift history',
+      done: driftCount > 0,
+      hint: 'no drift snapshots yet — run the first scan',
+      command: 'npx @getsystemix/cli drift scan',
+    },
+    {
+      id: 'preview',
+      label: 'Component previews',
+      done: Boolean(config?.app?.preview?.url),
+      hint: 'set app.preview.url in systemix.config.yaml for live component previews',
+      command: null,
+    },
+  ]
+}
+
+// ---- design docs + skills ---------------------------------------------------
+
+function loadFrontmatterDoc(file) {
+  const raw = readText(file)
+  if (raw == null) return null
+  try {
+    const { data, content } = matter(raw)
+    return { frontmatter: data, body: content, raw }
+  } catch {
+    return { frontmatter: {}, body: raw, raw }
+  }
+}
+
+export function loadDesign(root) {
+  return {
+    design: loadFrontmatterDoc(path.join(root, 'design', 'DESIGN.md')),
+    guardrails: loadFrontmatterDoc(path.join(root, 'design', 'guardrails.mdx')),
+  }
+}
+
+export function loadSkills(root) {
+  const skillsDir = path.join(root, '.claude', 'skills')
+  let skills = []
+  try {
+    skills = fs
+      .readdirSync(skillsDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory())
+      .map((d) => {
+        const doc = loadFrontmatterDoc(path.join(skillsDir, d.name, 'SKILL.md'))
+        const fm = doc?.frontmatter ?? {}
+        return {
+          name: fm.name ?? d.name,
+          description: fm.description ?? null,
+          userInvocable: fm['user-invocable'] ?? null,
+          dir: `.claude/skills/${d.name}`,
+        }
+      })
+      .sort((a, b) => a.name.localeCompare(b.name))
+  } catch {
+    skills = []
+  }
+  let workflows = []
+  try {
+    workflows = fs
+      .readdirSync(path.join(root, '.claude', 'workflows'), { withFileTypes: true })
+      .filter((d) => d.isFile())
+      .map((d) => ({ name: d.name.replace(/\.[^.]+$/, ''), file: `.claude/workflows/${d.name}` }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+  } catch {
+    workflows = []
+  }
+  return { skills, workflows }
+}
+
 export function loadDoc(root, slug) {
   if (!/^[a-z0-9-]+$/.test(slug)) return null
   const file = path.join(root, 'docs', 'components', `${slug}.md`)
@@ -50,7 +264,7 @@ export function loadDoc(root, slug) {
 }
 
 export function loadTokens(root, config) {
-  const cssPath = config?.design?.tokens ?? 'design/tokens.css'
+  const cssPath = tokensCssPath(config)
   const css = readText(path.join(root, cssPath))
   // optional generated-values seam: config app.tokens_generated: [paths]
   const generatedPaths = config?.app?.tokens_generated ?? []
@@ -191,7 +405,10 @@ export function loadHome(root) {
   const latestDrift = Array.isArray(snapshots) && snapshots.length ? snapshots[snapshots.length - 1] : null
   return {
     instance,
+    projectRoot: root,
     context: config?.context ?? null,
+    theme: loadTheme(root, config),
+    setup: loadSetup(root, config),
     autonomy: config?.hermes?.autonomy ?? null,
     signals: config?.signals ?? null,
     preview: config?.app?.preview ?? null,
